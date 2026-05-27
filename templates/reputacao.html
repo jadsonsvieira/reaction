@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReAção - Central de Reputação</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { heading: ['Poppins', 'sans-serif'], body: ['DM Sans', 'sans-serif'] },
+                    colors: { brand: '#ff6b35', sidebar: '#3a3a3a', bglight: '#e5e5e7' }
+                }
+            }
+        } 
+    </script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background-color: #e5e5e7;
+        }
+
+        .app-shell {
+            height: 100%;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .main-scroll {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            transition: all 0.15s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(255, 107, 53, 0.12);
+        }
+
+        .nav-item.active {
+            border-left: 3px solid #ff6b35;
+            color: white;
+        }
+
+        .review-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .pulse-alert {
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(220, 38, 38, 0);
+            }
+        }
+    </style>
+</head>
+
+<body class="h-full font-body text-gray-800">
+    <div class="app-shell">
+
+        <aside id="sidebar" class="w-60 flex-shrink-0 flex flex-col bg-sidebar">
+            <div class="p-5 flex items-center gap-2">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="12" stroke="#ff6b35" stroke-width="2.5" />
+                    <path d="M10 14l3 3 5-6" stroke="#ff6b35" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span class="font-heading font-bold text-lg text-white tracking-tight">Re<span
+                        class="text-brand">Ação</span></span>
+            </div>
+            <nav class="flex-1 mt-4 px-3 space-y-1">
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium"
+                    onclick="window.location.href='/app'">
+                    <i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i> Dashboard
+                </button>
+                <button
+                    class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white text-sm font-medium">
+                    <i data-lucide="message-square" class="w-[18px] h-[18px]"></i> Reputação
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium">
+                    <i data-lucide="list-checks" class="w-[18px] h-[18px]"></i> Minhas Ações
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium"
+                    onclick="window.location.href='/sala_maquinas'">
+                    <i data-lucide="settings" style="width:18px;height:18px;"></i> Sala de Máquinas
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium"
+                    onclick="window.location.href='/integracoes'">
+                    <i data-lucide="link" class="w-[18px] h-[18px]"></i> Integrações
+                </button>
+            </nav>
+        </aside>
+
+        <div class="main-scroll flex flex-col">
+            <header
+                class="flex items-center justify-between px-8 py-5 bg-white border-b border-gray-200 sticky top-0 z-10">
+                <div>
+                    <h1 class="font-heading font-semibold text-xl text-gray-800">Central de Reputação</h1>
+                    <p class="text-sm text-gray-400 mt-0.5">Gestão inteligente e contenção de crises em tempo real.</p>
+                </div>
+            </header>
+
+            <main class="px-8 py-6 flex-1 h-full overflow-hidden flex flex-col">
+                <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 h-full min-h-0">
+
+                    <div class="flex flex-col h-full">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                            <h2 class="font-heading font-semibold text-sm text-gray-800">Respondido pela IA</h2>
+                            <span
+                                class="ml-auto text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium">Automação</span>
+                        </div>
+                        <div id="col-respondidos" class="flex-1 overflow-y-auto space-y-4 pb-4 pr-1 scrollbar-hide">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col h-full">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-2.5 h-2.5 rounded-full bg-brand"></div>
+                            <h2 class="font-heading font-semibold text-sm text-gray-800">Dúvidas (Aprovação)</h2>
+                            <span class="ml-auto text-xs px-2 py-0.5 rounded-full bg-orange-100 text-brand font-medium"
+                                id="count-pendentes">0</span>
+                        </div>
+                        <div id="col-pendentes" class="flex-1 overflow-y-auto space-y-4 pb-4 pr-1">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col h-full">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                            <h2 class="font-heading font-semibold text-sm text-gray-800">Alerta Vermelho</h2>
+                            <span class="ml-auto text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium"
+                                id="count-alertas">0</span>
+                        </div>
+                        <div id="col-alertas" class="flex-1 overflow-y-auto space-y-4 pb-4 pr-1">
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // ── Mock Data Inicial (Até termos a rota GET /api/avaliacoes) ──
+        const mockAvaliacoes = [
+            {
+                id: 1,
+                cliente: "Maria Costa",
+                plataforma: "Google",
+                nota: 5,
+                tempo: "há 2h",
+                comentario: "Atendimento excelente! A equipe foi muito atenciosa e resolveu tudo rapidamente. Recomendo!",
+                rascunho: "Obrigado pela avaliação, Maria! Ficamos felizes em saber que a experiência foi positiva. Esperamos vê-la novamente!",
+                status: "respondido_ia"
+            },
+            {
+                id: 2,
+                cliente: "Rafael Santos",
+                plataforma: "Instagram",
+                nota: 4,
+                tempo: "há 5h",
+                comentario: "Boa experiência no geral. Gostaria de saber se vocês oferecem opções vegetarianas no cardápio do almoço?",
+                rascunho: "Olá Rafael! Sim, temos diversas opções vegetarianas disponíveis. Confira nosso cardápio no link da bio.",
+                status: "pendente"
+            },
+            {
+                id: 3,
+                cliente: "Pedro Lima",
+                plataforma: "Google",
+                nota: 1,
+                tempo: "há 1h",
+                comentario: "Péssimo atendimento. Esperei mais de 40 minutos e ninguém veio me atender. Decepção total.",
+                rascunho: "Olá Pedro. Lamentamos profundamente a sua espera de 40 minutos. Queremos entender e resolver isso imediatamente. Por favor, nos chame no WhatsApp: wa.me/5585999999999",
+                status: "alerta_crise"
+            }
+        ];
+
+        // ── Helpers de Renderização ──
+        function renderStars(nota) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<span class="text-sm ${i <= nota ? 'text-amber-400' : 'text-gray-300'}">★</span>`;
+            }
+            return stars;
+        }
+
+        function createCardHTML(av) {
+            if (av.status === 'respondido_ia') {
+                return `
+          <div class="review-card bg-white rounded-xl p-5 border border-gray-100">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <span class="text-sm font-semibold text-gray-800">${av.cliente}</span>
+                <div class="text-[11px] text-gray-400">${av.plataforma} · ${av.tempo}</div>
+              </div>
+              <span class="text-[10px] font-semibold px-2 py-1 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 flex items-center gap-1">
+                <i data-lucide="check-circle" class="w-3 h-3"></i> Respondido
+              </span>
+            </div>
+            <div class="flex gap-0.5 mb-2">${renderStars(av.nota)}</div>
+            <p class="text-sm text-gray-600 mb-3 line-clamp-3">"${av.comentario}"</p>
+            <div class="pt-3 border-t border-gray-100">
+              <div class="text-[11px] font-medium mb-1 text-gray-400">Resposta da IA:</div>
+              <p class="text-xs text-gray-500 leading-relaxed italic">"${av.rascunho}"</p>
+            </div>
+          </div>
+        `;
+            }
+
+            if (av.status === 'pendente') {
+                return `
+          <div class="review-card bg-white rounded-xl p-5 border-2 border-brand/20">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <span class="text-sm font-semibold text-gray-800">${av.cliente}</span>
+                <div class="text-[11px] text-gray-400">${av.plataforma} · ${av.tempo}</div>
+              </div>
+              <span class="text-[10px] font-semibold px-2 py-1 rounded bg-orange-50 text-brand border border-orange-200 flex items-center gap-1">
+                <i data-lucide="clock" class="w-3 h-3"></i> Pendente
+              </span>
+            </div>
+            <div class="flex gap-0.5 mb-2">${renderStars(av.nota)}</div>
+            <p class="text-sm text-gray-600 mb-3">"${av.comentario}"</p>
+            <div class="pt-3 border-t border-gray-100">
+              <div class="text-[11px] font-medium mb-1 text-gray-400">Rascunho da IA:</div>
+              <p class="text-xs text-gray-700 leading-relaxed mb-3">"${av.rascunho}"</p>
+              <button onclick="aprovarAvaliacao(${av.id})" class="w-full py-2 rounded-lg text-white text-xs font-semibold flex items-center justify-center gap-1.5 bg-brand hover:brightness-110 transition">
+                <i data-lucide="check" class="w-3 h-3"></i> Aprovar Rascunho
+              </button>
+            </div>
+          </div>
+        `;
+            }
+
+            if (av.status === 'alerta_crise') {
+                return `
+          <div class="review-card pulse-alert bg-white rounded-xl p-5 border-2 border-red-300">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <span class="text-sm font-semibold text-gray-800">${av.cliente}</span>
+                <div class="text-[11px] text-gray-400">${av.plataforma} · ${av.tempo}</div>
+              </div>
+              <span class="text-[10px] font-semibold px-2 py-1 rounded bg-red-100 text-red-700 flex items-center gap-1">
+                <i data-lucide="alert-triangle" class="w-3 h-3"></i> Urgente
+              </span>
+            </div>
+            <div class="flex gap-0.5 mb-2">${renderStars(av.nota)}</div>
+            <p class="text-sm text-gray-600 mb-3">"${av.comentario}"</p>
+            <div class="pt-3 border-t border-red-100 bg-red-50 -mx-5 -mb-5 px-5 pb-5 rounded-b-xl mt-3">
+              <div class="flex items-center gap-1.5 mb-2 pt-3">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-red-600"></i>
+                <span class="text-xs font-semibold text-red-700">Ação imediata necessária</span>
+              </div>
+              <p class="text-[11px] text-red-600/80 mb-3">Sugestão de Contenção (Ponte Privada):<br><span class="italic text-gray-800">"${av.rascunho}"</span></p>
+              <div class="flex gap-2">
+                <button onclick="aprovarAvaliacao(${av.id})" class="flex-1 py-2 rounded-lg text-white text-xs font-semibold flex items-center justify-center gap-1.5 bg-red-600 hover:bg-red-700 transition">
+                  <i data-lucide="message-circle" class="w-3 h-3"></i> Publicar Resposta
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+            }
+        }
+
+        // Função que comunica com o Python para aprovar a avaliação
+        async function aprovarAvaliacao(id) {
+            try {
+                // Envia um pedido PUT para o nosso backend
+                const res = await fetch(`/api/avaliacoes/${id}/aprovar`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (res.ok) {
+                    toast("✅ Resposta publicada! Cartão atualizado.");
+                    // Recarrega o Kanban para vermos o cartão a "saltar" de coluna
+                    initKanban();
+                } else {
+                    toast("❌ Erro ao aprovar a resposta.");
+                }
+            } catch (err) {
+                console.error(err);
+                toast("❌ Falha de comunicação com o servidor.");
+            }
+        }
+
+        // ── Engine Principal Atualizada (Dados Reais) ──
+        async function initKanban() {
+            try {
+                // Consome a rota que acabamos de criar no Python
+                const response = await fetch('/api/avaliacoes');
+                if (!response.ok) throw new Error('Erro ao buscar dados');
+                const data = await response.json();
+
+                const colRes = document.getElementById('col-respondidos');
+                const colPen = document.getElementById('col-pendentes');
+                const colAle = document.getElementById('col-alertas');
+
+                // Limpa as colunas caso seja um recarregamento
+                colRes.innerHTML = '';
+                colPen.innerHTML = '';
+                colAle.innerHTML = '';
+
+                let cPen = 0, cAle = 0;
+
+                data.forEach(av => {
+                    const html = createCardHTML(av);
+                    if (av.status === 'respondido_ia') colRes.insertAdjacentHTML('beforeend', html);
+                    if (av.status === 'pendente') { colPen.insertAdjacentHTML('beforeend', html); cPen++; }
+                    if (av.status === 'alerta_crise') { colAle.insertAdjacentHTML('beforeend', html); cAle++; }
+                });
+
+                document.getElementById('count-pendentes').innerText = cPen;
+                document.getElementById('count-alertas').innerText = cAle;
+
+                lucide.createIcons();
+            } catch (error) {
+                console.error("Falha ao carregar o Kanban:", error);
+            }
+        }
+
+        // Iniciar na montagem
+        initKanban();
+    </script>
+</body>
+
+</html>

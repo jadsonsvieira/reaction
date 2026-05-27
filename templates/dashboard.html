@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReAção Cockpit</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&amp;family=DM+Sans:wght@400;500;600&amp;display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Poppins', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif']
+          }
+        }
+      }
+    } 
+  </script>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    .app-shell {
+      height: 100%;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .main-scroll {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .action-btn {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 20px 6px rgba(255, 107, 53, 0.15);
+      }
+    }
+
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .anim-in {
+      animation: slide-up 0.4s ease-out both;
+    }
+
+    .anim-d1 {
+      animation-delay: 0.05s;
+    }
+
+    .anim-d2 {
+      animation-delay: 0.1s;
+    }
+
+    .anim-d3 {
+      animation-delay: 0.15s;
+    }
+
+    .anim-d4 {
+      animation-delay: 0.2s;
+    }
+
+    .check-box {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .check-box.finalizado {
+      background: #ff6b35;
+      border-color: #ff6b35;
+    }
+
+    .check-box:hover {
+      border-color: #ff6b35;
+    }
+
+    .nav-item {
+      transition: all 0.15s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: rgba(255, 107, 53, 0.12);
+    }
+
+    .nav-item.active {
+      border-left: 3px solid #ff6b35;
+    }
+
+    .kpi-card {
+      transition: transform 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .task-row {
+      transition: background 0.15s;
+    }
+
+    .task-row:hover {
+      background: #fafafa;
+    }
+
+    .inline-confirm {
+      animation: slide-up 0.2s ease-out;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 999;
+      animation: slide-up 0.3s ease-out;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      animation: fade-in 0.2s;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+  </style>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body class="h-full font-body" style="background:#e5e5e7;">
+  <div class="app-shell" id="app-shell">
+    <aside id="sidebar" class="w-60 flex-shrink-0 flex flex-col" style="background:#3a3a3a;">
+      <div class="p-5 flex items-center gap-2">
+        <svg width="28" height="28" viewbox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="12" stroke="#ff6b35" stroke-width="2.5" />
+          <path d="M10 14l3 3 5-6" stroke="#ff6b35" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg><span class="font-heading font-bold text-lg text-white tracking-tight">Re<span
+            style="color:#ff6b35">Ação</span></span>
+      </div>
+      <nav class="flex-1 mt-4 px-3 space-y-1" role="navigation" aria-label="Navegação principal">
+        <button
+          class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white text-sm font-medium"
+          onclick="window.location.href='/app'">
+          <i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i> Dashboard
+        </button>
+
+        <button class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium"
+          onclick="window.location.href='/reputacao'">
+          <i data-lucide="message-square" style="width:18px;height:18px;"></i> Reputação
+        </button>
+
+        <button
+          class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium">
+          <i data-lucide="list-checks" style="width:18px;height:18px;"></i> Minhas Ações
+        </button>
+
+        <button class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium"
+          onclick="window.location.href='/sala_maquinas'">
+          <i data-lucide="settings" style="width:18px;height:18px;"></i> Sala de Máquinas
+        </button>
+
+        <button class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium"
+          onclick="window.location.href='/integracoes'">
+          <i data-lucide="link" class="w-[18px] h-[18px]"></i> Integrações
+        </button>
+      </nav>
+      <div class="p-4 border-t border-gray-600 flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+          style="background:#ff6b35;">
+          {{ usuario.iniciais }}
+        </div>
+        <div class="text-sm text-gray-300 truncate" id="sidebar-name">
+          {{ usuario.nome }}
+        </div><button class="ml-auto text-gray-500 hover:text-gray-300"><i data-lucide="settings"
+            style="width:16px;height:16px;"></i></button>
+        <a href="/logout" class="ml-2 text-gray-500 hover:text-red-400" title="Sair"><i data-lucide="log-out"
+            style="width:16px;height:16px;"></i></a>
+      </div>
+    </aside>
+    <div class="main-scroll" id="main-area">
+      <header class="flex items-center justify-between px-8 py-5 bg-white border-b border-gray-200">
+        <div>
+          <h1 class="font-heading font-semibold text-xl" style="color:#3a3a3a;" id="greeting-text">Bom dia, {{
+            usuario.nome }}.</h1>
+          <p class="text-sm text-gray-400 mt-0.5" id="greeting-sub">O que vamos tirar do papel hoje?</p>
+        </div><button id="btn-new-action"
+          class="action-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-heading font-semibold text-sm"
+          style="background:#ff6b35;"> <i data-lucide="plus" style="width:18px;height:18px;"></i> Nova Ação </button>
+      </header>
+      <main class="px-8 py-6 space-y-6" role="main">
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4" aria-label="Indicadores">
+          <div class="kpi-card anim-in anim-d1 bg-white rounded-2xl p-5 border border-gray-100">
+            <div class="flex items-center gap-2 text-gray-400 text-xs font-medium uppercase tracking-wide mb-2">
+              <i data-lucide="clock" style="width:14px;height:14px;"></i> Pendentes
+            </div>
+            <div class="font-heading font-bold text-3xl" style="color:#3a3a3a;" id="kpi-pending">
+              0
+            </div>
+          </div>
+          <div class="kpi-card anim-in anim-d2 bg-white rounded-2xl p-5 border border-gray-100">
+            <div class="flex items-center gap-2 text-xs font-medium uppercase tracking-wide mb-2"
+              style="color:#e74c3c;">
+              <i data-lucide="alert-triangle" style="width:14px;height:14px;"></i> Crítico / Hoje
+            </div>
+            <div class="font-heading font-bold text-3xl" style="color:#e74c3c;" id="kpi-critical">
+              0
+            </div>
+          </div>
+          <div class="kpi-card anim-in anim-d3 bg-white rounded-2xl p-5 border border-gray-100">
+            <div class="flex items-center gap-2 text-xs font-medium uppercase tracking-wide mb-2"
+              style="color:#27ae60;">
+              <i data-lucide="check-circle" style="width:14px;height:14px;"></i> Concluído na Semana
+            </div>
+            <div class="font-heading font-bold text-3xl" style="color:#27ae60;" id="kpi-concluido">
+              0
+            </div>
+          </div>
+        </section>
+        <section class="anim-in anim-d3 bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h2 class="font-heading font-semibold text-base" style="color:#3a3a3a;" id="focus-title">Foco Agora</h2>
+            <span class="text-xs text-gray-400" id="focus-count">0 ações</span>
+          </div>
+          <div id="task-list" class="divide-y divide-gray-50 min-h-[80px]">
+            <div id="empty-state" class="flex flex-col items-center justify-center py-10 text-gray-300"><i
+                data-lucide="inbox" style="width:36px;height:36px;"></i>
+              <p class="mt-2 text-sm">Nenhuma ação ainda. Crie a primeira!</p>
+            </div>
+          </div>
+        </section>
+        <section class="anim-in anim-d4 bg-white rounded-2xl border border-gray-100 p-6">
+          <h2 class="font-heading font-semibold text-base mb-4" style="color:#3a3a3a;">Radar de Prazos</h2>
+          <div id="timeline" class="grid grid-cols-7 gap-2 text-center"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <div id="modal-new" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true"
+    aria-label="Nova Ação">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 mx-4">
+      <h3 class="font-heading font-semibold text-lg mb-4" style="color:#3a3a3a;">Nova Ação</h3>
+      <div id="container-new" class="space-y-4">
+        <div><label for="inp-title" class="block text-sm font-medium text-gray-600 mb-1">Título</label> <input
+            id="inp-title" type="text" required
+            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2"
+            style="--tw-ring-color:#ff6b35;" placeholder="Descreva a ação...">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label for="inp-priority" class="block text-sm font-medium text-gray-600 mb-1">Prioridade</label> <select
+              id="inp-priority" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none">
+              <option value="normal">Normal</option>
+              <option value="critical">Crítica</option>
+            </select>
+          </div>
+          <div><label for="inp-due" class="block text-sm font-medium text-gray-600 mb-1">Prazo</label> <input
+              id="inp-due" type="date"
+              class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          </div>
+        </div>
+        <div class="flex gap-3 pt-2"><button type="button" id="btn-cancel"
+            class="flex-1 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-500 hover:bg-gray-50">Cancelar</button>
+          <button type="button" id="btn-salvar" class="flex-1 py-2 rounded-lg text-white text-sm font-semibold"
+            style="background:#ff6b35;">Criar Ação</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast-container"></div>
+  <script>
+    // ── State ── 
+    let allActions = [];
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+
+    // ── Helpers ── 
+    function getGreetingTime() {
+      const h = new Date().getHours();
+      if (h < 12) return 'Bom dia';
+      if (h < 18) return 'Boa tarde';
+      return 'Boa noite';
+    }
+
+    function isToday(dateStr) {
+      if (!dateStr) return false;
+      const d = new Date(dateStr); d.setHours(0, 0, 0, 0);
+      return d.getTime() === today.getTime();
+    }
+
+    function isThisWeek(dateStr) {
+      if (!dateStr) return false;
+      const d = new Date(dateStr);
+      const start = new Date(today);
+      start.setDate(today.getDate() - today.getDay());
+      const end = new Date(start);
+      end.setDate(start.getDate() + 7);
+      return d >= start && d < end;
+    }
+
+    function toast(msg) {
+      const el = document.createElement('div');
+      el.className = 'toast-msg';
+      el.textContent = msg;
+      document.getElementById('toast-container').appendChild(el);
+      setTimeout(() => el.remove(), 2200);
+    }
+
+    // ── Render ── 
+    function updateKPIs() {
+      const pending = allActions.filter(a => !a.completed).length;
+      const critical = allActions.filter(a => !a.completed && (a.priority === 'critical' || isToday(a.due_date))).length;
+      const finishedWeek = allActions.filter(a => a.completed && isThisWeek(a.created_at)).length;
+      document.getElementById('kpi-pending').textContent = pending;
+      document.getElementById('kpi-critical').textContent = critical;
+      document.getElementById('kpi-concluido').textContent = finishedWeek;
+    }
+
+    function renderTasks() {
+      const container = document.getElementById('task-list');
+      const empty = document.getElementById('empty-state');
+      const sorted = [...allActions].sort((a, b) => {
+        if (a.completed !== b.completed) return a.completed ? 1 : -1;
+        if (a.priority === 'critical' && b.priority !== 'critical') return -1;
+        if (b.priority === 'critical' && a.priority !== 'critical') return 1;
+        return 0;
+      });
+
+      // Track existing 
+      const existing = new Map([...container.querySelectorAll('.task-row')].map(el => [el.dataset.id, el]));
+
+      sorted.forEach(action => {
+        const id = action.__backendId;
+        if (existing.has(id)) {
+          updateTaskRow(existing.get(id), action);
+          existing.delete(id);
+        } else {
+          container.appendChild(createTaskRow(action));
+        }
+      });
+      existing.forEach(el => el.remove());
+
+      if (empty) empty.style.display = sorted.length ? 'none' : 'flex';
+      document.getElementById('focus-count').textContent = `${allActions.filter(a => !a.completed).length} ações`;
+    }
+
+    function createTaskRow(action) {
+      const row = document.createElement('div');
+      row.className = 'task-row flex items-center gap-3 px-6 py-3';
+      row.dataset.id = action.__backendId;
+      updateTaskRowInner(row, action);
+      return row;
+    }
+
+    function updateTaskRow(row, action) {
+      updateTaskRowInner(row, action);
+    }
+
+    function updateTaskRowInner(row, action) {
+      const isFinished = action.completed;
+      const isCrit = action.priority === 'critical';
+      const dueStr = action.due_date ? new Date(action.due_date).toLocaleDateString('pt-BR', { timeZone: 'UTC', day: '2-digit', month: 'short' }) : '';
+      row.innerHTML = ` 
+        <div class="check-box ${isFinished ? 'finalizado' : ''}" data-toggle="${action.__backendId}"> 
+          ${isFinished ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''} 
+        </div> 
+        <span class="flex-1 text-sm ${isFinished ? 'line-through text-gray-300' : 'text-gray-700'}">${action.title}</span> 
+        ${isCrit && !isFinished ? '<span class="text-xs px-2 py-0.5 rounded-full font-medium" style="background:#fdecea;color:#e74c3c;">Crítica</span>' : ''} 
+        ${dueStr ? '<span class="text-xs text-gray-400">' + dueStr + '</span>' : ''} 
+        <button class="del-btn text-gray-300 hover:text-red-400" data-del="${action.__backendId}" aria-label="Excluir"><i data-lucide="trash-2" style="width:15px;height:15px;"></i></button> 
+      `;
+      lucide.createIcons();
+
+      // Events 
+      row.querySelector('.check-box').onclick = async () => {
+        row.querySelector('.check-box').style.opacity = '0.5';
+
+        try {
+          const res = await fetch(`/api/acoes/${action.__backendId}`, { method: 'PUT' });
+          if (!res.ok) throw new Error('Erro na API');
+
+          const index = allActions.findIndex(a => a.__backendId === action.__backendId);
+          if (index > -1) {
+            allActions[index].completed = !allActions[index].completed;
+            updateKPIs();
+            renderTasks();
+            renderTimeline();
+            toast('Ação atualizada!');
+          }
+        } catch (err) {
+          row.querySelector('.check-box').style.opacity = '1';
+          toast('Erro ao atualizar ação');
+        }
+      };
+
+      row.querySelector('.del-btn').onclick = async () => {
+        row.querySelector('.del-btn').disabled = true;
+
+        try {
+          const res = await fetch(`/api/acoes/${action.__backendId}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error('Erro na API');
+
+          allActions = allActions.filter(a => a.__backendId !== action.__backendId);
+          updateKPIs();
+          renderTasks();
+          renderTimeline();
+          toast('Ação removida');
+        } catch (err) {
+          row.querySelector('.del-btn').disabled = false;
+          toast('Erro ao remover ação');
+        }
+      };
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('timeline');
+      container.innerHTML = '';
+      const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - today.getDay());
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(startOfWeek);
+        d.setDate(startOfWeek.getDate() + i);
+        const dateStr = d.toISOString().split('T')[0];
+        const count = allActions.filter(a => a.due_date === dateStr && !a.completed).length;
+        const isT = d.getTime() === today.getTime();
+        const col = document.createElement('div');
+        col.className = 'flex flex-col items-center gap-1';
+        col.innerHTML = ` 
+          <span class="text-xs font-medium ${isT ? '' : 'text-gray-400'}" ${isT ? 'style="color:#ff6b35;"' : ''}>${days[i]}</span> 
+          <span class="text-xs text-gray-300">${d.getDate()}</span> 
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${count > 0 ? (isT ? 'text-white' : 'text-white') : 'text-gray-300'}" style="${count > 0 ? (isT ? 'background:#ff6b35;' : 'background:#3a3a3a;') : 'background:#f5f5f5;'}">${count || '—'}</div> 
+        `;
+        container.appendChild(col);
+      }
+    }
+
+    // ── Modal ── 
+    const modal = document.getElementById('modal-new');
+    document.getElementById('btn-new-action').onclick = () => { modal.style.display = 'flex'; document.getElementById('inp-title').focus(); };
+    document.getElementById('btn-cancel').onclick = () => modal.style.display = 'none';
+    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+    document.getElementById('btn-salvar').onclick = async (e) => {
+      e.preventDefault();
+      if (allActions.length >= 999) { toast('Limite de 999 ações atingido!'); return; }
+      const btn = document.getElementById('btn-salvar');
+      btn.disabled = true; btn.textContent = 'Criando...';
+
+      const payload = {
+        title: document.getElementById('inp-title').value.trim(),
+        priority: document.getElementById('inp-priority').value,
+        due_date: document.getElementById('inp-due').value || ''
+      };
+
+      try {
+        const res = await fetch('/api/acoes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error('Erro na API');
+        const data = await res.json();
+
+        const newAction = {
+          __backendId: data.__backendId,
+          title: payload.title,
+          completed: false,
+          priority: payload.priority,
+          due_date: payload.due_date,
+          created_at: new Date().toISOString()
+        };
+
+        allActions.push(newAction);
+
+        modal.style.display = 'none';
+        document.getElementById('inp-title').value = '';
+        document.getElementById('inp-priority').value = 'normal';
+        document.getElementById('inp-due').value = '';
+
+        updateKPIs();
+        renderTasks();
+        renderTimeline();
+        toast('Ação criada!');
+      } catch (err) {
+        toast('Erro ao criar ação');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Criar Ação';
+      }
+    };
+
+    // ── Initialization ──
+    (async () => {
+      document.getElementById('greeting-text').textContent = `${getGreetingTime()}, {{ usuario.nome }}.`;
+
+      try {
+        const res = await fetch('/api/acoes');
+        if (res.ok) {
+          allActions = await res.json();
+        }
+      } catch (err) {
+        console.error('Failed to fetch initial actions', err);
+      }
+
+      updateKPIs();
+      renderTasks();
+      renderTimeline();
+      lucide.createIcons();
+    })(); 
+  </script>
+</body>
+
+</html>
