@@ -25,6 +25,7 @@
         body {
             height: 100%;
             margin: 0;
+            box-sizing: border-box;
             background-color: #e5e5e7;
         }
 
@@ -77,13 +78,41 @@
                 box-shadow: 0 0 0 6px rgba(220, 38, 38, 0);
             }
         }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 999;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            animation: slide-up 0.3s ease-out;
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
     </style>
 </head>
 
-<body class="h-full font-body text-gray-800">
-    <div class="app-shell">
+<body class="h-full font-body text-gray-800 flex overflow-hidden">
+    <div class="app-shell w-full">
 
-        <aside id="sidebar" class="w-60 flex-shrink-0 flex flex-col bg-sidebar">
+        <aside id="sidebar" class="w-64 flex-shrink-0 flex flex-col transition-all bg-sidebar">
             <div class="p-5 flex items-center gap-2">
                 <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                     <circle cx="14" cy="14" r="12" stroke="#ff6b35" stroke-width="2.5" />
@@ -93,7 +122,7 @@
                 <span class="font-heading font-bold text-lg text-white tracking-tight">Re<span
                         class="text-brand">Ação</span></span>
             </div>
-            <nav class="flex-1 mt-4 px-3 space-y-1">
+            <nav class="flex-1 mt-4 px-3 space-y-1" role="navigation" aria-label="Navegação principal">
                 <button
                     class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium"
                     onclick="window.location.href='/app'">
@@ -110,7 +139,7 @@
                 <button
                     class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium"
                     onclick="window.location.href='/sala_maquinas'">
-                    <i data-lucide="settings" style="width:18px;height:18px;"></i> Sala de Máquinas
+                    <i data-lucide="settings" class="w-[18px] h-[18px]"></i> Sala de Máquinas
                 </button>
                 <button
                     class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 text-sm font-medium"
@@ -118,14 +147,26 @@
                     <i data-lucide="link" class="w-[18px] h-[18px]"></i> Integrações
                 </button>
             </nav>
+            <div class="p-4 border-t border-gray-600 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                    style="background:#ff6b35;">
+                    U </div>
+                <div class="text-sm text-gray-300 truncate flex-1" id="sidebar-name">
+                    Membro ReAção
+                </div>
+                <button class="text-gray-500 hover:text-gray-300 transition-colors"><i data-lucide="settings"
+                        style="width:16px;height:16px;"></i></button>
+                <a href="/logout" class="ml-1 text-gray-500 hover:text-red-400 transition-colors" title="Sair"><i
+                        data-lucide="log-out" style="width:16px;height:16px;"></i></a>
+            </div>
         </aside>
 
         <div class="main-scroll flex flex-col">
             <header
-                class="flex items-center justify-between px-8 py-5 bg-white border-b border-gray-200 sticky top-0 z-10">
+                class="flex items-center justify-between px-8 py-6 bg-white border-b border-gray-200 sticky top-0 z-10">
                 <div>
-                    <h1 class="font-heading font-semibold text-xl text-gray-800">Central de Reputação</h1>
-                    <p class="text-sm text-gray-400 mt-0.5">Gestão inteligente e contenção de crises em tempo real.</p>
+                    <h1 class="font-heading font-semibold text-2xl text-gray-800">Central de Reputação</h1>
+                    <p class="text-sm text-gray-500 mt-1">Gestão inteligente e contenção de crises em tempo real.</p>
                 </div>
             </header>
 
@@ -137,7 +178,7 @@
                             <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
                             <h2 class="font-heading font-semibold text-sm text-gray-800">Respondido pela IA</h2>
                             <span
-                                class="ml-auto text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium">Automação</span>
+                                class="ml-auto text-xs px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-700 font-semibold tracking-wide">AUTOMAÇÃO</span>
                         </div>
                         <div id="col-respondidos" class="flex-1 overflow-y-auto space-y-4 pb-4 pr-1 scrollbar-hide">
                         </div>
@@ -147,7 +188,7 @@
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-2.5 h-2.5 rounded-full bg-brand"></div>
                             <h2 class="font-heading font-semibold text-sm text-gray-800">Dúvidas (Aprovação)</h2>
-                            <span class="ml-auto text-xs px-2 py-0.5 rounded-full bg-orange-100 text-brand font-medium"
+                            <span class="ml-auto text-xs font-bold px-2 py-0.5 rounded-md bg-orange-100 text-brand"
                                 id="count-pendentes">0</span>
                         </div>
                         <div id="col-pendentes" class="flex-1 overflow-y-auto space-y-4 pb-4 pr-1">
@@ -158,7 +199,7 @@
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
                             <h2 class="font-heading font-semibold text-sm text-gray-800">Alerta Vermelho</h2>
-                            <span class="ml-auto text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium"
+                            <span class="ml-auto text-xs font-bold px-2 py-0.5 rounded-md bg-red-100 text-red-700"
                                 id="count-alertas">0</span>
                         </div>
                         <div id="col-alertas" class="flex-1 overflow-y-auto space-y-4 pb-4 pr-1">
@@ -170,44 +211,28 @@
         </div>
     </div>
 
+    <div id="toast-container"></div>
+
     <script>
         lucide.createIcons();
 
-        // ── Mock Data Inicial (Até termos a rota GET /api/avaliacoes) ──
-        const mockAvaliacoes = [
-            {
-                id: 1,
-                cliente: "Maria Costa",
-                plataforma: "Google",
-                nota: 5,
-                tempo: "há 2h",
-                comentario: "Atendimento excelente! A equipe foi muito atenciosa e resolveu tudo rapidamente. Recomendo!",
-                rascunho: "Obrigado pela avaliação, Maria! Ficamos felizes em saber que a experiência foi positiva. Esperamos vê-la novamente!",
-                status: "respondido_ia"
-            },
-            {
-                id: 2,
-                cliente: "Rafael Santos",
-                plataforma: "Instagram",
-                nota: 4,
-                tempo: "há 5h",
-                comentario: "Boa experiência no geral. Gostaria de saber se vocês oferecem opções vegetarianas no cardápio do almoço?",
-                rascunho: "Olá Rafael! Sim, temos diversas opções vegetarianas disponíveis. Confira nosso cardápio no link da bio.",
-                status: "pendente"
-            },
-            {
-                id: 3,
-                cliente: "Pedro Lima",
-                plataforma: "Google",
-                nota: 1,
-                tempo: "há 1h",
-                comentario: "Péssimo atendimento. Esperei mais de 40 minutos e ninguém veio me atender. Decepção total.",
-                rascunho: "Olá Pedro. Lamentamos profundamente a sua espera de 40 minutos. Queremos entender e resolver isso imediatamente. Por favor, nos chame no WhatsApp: wa.me/5585999999999",
-                status: "alerta_crise"
-            }
-        ];
+        // Helpers
+        function toast(msg) {
+            const el = document.createElement('div');
+            el.className = 'toast-msg';
+            el.textContent = msg;
+            document.getElementById('toast-container').appendChild(el);
+            setTimeout(() => el.remove(), 3500);
+        }
 
-        // ── Helpers de Renderização ──
+        // Blindagem anti-XSS
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.toString().replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
+        }
+
         function renderStars(nota) {
             let stars = '';
             for (let i = 1; i <= 5; i++) {
@@ -217,23 +242,30 @@
         }
 
         function createCardHTML(av) {
+            // Sanitização Total dos dados que chegam da API
+            const c_cliente = escapeHTML(av.cliente);
+            const c_plataforma = escapeHTML(av.plataforma);
+            const c_tempo = escapeHTML(av.tempo || "Recente");
+            const c_comentario = escapeHTML(av.comentario);
+            const c_rascunho = escapeHTML(av.rascunho);
+
             if (av.status === 'respondido_ia') {
                 return `
-          <div class="review-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="review-card bg-white rounded-xl p-5 border border-gray-200">
             <div class="flex items-center justify-between mb-3">
               <div>
-                <span class="text-sm font-semibold text-gray-800">${av.cliente}</span>
-                <div class="text-[11px] text-gray-400">${av.plataforma} · ${av.tempo}</div>
+                <span class="text-sm font-bold text-gray-800">${c_cliente}</span>
+                <div class="text-[11px] font-medium text-gray-400">${c_plataforma} · ${c_tempo}</div>
               </div>
-              <span class="text-[10px] font-semibold px-2 py-1 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 flex items-center gap-1">
+              <span class="text-[10px] font-semibold px-2 py-1 rounded-md border border-emerald-200 bg-emerald-50 text-emerald-700 flex items-center gap-1">
                 <i data-lucide="check-circle" class="w-3 h-3"></i> Respondido
               </span>
             </div>
             <div class="flex gap-0.5 mb-2">${renderStars(av.nota)}</div>
-            <p class="text-sm text-gray-600 mb-3 line-clamp-3">"${av.comentario}"</p>
+            <p class="text-sm text-gray-600 mb-4 line-clamp-3">"${c_comentario}"</p>
             <div class="pt-3 border-t border-gray-100">
-              <div class="text-[11px] font-medium mb-1 text-gray-400">Resposta da IA:</div>
-              <p class="text-xs text-gray-500 leading-relaxed italic">"${av.rascunho}"</p>
+              <div class="text-[11px] font-bold mb-1.5 text-gray-400 uppercase tracking-wide">Resposta da IA:</div>
+              <p class="text-xs text-gray-500 leading-relaxed italic">"${c_rascunho}"</p>
             </div>
           </div>
         `;
@@ -244,19 +276,20 @@
           <div class="review-card bg-white rounded-xl p-5 border-2 border-brand/20">
             <div class="flex items-center justify-between mb-3">
               <div>
-                <span class="text-sm font-semibold text-gray-800">${av.cliente}</span>
-                <div class="text-[11px] text-gray-400">${av.plataforma} · ${av.tempo}</div>
+                <span class="text-sm font-bold text-gray-800">${c_cliente}</span>
+                <div class="text-[11px] font-medium text-gray-400">${c_plataforma} · ${c_tempo}</div>
               </div>
-              <span class="text-[10px] font-semibold px-2 py-1 rounded bg-orange-50 text-brand border border-orange-200 flex items-center gap-1">
+              <span class="text-[10px] font-semibold px-2 py-1 rounded-md bg-orange-50 text-brand border border-orange-200 flex items-center gap-1">
                 <i data-lucide="clock" class="w-3 h-3"></i> Pendente
               </span>
             </div>
             <div class="flex gap-0.5 mb-2">${renderStars(av.nota)}</div>
-            <p class="text-sm text-gray-600 mb-3">"${av.comentario}"</p>
+            <p class="text-sm text-gray-700 mb-4 font-medium">"${c_comentario}"</p>
             <div class="pt-3 border-t border-gray-100">
-              <div class="text-[11px] font-medium mb-1 text-gray-400">Rascunho da IA:</div>
-              <p class="text-xs text-gray-700 leading-relaxed mb-3">"${av.rascunho}"</p>
-              <button onclick="aprovarAvaliacao(${av.id})" class="w-full py-2 rounded-lg text-white text-xs font-semibold flex items-center justify-center gap-1.5 bg-brand hover:brightness-110 transition">
+              <div class="text-[11px] font-bold mb-1.5 text-gray-400 uppercase tracking-wide">Rascunho da IA:</div>
+              <p class="text-xs text-gray-600 leading-relaxed mb-4 p-2 bg-gray-50 rounded-md border border-gray-100">"${c_rascunho}"</p>
+              
+              <button onclick="aprovarAvaliacao(${av.id}, this)" class="w-full py-2.5 rounded-lg text-white text-xs font-bold flex items-center justify-center gap-1.5 bg-brand hover:brightness-110 transition shadow-sm shadow-orange-500/20">
                 <i data-lucide="check" class="w-3 h-3"></i> Aprovar Rascunho
               </button>
             </div>
@@ -269,23 +302,23 @@
           <div class="review-card pulse-alert bg-white rounded-xl p-5 border-2 border-red-300">
             <div class="flex items-center justify-between mb-3">
               <div>
-                <span class="text-sm font-semibold text-gray-800">${av.cliente}</span>
-                <div class="text-[11px] text-gray-400">${av.plataforma} · ${av.tempo}</div>
+                <span class="text-sm font-bold text-gray-800">${c_cliente}</span>
+                <div class="text-[11px] font-medium text-gray-400">${c_plataforma} · ${c_tempo}</div>
               </div>
-              <span class="text-[10px] font-semibold px-2 py-1 rounded bg-red-100 text-red-700 flex items-center gap-1">
+              <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-red-100 text-red-700 flex items-center gap-1">
                 <i data-lucide="alert-triangle" class="w-3 h-3"></i> Urgente
               </span>
             </div>
             <div class="flex gap-0.5 mb-2">${renderStars(av.nota)}</div>
-            <p class="text-sm text-gray-600 mb-3">"${av.comentario}"</p>
+            <p class="text-sm text-gray-800 mb-3 font-semibold">"${c_comentario}"</p>
             <div class="pt-3 border-t border-red-100 bg-red-50 -mx-5 -mb-5 px-5 pb-5 rounded-b-xl mt-3">
               <div class="flex items-center gap-1.5 mb-2 pt-3">
                 <i data-lucide="shield-alert" class="w-4 h-4 text-red-600"></i>
-                <span class="text-xs font-semibold text-red-700">Ação imediata necessária</span>
+                <span class="text-xs font-bold text-red-700">Ação imediata necessária</span>
               </div>
-              <p class="text-[11px] text-red-600/80 mb-3">Sugestão de Contenção (Ponte Privada):<br><span class="italic text-gray-800">"${av.rascunho}"</span></p>
+              <p class="text-[11px] text-red-600/80 mb-4 font-medium">Sugestão de Contenção (Ponte Privada):<br><span class="italic text-gray-800 font-normal mt-1 block">"${c_rascunho}"</span></p>
               <div class="flex gap-2">
-                <button onclick="aprovarAvaliacao(${av.id})" class="flex-1 py-2 rounded-lg text-white text-xs font-semibold flex items-center justify-center gap-1.5 bg-red-600 hover:bg-red-700 transition">
+                <button onclick="aprovarAvaliacao(${av.id}, this)" class="flex-1 py-2.5 rounded-lg text-white text-xs font-bold flex items-center justify-center gap-1.5 bg-red-600 hover:bg-red-700 transition shadow-sm shadow-red-600/20">
                   <i data-lucide="message-circle" class="w-3 h-3"></i> Publicar Resposta
                 </button>
               </div>
@@ -295,32 +328,42 @@
             }
         }
 
-        // Função que comunica com o Python para aprovar a avaliação
-        async function aprovarAvaliacao(id) {
+        // UX: Recebe o botão para aplicar feedback de carregamento
+        async function aprovarAvaliacao(id, btnElement) {
+            // Guardar texto original e travar o botão
+            const originalHTML = btnElement.innerHTML;
+            btnElement.disabled = true;
+            btnElement.classList.add('opacity-70', 'cursor-not-allowed');
+            btnElement.innerHTML = `Aguarde...`;
+
             try {
-                // Envia um pedido PUT para o nosso backend
                 const res = await fetch(`/api/avaliacoes/${id}/aprovar`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' }
                 });
 
                 if (res.ok) {
-                    toast("✅ Resposta publicada! Cartão atualizado.");
-                    // Recarrega o Kanban para vermos o cartão a "saltar" de coluna
+                    toast("✅ Resposta publicada! O cliente foi notificado.");
                     initKanban();
                 } else {
                     toast("❌ Erro ao aprovar a resposta.");
+                    // Restaura o botão em caso de erro
+                    btnElement.disabled = false;
+                    btnElement.classList.remove('opacity-70', 'cursor-not-allowed');
+                    btnElement.innerHTML = originalHTML;
                 }
             } catch (err) {
                 console.error(err);
                 toast("❌ Falha de comunicação com o servidor.");
+                btnElement.disabled = false;
+                btnElement.classList.remove('opacity-70', 'cursor-not-allowed');
+                btnElement.innerHTML = originalHTML;
             }
         }
 
-        // ── Engine Principal Atualizada (Dados Reais) ──
+        // Engine Principal
         async function initKanban() {
             try {
-                // Consome a rota que acabamos de criar no Python
                 const response = await fetch('/api/avaliacoes');
                 if (!response.ok) throw new Error('Erro ao buscar dados');
                 const data = await response.json();
@@ -329,7 +372,6 @@
                 const colPen = document.getElementById('col-pendentes');
                 const colAle = document.getElementById('col-alertas');
 
-                // Limpa as colunas caso seja um recarregamento
                 colRes.innerHTML = '';
                 colPen.innerHTML = '';
                 colAle.innerHTML = '';
@@ -352,7 +394,6 @@
             }
         }
 
-        // Iniciar na montagem
         initKanban();
     </script>
 </body>

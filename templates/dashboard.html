@@ -27,6 +27,7 @@
     body {
       height: 100%;
       margin: 0;
+      box-sizing: border-box;
     }
 
     .app-shell {
@@ -139,10 +140,6 @@
       background: #fafafa;
     }
 
-    .inline-confirm {
-      animation: slide-up 0.2s ease-out;
-    }
-
     .toast-msg {
       position: fixed;
       bottom: 24px;
@@ -178,23 +175,20 @@
       }
     }
   </style>
-  <style>
-    body {
-      box-sizing: border-box;
-    }
-  </style>
 </head>
 
 <body class="h-full font-body" style="background:#e5e5e7;">
   <div class="app-shell" id="app-shell">
-    <aside id="sidebar" class="w-60 flex-shrink-0 flex flex-col" style="background:#3a3a3a;">
+    <aside id="sidebar" class="w-64 flex-shrink-0 flex flex-col transition-all" style="background:#3a3a3a;">
       <div class="p-5 flex items-center gap-2">
         <svg width="28" height="28" viewbox="0 0 28 28" fill="none">
           <circle cx="14" cy="14" r="12" stroke="#ff6b35" stroke-width="2.5" />
           <path d="M10 14l3 3 5-6" stroke="#ff6b35" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg><span class="font-heading font-bold text-lg text-white tracking-tight">Re<span
+        </svg>
+        <span class="font-heading font-bold text-lg text-white tracking-tight">Re<span
             style="color:#ff6b35">Ação</span></span>
       </div>
+
       <nav class="flex-1 mt-4 px-3 space-y-1" role="navigation" aria-label="Navegação principal">
         <button
           class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white text-sm font-medium"
@@ -222,114 +216,140 @@
           <i data-lucide="link" class="w-[18px] h-[18px]"></i> Integrações
         </button>
       </nav>
+
       <div class="p-4 border-t border-gray-600 flex items-center gap-3">
         <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
           style="background:#ff6b35;">
           {{ usuario.iniciais }}
         </div>
-        <div class="text-sm text-gray-300 truncate" id="sidebar-name">
+        <div class="text-sm text-gray-300 truncate flex-1" id="sidebar-name">
           {{ usuario.nome }}
-        </div><button class="ml-auto text-gray-500 hover:text-gray-300"><i data-lucide="settings"
+        </div>
+        <button class="text-gray-500 hover:text-gray-300 transition-colors"><i data-lucide="settings"
             style="width:16px;height:16px;"></i></button>
-        <a href="/logout" class="ml-2 text-gray-500 hover:text-red-400" title="Sair"><i data-lucide="log-out"
-            style="width:16px;height:16px;"></i></a>
+        <a href="/logout" class="ml-1 text-gray-500 hover:text-red-400 transition-colors" title="Sair"><i
+            data-lucide="log-out" style="width:16px;height:16px;"></i></a>
       </div>
     </aside>
+
     <div class="main-scroll" id="main-area">
-      <header class="flex items-center justify-between px-8 py-5 bg-white border-b border-gray-200">
+      <header class="flex items-center justify-between px-8 py-6 bg-white border-b border-gray-200">
         <div>
-          <h1 class="font-heading font-semibold text-xl" style="color:#3a3a3a;" id="greeting-text">Bom dia, {{
+          <h1 class="font-heading font-semibold text-2xl" style="color:#3a3a3a;" id="greeting-text">Bom dia, {{
             usuario.nome }}.</h1>
-          <p class="text-sm text-gray-400 mt-0.5" id="greeting-sub">O que vamos tirar do papel hoje?</p>
-        </div><button id="btn-new-action"
-          class="action-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-heading font-semibold text-sm"
-          style="background:#ff6b35;"> <i data-lucide="plus" style="width:18px;height:18px;"></i> Nova Ação </button>
+          <p class="text-sm text-gray-500 mt-1" id="greeting-sub">O que vamos tirar do papel hoje?</p>
+        </div>
+        <button id="btn-new-action"
+          class="action-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-heading font-semibold text-sm hover:brightness-110 transition-all"
+          style="background:#ff6b35;">
+          <i data-lucide="plus" style="width:18px;height:18px;"></i> Nova Ação
+        </button>
       </header>
-      <main class="px-8 py-6 space-y-6" role="main">
-        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4" aria-label="Indicadores">
-          <div class="kpi-card anim-in anim-d1 bg-white rounded-2xl p-5 border border-gray-100">
+
+      <main class="px-8 py-6 space-y-6 max-w-7xl mx-auto" role="main">
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-5" aria-label="Indicadores">
+          <div class="kpi-card anim-in anim-d1 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
             <div class="flex items-center gap-2 text-gray-400 text-xs font-medium uppercase tracking-wide mb-2">
               <i data-lucide="clock" style="width:14px;height:14px;"></i> Pendentes
             </div>
-            <div class="font-heading font-bold text-3xl" style="color:#3a3a3a;" id="kpi-pending">
-              0
-            </div>
+            <div class="font-heading font-bold text-3xl" style="color:#3a3a3a;" id="kpi-pending">0</div>
           </div>
-          <div class="kpi-card anim-in anim-d2 bg-white rounded-2xl p-5 border border-gray-100">
+
+          <div class="kpi-card anim-in anim-d2 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
             <div class="flex items-center gap-2 text-xs font-medium uppercase tracking-wide mb-2"
               style="color:#e74c3c;">
               <i data-lucide="alert-triangle" style="width:14px;height:14px;"></i> Crítico / Hoje
             </div>
-            <div class="font-heading font-bold text-3xl" style="color:#e74c3c;" id="kpi-critical">
-              0
-            </div>
+            <div class="font-heading font-bold text-3xl" style="color:#e74c3c;" id="kpi-critical">0</div>
           </div>
-          <div class="kpi-card anim-in anim-d3 bg-white rounded-2xl p-5 border border-gray-100">
+
+          <div class="kpi-card anim-in anim-d3 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
             <div class="flex items-center gap-2 text-xs font-medium uppercase tracking-wide mb-2"
               style="color:#27ae60;">
               <i data-lucide="check-circle" style="width:14px;height:14px;"></i> Concluído na Semana
             </div>
-            <div class="font-heading font-bold text-3xl" style="color:#27ae60;" id="kpi-concluido">
-              0
-            </div>
+            <div class="font-heading font-bold text-3xl" style="color:#27ae60;" id="kpi-concluido">0</div>
           </div>
         </section>
-        <section class="anim-in anim-d3 bg-white rounded-2xl border border-gray-100 overflow-hidden">
-          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+
+        <section class="anim-in anim-d3 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
             <h2 class="font-heading font-semibold text-base" style="color:#3a3a3a;" id="focus-title">Foco Agora</h2>
-            <span class="text-xs text-gray-400" id="focus-count">0 ações</span>
+            <span class="text-xs font-medium text-gray-500 bg-gray-200 px-2 py-1 rounded-full" id="focus-count">0
+              ações</span>
           </div>
-          <div id="task-list" class="divide-y divide-gray-50 min-h-[80px]">
-            <div id="empty-state" class="flex flex-col items-center justify-center py-10 text-gray-300"><i
-                data-lucide="inbox" style="width:36px;height:36px;"></i>
-              <p class="mt-2 text-sm">Nenhuma ação ainda. Crie a primeira!</p>
+          <div id="task-list" class="divide-y divide-gray-100 min-h-[120px]">
+            <div id="empty-state" class="flex flex-col items-center justify-center py-12 text-gray-400">
+              <i data-lucide="inbox" style="width:42px;height:42px; opacity: 0.5;"></i>
+              <p class="mt-3 text-sm font-medium">Nenhuma ação ainda. Crie a primeira!</p>
             </div>
           </div>
         </section>
-        <section class="anim-in anim-d4 bg-white rounded-2xl border border-gray-100 p-6">
+
+        <section class="anim-in anim-d4 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <h2 class="font-heading font-semibold text-base mb-4" style="color:#3a3a3a;">Radar de Prazos</h2>
           <div id="timeline" class="grid grid-cols-7 gap-2 text-center"></div>
         </section>
       </main>
     </div>
   </div>
+
   <div id="modal-new" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true"
     aria-label="Nova Ação">
-    <div class="bg-white rounded-2xl w-full max-w-md p-6 mx-4">
-      <h3 class="font-heading font-semibold text-lg mb-4" style="color:#3a3a3a;">Nova Ação</h3>
-      <div id="container-new" class="space-y-4">
-        <div><label for="inp-title" class="block text-sm font-medium text-gray-600 mb-1">Título</label> <input
-            id="inp-title" type="text" required
-            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2"
-            style="--tw-ring-color:#ff6b35;" placeholder="Descreva a ação...">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 mx-4 shadow-2xl">
+      <h3 class="font-heading font-semibold text-xl mb-4" style="color:#3a3a3a;">Nova Ação</h3>
+
+      <form id="form-new-action" class="space-y-4">
+        <div>
+          <label for="inp-title" class="block text-sm font-medium text-gray-700 mb-1">Título</label>
+          <input id="inp-title" type="text" required
+            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+            style="--tw-ring-color:rgba(255,107,53,0.5);" placeholder="Descreva a ação a ser feita...">
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div><label for="inp-priority" class="block text-sm font-medium text-gray-600 mb-1">Prioridade</label> <select
-              id="inp-priority" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="inp-priority" class="block text-sm font-medium text-gray-700 mb-1">Prioridade</label>
+            <select id="inp-priority"
+              class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2"
+              style="--tw-ring-color:rgba(255,107,53,0.5);">
               <option value="normal">Normal</option>
               <option value="critical">Crítica</option>
             </select>
           </div>
-          <div><label for="inp-due" class="block text-sm font-medium text-gray-600 mb-1">Prazo</label> <input
-              id="inp-due" type="date"
-              class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none">
+          <div>
+            <label for="inp-due" class="block text-sm font-medium text-gray-700 mb-1">Prazo</label>
+            <input id="inp-due" type="date"
+              class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2"
+              style="--tw-ring-color:rgba(255,107,53,0.5);">
           </div>
         </div>
-        <div class="flex gap-3 pt-2"><button type="button" id="btn-cancel"
-            class="flex-1 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-500 hover:bg-gray-50">Cancelar</button>
-          <button type="button" id="btn-salvar" class="flex-1 py-2 rounded-lg text-white text-sm font-semibold"
+        <div class="flex gap-3 pt-4 mt-2 border-t border-gray-100">
+          <button type="button" id="btn-cancel"
+            class="flex-1 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Cancelar</button>
+          <button type="submit" id="btn-salvar"
+            class="flex-1 py-2.5 rounded-lg text-white text-sm font-semibold hover:brightness-110 transition-all shadow-md shadow-orange-500/20"
             style="background:#ff6b35;">Criar Ação</button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
+
   <div id="toast-container"></div>
+
   <script>
     // ── State ── 
     let allActions = [];
     const today = new Date(); today.setHours(0, 0, 0, 0);
 
     // ── Helpers ── 
+    function escapeHTML(str) {
+      // Segurança: Previne XSS escapando tags HTML do título
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag] || tag)
+      );
+    }
+
     function getGreetingTime() {
       const h = new Date().getHours();
       if (h < 12) return 'Bom dia';
@@ -355,10 +375,10 @@
 
     function toast(msg) {
       const el = document.createElement('div');
-      el.className = 'toast-msg';
+      el.className = 'toast-msg font-medium shadow-lg';
       el.textContent = msg;
       document.getElementById('toast-container').appendChild(el);
-      setTimeout(() => el.remove(), 2200);
+      setTimeout(() => el.remove(), 2500);
     }
 
     // ── Render ── 
@@ -366,6 +386,7 @@
       const pending = allActions.filter(a => !a.completed).length;
       const critical = allActions.filter(a => !a.completed && (a.priority === 'critical' || isToday(a.due_date))).length;
       const finishedWeek = allActions.filter(a => a.completed && isThisWeek(a.created_at)).length;
+
       document.getElementById('kpi-pending').textContent = pending;
       document.getElementById('kpi-critical').textContent = critical;
       document.getElementById('kpi-concluido').textContent = finishedWeek;
@@ -401,7 +422,7 @@
 
     function createTaskRow(action) {
       const row = document.createElement('div');
-      row.className = 'task-row flex items-center gap-3 px-6 py-3';
+      row.className = 'task-row flex items-center gap-4 px-6 py-3.5';
       row.dataset.id = action.__backendId;
       updateTaskRowInner(row, action);
       return row;
@@ -415,14 +436,16 @@
       const isFinished = action.completed;
       const isCrit = action.priority === 'critical';
       const dueStr = action.due_date ? new Date(action.due_date).toLocaleDateString('pt-BR', { timeZone: 'UTC', day: '2-digit', month: 'short' }) : '';
+
+      // Aplicado escapeHTML para segurança
       row.innerHTML = ` 
         <div class="check-box ${isFinished ? 'finalizado' : ''}" data-toggle="${action.__backendId}"> 
           ${isFinished ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''} 
         </div> 
-        <span class="flex-1 text-sm ${isFinished ? 'line-through text-gray-300' : 'text-gray-700'}">${action.title}</span> 
-        ${isCrit && !isFinished ? '<span class="text-xs px-2 py-0.5 rounded-full font-medium" style="background:#fdecea;color:#e74c3c;">Crítica</span>' : ''} 
-        ${dueStr ? '<span class="text-xs text-gray-400">' + dueStr + '</span>' : ''} 
-        <button class="del-btn text-gray-300 hover:text-red-400" data-del="${action.__backendId}" aria-label="Excluir"><i data-lucide="trash-2" style="width:15px;height:15px;"></i></button> 
+        <span class="flex-1 text-sm font-medium ${isFinished ? 'line-through text-gray-400' : 'text-gray-700'}">${escapeHTML(action.title)}</span> 
+        ${isCrit && !isFinished ? '<span class="text-xs px-2.5 py-1 rounded-md font-semibold tracking-wide" style="background:#fdecea;color:#e74c3c;">CRÍTICA</span>' : ''} 
+        ${dueStr ? '<span class="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded-md">' + dueStr + '</span>' : ''} 
+        <button class="del-btn text-gray-300 hover:text-red-500 transition-colors p-1" data-del="${action.__backendId}" aria-label="Excluir"><i data-lucide="trash-2" style="width:16px;height:16px;"></i></button> 
       `;
       lucide.createIcons();
 
@@ -481,30 +504,54 @@
         const count = allActions.filter(a => a.due_date === dateStr && !a.completed).length;
         const isT = d.getTime() === today.getTime();
         const col = document.createElement('div');
-        col.className = 'flex flex-col items-center gap-1';
+        col.className = 'flex flex-col items-center gap-1.5';
         col.innerHTML = ` 
-          <span class="text-xs font-medium ${isT ? '' : 'text-gray-400'}" ${isT ? 'style="color:#ff6b35;"' : ''}>${days[i]}</span> 
-          <span class="text-xs text-gray-300">${d.getDate()}</span> 
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${count > 0 ? (isT ? 'text-white' : 'text-white') : 'text-gray-300'}" style="${count > 0 ? (isT ? 'background:#ff6b35;' : 'background:#3a3a3a;') : 'background:#f5f5f5;'}">${count || '—'}</div> 
+          <span class="text-xs font-semibold ${isT ? '' : 'text-gray-400'}" ${isT ? 'style="color:#ff6b35;"' : ''}>${days[i]}</span> 
+          <span class="text-xs font-medium text-gray-400">${d.getDate()}</span> 
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${count > 0 ? (isT ? 'text-white' : 'text-white') : 'text-gray-400'}" style="${count > 0 ? (isT ? 'background:#ff6b35; shadow-md' : 'background:#3a3a3a;') : 'background:#f0f0f0;'}">${count || '—'}</div> 
         `;
         container.appendChild(col);
       }
     }
 
-    // ── Modal ── 
+    // ── Modal & Form ── 
     const modal = document.getElementById('modal-new');
-    document.getElementById('btn-new-action').onclick = () => { modal.style.display = 'flex'; document.getElementById('inp-title').focus(); };
-    document.getElementById('btn-cancel').onclick = () => modal.style.display = 'none';
-    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    const formNewAction = document.getElementById('form-new-action');
 
-    document.getElementById('btn-salvar').onclick = async (e) => {
+    document.getElementById('btn-new-action').onclick = () => {
+      modal.style.display = 'flex';
+      document.getElementById('inp-title').focus();
+    };
+
+    document.getElementById('btn-cancel').onclick = () => {
+      modal.style.display = 'none';
+      formNewAction.reset(); // Limpa o form ao cancelar
+    };
+
+    modal.onclick = (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        formNewAction.reset();
+      }
+    };
+
+    formNewAction.onsubmit = async (e) => {
       e.preventDefault();
+
+      const titleInput = document.getElementById('inp-title').value.trim();
+      if (!titleInput) {
+        toast('O título da ação não pode estar vazio.');
+        return;
+      }
+
       if (allActions.length >= 999) { toast('Limite de 999 ações atingido!'); return; }
+
       const btn = document.getElementById('btn-salvar');
-      btn.disabled = true; btn.textContent = 'Criando...';
+      btn.disabled = true;
+      btn.textContent = 'Criando...';
 
       const payload = {
-        title: document.getElementById('inp-title').value.trim(),
+        title: titleInput,
         priority: document.getElementById('inp-priority').value,
         due_date: document.getElementById('inp-due').value || ''
       };
@@ -531,18 +578,17 @@
         allActions.push(newAction);
 
         modal.style.display = 'none';
-        document.getElementById('inp-title').value = '';
-        document.getElementById('inp-priority').value = 'normal';
-        document.getElementById('inp-due').value = '';
+        formNewAction.reset(); // Limpa form com 1 comando
 
         updateKPIs();
         renderTasks();
         renderTimeline();
-        toast('Ação criada!');
+        toast('Ação criada com sucesso!');
       } catch (err) {
         toast('Erro ao criar ação');
       } finally {
-        btn.disabled = false; btn.textContent = 'Criar Ação';
+        btn.disabled = false;
+        btn.textContent = 'Criar Ação';
       }
     };
 

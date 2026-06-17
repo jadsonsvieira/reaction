@@ -19,13 +19,13 @@
         }
 
         .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.4s ease-out;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(16px);
             }
 
             to {
@@ -38,99 +38,104 @@
 
 <body class="h-full font-body flex items-center justify-center p-4">
 
-    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden fade-in border border-gray-100">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden fade-in border border-gray-100">
 
+        <!-- Header -->
         <div class="bg-dark p-8 text-center flex flex-col items-center">
-            <svg width="40" height="40" viewBox="0 0 28 28" fill="none" class="mb-3">
+            <svg width="44" height="44" viewBox="0 0 28 28" fill="none" class="mb-4 drop-shadow-md">
                 <circle cx="14" cy="14" r="12" stroke="#ff6b35" stroke-width="2.5" />
                 <path d="M10 14l3 3 5-6" stroke="#ff6b35" stroke-width="2.2" stroke-linecap="round"
                     stroke-linejoin="round" />
             </svg>
             <h1 class="font-heading font-bold text-3xl text-white tracking-tight">Re<span class="text-brand">Ação</span>
             </h1>
-            <p class="text-gray-400 text-sm mt-1">O seu gestor de reputação inteligente</p>
+            <p class="text-gray-400 text-sm mt-1.5 font-medium">O seu gestor de reputação inteligente</p>
         </div>
 
         <div class="p-8">
 
+            <!-- Alertas -->
             {% if erro %}
             <div
-                class="mb-4 p-3 bg-red-50 border border-red-100 text-red-600 text-sm rounded-lg flex items-center gap-2">
-                <i data-lucide="alert-circle" class="w-4 h-4"></i> {{ erro }}
+                class="mb-5 p-3.5 bg-red-50 border border-red-100 text-red-600 text-sm font-medium rounded-xl flex items-center gap-2.5 animate-pulse">
+                <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i> {{ erro }}
             </div>
             {% endif %}
 
             {% if erro_registo %}
             <div
-                class="mb-4 p-3 bg-red-50 border border-red-100 text-red-600 text-sm rounded-lg flex items-center gap-2">
-                <i data-lucide="alert-circle" class="w-4 h-4"></i> {{ erro_registo }}
+                class="mb-5 p-3.5 bg-red-50 border border-red-100 text-red-600 text-sm font-medium rounded-xl flex items-center gap-2.5 animate-pulse">
+                <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i> {{ erro_registo }}
             </div>
             {% endif %}
 
             {% if sucesso %}
             <div
-                class="mb-4 p-3 bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm rounded-lg flex items-center gap-2">
-                <i data-lucide="check-circle" class="w-4 h-4"></i> {{ sucesso }}
+                class="mb-5 p-3.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm font-medium rounded-xl flex items-center gap-2.5 shadow-sm">
+                <i data-lucide="check-circle" class="w-5 h-5 flex-shrink-0"></i> {{ sucesso }}
             </div>
             {% endif %}
 
+            <!-- Formulário de LOGIN -->
             <form id="form-login" action="/login" method="POST"
-                class="space-y-4 {% if mostrar_registo %}hidden{% endif %}">
+                class="space-y-4 {% if mostrar_registo %}hidden{% endif %}" onsubmit="bloquearBotao(this)">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">E-mail</label>
                     <input type="email" name="email" required
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand transition"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-brand/50 transition-all bg-gray-50 focus:bg-white"
                         placeholder="seu@email.com">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Palavra-passe</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Palavra-passe</label>
                     <input type="password" name="senha" required
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand transition"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-brand/50 transition-all bg-gray-50 focus:bg-white"
                         placeholder="••••••••">
                 </div>
                 <button type="submit"
-                    class="w-full py-3 mt-2 rounded-lg text-white font-semibold flex items-center justify-center gap-2 bg-brand hover:brightness-110 transition shadow-lg shadow-orange-500/30">
-                    Entrar na Plataforma <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    class="w-full py-3.5 mt-2 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-brand hover:brightness-110 hover:-translate-y-0.5 transition-all shadow-lg shadow-orange-500/30">
+                    <span>Entrar na Plataforma</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
-                <p class="text-center text-sm text-gray-500 mt-6">
+                <p class="text-center text-sm font-medium text-gray-500 mt-6">
                     Não tem uma conta? <a href="#" onclick="toggleForms(event)"
-                        class="text-brand font-semibold hover:underline">Criar conta</a>
+                        class="text-brand hover:text-orange-600 transition-colors hover:underline">Criar conta
+                        grátis</a>
                 </p>
             </form>
 
+            <!-- Formulário de REGISTO -->
             <form id="form-registo" action="/registo" method="POST"
-                class="space-y-4 {% if not mostrar_registo %}hidden{% endif %}">
+                class="space-y-4 {% if not mostrar_registo %}hidden{% endif %}" onsubmit="bloquearBotao(this)">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Empresa</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nome da Empresa</label>
                     <input type="text" name="nome_empresa" required
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand transition"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-gray-400 transition-all bg-gray-50 focus:bg-white"
                         placeholder="A sua empresa">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">O seu Nome</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">O seu Nome</label>
                     <input type="text" name="nome_usuario" required
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand transition"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-gray-400 transition-all bg-gray-50 focus:bg-white"
                         placeholder="Como gosta de ser chamado">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail de Acesso</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">E-mail de Acesso</label>
                     <input type="email" name="email" required
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand transition"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-gray-400 transition-all bg-gray-50 focus:bg-white"
                         placeholder="seu@email.com">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Criar Palavra-passe</label>
-                    <input type="password" name="senha" required
-                        class="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand transition"
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Criar Palavra-passe</label>
+                    <input type="password" name="senha" required minlength="6"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-transparent focus:ring-2 focus:ring-gray-400 transition-all bg-gray-50 focus:bg-white"
                         placeholder="No mínimo 6 caracteres">
                 </div>
                 <button type="submit"
-                    class="w-full py-3 mt-2 rounded-lg text-white font-semibold flex items-center justify-center gap-2 bg-dark hover:bg-black transition shadow-lg">
-                    Criar Nova Conta <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    class="w-full py-3.5 mt-2 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-dark hover:bg-black hover:-translate-y-0.5 transition-all shadow-lg shadow-gray-900/20">
+                    <span>Criar Nova Conta</span> <i data-lucide="user-plus" class="w-4 h-4"></i>
                 </button>
-                <p class="text-center text-sm text-gray-500 mt-6">
+                <p class="text-center text-sm font-medium text-gray-500 mt-6">
                     Já é cliente? <a href="#" onclick="toggleForms(event)"
-                        class="text-brand font-semibold hover:underline">Iniciar sessão</a>
+                        class="text-brand hover:text-orange-600 transition-colors hover:underline">Iniciar sessão</a>
                 </p>
             </form>
 
@@ -140,11 +145,18 @@
     <script>
         lucide.createIcons();
 
-        // Função simples para alternar entre Login e Registo visualmente
         function toggleForms(e) {
             e.preventDefault();
             document.getElementById('form-login').classList.toggle('hidden');
             document.getElementById('form-registo').classList.toggle('hidden');
+        }
+
+        function bloquearBotao(form) {
+            const btn = form.querySelector('button[type="submit"]');
+            const span = btn.querySelector('span');
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            span.textContent = 'A processar...';
         }
     </script>
 </body>
