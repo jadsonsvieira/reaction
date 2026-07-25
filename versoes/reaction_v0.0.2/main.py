@@ -386,7 +386,8 @@ def esqueci_senha():
     if user:
         reset_link = f"https://reaction.frameia.com.br/redefinir_senha?email={email}"
         enviar_email_redefinicao_senha(email, user['nome'], reset_link)
-        return render_template('login.html', sucesso="Enviamos um e-mail com as instruções para redefinir a sua palavra-passe!")
+        msg_sucesso = f"Instruções enviadas para <strong>{email}</strong>! Se preferir redefinir agora, <a href='/redefinir_senha?email={email}' class='underline font-bold hover:text-emerald-800'>clique aqui para cadastrar a nova senha</a>."
+        return render_template('login.html', sucesso=msg_sucesso)
     else:
         return render_template('login.html', erro="Nenhuma conta encontrada com este e-mail.")
 
