@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="pt-PT" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReAction | Gestor de Reputação</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" href="/static/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/favicon.svg">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#ff6b35">
+
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { heading: ['Poppins', 'sans-serif'], body: ['DM Sans', 'sans-serif'] },
+                    colors: { brand: '#ff6b35', sidebar: '#3a3a3a', bglight: '#f4f4f5' }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f4f4f5;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Suaviza o autocomplete dos navegadores */
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            -webkit-text-fill-color: #1f2937 !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen font-body flex items-center justify-center p-4">
+
+    <div
+        class="w-full max-w-md bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden fade-in border border-gray-100">
+
+        <!-- CABEÇALHO DO LOGIN COM A LOGO DO ESCUDO PADRONIZADA -->
+        <div class="bg-sidebar p-8 text-center flex flex-col items-center border-b border-gray-800">
+            <div
+                class="w-12 h-12 bg-brand rounded-2xl flex items-center justify-center shadow-lg shadow-brand/30 mb-3 shrink-0">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="M9 12l2 2 4-4"></path>
+                </svg>
+            </div>
+            <h1 class="font-heading font-bold text-3xl text-white tracking-tight">Re<span
+                    class="text-brand">Action</span></h1>
+            <p class="text-gray-400 text-sm mt-1.5 font-medium tracking-wide">O seu gestor de reputação inteligente</p>
+        </div>
+
+        <div class="p-8 md:p-10">
+
+            {% if erro %}
+            <div
+                class="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-sm font-semibold rounded-xl flex items-center gap-3 animate-pulse shadow-sm">
+                <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i> {{ erro }}
+            </div>
+            {% endif %}
+
+            {% if erro_registo %}
+            <div
+                class="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-sm font-semibold rounded-xl flex items-center gap-3 animate-pulse shadow-sm">
+                <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i> {{ erro_registo }}
+            </div>
+            {% endif %}
+
+            {% if sucesso %}
+            <div
+                class="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm font-semibold rounded-xl flex items-center gap-3 shadow-sm">
+                <i data-lucide="check-circle-2" class="w-5 h-5 flex-shrink-0"></i> <div>{{ sucesso|safe }}</div>
+            </div>
+            {% endif %}
+
+            <form id="form-login" action="/login" method="POST"
+                class="space-y-5 {% if mostrar_registo %}hidden{% endif %}" onsubmit="bloquearBotao(this)">
+
+                <div>
+                    <label for="login-email" class="block text-sm font-bold text-gray-800 mb-1.5">E-mail de
+                        Acesso</label>
+                    <input id="login-email" type="email" name="email" required autocomplete="email"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/40 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="seu@email.com">
+                </div>
+
+                <div>
+                    <label for="login-senha" class="block text-sm font-bold text-gray-800 mb-1.5">Palavra-passe</label>
+                    <input id="login-senha" type="password" name="senha" required autocomplete="current-password"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/40 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="••••••••">
+                    <div class="flex justify-end text-xs mt-1.5">
+                        <a href="#" onclick="mostrarEsqueciSenha(event)" class="text-gray-500 font-semibold hover:text-brand transition-colors hover:underline">Esqueceu a palavra-passe?</a>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-brand hover:brightness-110 hover:-translate-y-0.5 transition-all shadow-lg shadow-brand/30">
+                        <span>Entrar na Plataforma</span> <i data-lucide="arrow-right" class="w-4 h-4 icone-normal"></i>
+                    </button>
+                </div>
+
+                <p class="text-center text-sm font-medium text-gray-500 mt-6">
+                    Não tem uma conta? <a href="#" onclick="toggleForms(event)"
+                        class="text-brand font-bold hover:text-orange-600 transition-colors hover:underline">Criar conta
+                        grátis</a>
+                </p>
+            </form>
+
+            <form id="form-esqueci" action="/esqueci_senha" method="POST"
+                class="space-y-5 hidden" onsubmit="bloquearBotao(this)">
+
+                <div>
+                    <h3 class="font-heading font-bold text-lg text-gray-900 mb-1">Recuperar Palavra-passe</h3>
+                    <p class="text-xs text-gray-500 mb-4 font-medium">Insira o seu e-mail cadastrado para receber as instruções de redefinição.</p>
+
+                    <label for="esqueci-email" class="block text-sm font-bold text-gray-800 mb-1.5">E-mail Cadastrado</label>
+                    <input id="esqueci-email" type="email" name="email" required autocomplete="email"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/40 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="seu@email.com">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-brand hover:brightness-110 hover:-translate-y-0.5 transition-all shadow-lg shadow-brand/30">
+                        <span>Enviar Link de Recuperação</span> <i data-lucide="mail" class="w-4 h-4 icone-normal"></i>
+                    </button>
+                </div>
+
+                <p class="text-center text-sm font-medium text-gray-500 mt-6">
+                    Lembrou da senha? <a href="#" onclick="voltarParaLogin(event)"
+                        class="text-brand font-bold hover:text-orange-600 transition-colors hover:underline">Voltar ao Login</a>
+                </p>
+            </form>
+
+            <form id="form-registo" action="/registo" method="POST"
+                class="space-y-5 {% if not mostrar_registo %}hidden{% endif %}" onsubmit="bloquearBotao(this)">
+
+                <div>
+                    <label for="reg-empresa" class="block text-sm font-bold text-gray-800 mb-1.5">Nome da
+                        Empresa</label>
+                    <input id="reg-empresa" type="text" name="nome_empresa" required autocomplete="organization"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-sidebar focus:ring-2 focus:ring-gray-300 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="A sua marca">
+                </div>
+
+                <div>
+                    <label for="reg-nome" class="block text-sm font-bold text-gray-800 mb-1.5">O seu Nome</label>
+                    <input id="reg-nome" type="text" name="nome_usuario" required autocomplete="name"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-sidebar focus:ring-2 focus:ring-gray-300 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="Como gosta de ser chamado">
+                </div>
+
+                <div>
+                    <label for="reg-email" class="block text-sm font-bold text-gray-800 mb-1.5">E-mail Comercial</label>
+                    <input id="reg-email" type="email" name="email" required autocomplete="email"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-sidebar focus:ring-2 focus:ring-gray-300 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="seu@email.com">
+                </div>
+
+                <div>
+                    <label for="reg-senha" class="block text-sm font-bold text-gray-800 mb-1.5">Criar
+                        Palavra-passe</label>
+                    <input id="reg-senha" type="password" name="senha" required minlength="6"
+                        autocomplete="new-password"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-sidebar focus:ring-2 focus:ring-gray-300 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="Mínimo de 6 caracteres">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-sidebar hover:bg-black hover:-translate-y-0.5 transition-all shadow-lg shadow-gray-900/20">
+                        <span>Criar Nova Conta</span> <i data-lucide="user-plus" class="w-4 h-4 icone-normal"></i>
+                    </button>
+                </div>
+
+                <p class="text-center text-sm font-medium text-gray-500 mt-6">
+                    Já é cliente? <a href="#" onclick="toggleForms(event)"
+                        class="text-sidebar font-bold hover:text-black transition-colors hover:underline">Iniciar
+                        sessão</a>
+                </p>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        // Inicializa ícones
+        lucide.createIcons();
+
+        // Alternar entre formulários de Login e Registo
+        function toggleForms(e) {
+            if (e) e.preventDefault();
+            const formLogin = document.getElementById('form-login');
+            const formRegisto = document.getElementById('form-registo');
+            const formEsqueci = document.getElementById('form-esqueci');
+
+            formEsqueci.classList.add('hidden');
+            if (formLogin.classList.contains('hidden')) {
+                formRegisto.classList.add('hidden');
+                formLogin.classList.remove('hidden');
+            } else {
+                formLogin.classList.add('hidden');
+                formRegisto.classList.remove('hidden');
+            }
+        }
+
+        function mostrarEsqueciSenha(e) {
+            if (e) e.preventDefault();
+            document.getElementById('form-login').classList.add('hidden');
+            document.getElementById('form-registo').classList.add('hidden');
+            document.getElementById('form-esqueci').classList.remove('hidden');
+        }
+
+        function voltarParaLogin(e) {
+            if (e) e.preventDefault();
+            document.getElementById('form-registo').classList.add('hidden');
+            document.getElementById('form-esqueci').classList.add('hidden');
+            document.getElementById('form-login').classList.remove('hidden');
+        }
+
+        // Se o usuário veio pelo botão "Começar Grátis", abrir a aba de Registo diretamente
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registo') === 'true' || urlParams.get('register') === 'true') {
+                const formLogin = document.getElementById('form-login');
+                const formRegisto = document.getElementById('form-registo');
+                if (formLogin && formRegisto) {
+                    formLogin.classList.add('hidden');
+                    formRegisto.classList.remove('hidden');
+                }
+            }
+        });
+
+        // UX: Animação e bloqueio de botão no envio para evitar envios duplicados
+        function bloquearBotao(form) {
+            const btn = form.querySelector('button[type="submit"]');
+
+            // Impede cliques duplos
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            // Modifica o conteúdo do botão para mostrar estado de carregamento
+            btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> <span>A processar...</span>`;
+
+            // Re-renderiza os ícones do Lucide no botão modificado
+            lucide.createIcons({ root: btn });
+        }
+    </script>
+</body>
+
+</html>
