@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="pt-PT" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReAction | Relatórios Executivos</title>
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.1.8">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.1.8">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.1.8">
+    <link rel="manifest" href="/static/manifest.json?v=0.1.8">
+    <meta name="theme-color" content="#ff6b35">
+
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Poppins', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif']
+                    },
+                    colors: {
+                        brand: '#ff6b35',
+                        sidebar: '#3a3a3a',
+                        bglight: '#f4f4f5'
+                    }
+                }
+            }
+        } 
+    </script>
+
+    <style>
+        /* ================= RESET & ESTRUTURA BASE ================= */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f5;
+        }
+
+        .app-shell {
+            height: 100%;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .main-scroll {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* ================= SCROLLBAR MINIMALISTA ================= */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d8;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa;
+        }
+
+        /* ================= NAVEGAÇÃO & MENUS ================= */
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: rgba(255, 107, 53, 0.05);
+            color: #d1d5db;
+        }
+
+        .nav-item.active {
+            border-left: 3px solid #ff6b35;
+            color: white;
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        /* ================= CARTÕES DE KPI ================= */
+        .kpi-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ================= TOASTS (NOTIFICAÇÕES) ================= */
+        .toast-msg {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27272a;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slide-up 0.3s ease-out;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* ================= ESTILOS DE IMPRESSÃO (EXPORTAR PDF) ================= */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 1.2cm;
+            }
+
+            #sidebar,
+            .md\:hidden,
+            .no-print,
+            header button,
+            header a {
+                display: none !important;
+            }
+
+            html, body, .app-shell, #main-area, .main-scroll {
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .kpi-card,
+            .bg-white,
+            section,
+            canvas {
+                box-shadow: none !important;
+                border: 1px solid #e4e4e7 !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            header {
+                padding-top: 0 !important;
+                padding-bottom: 1rem !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="h-full font-body text-gray-800">
+    <div class="app-shell w-full">
+
+        <aside id="sidebar"
+            class="w-64 flex-shrink-0 flex-col transition-all bg-sidebar hidden md:flex z-20 shadow-xl no-print">
+
+            <!-- LOGO DA SIDEBAR PADRONIZADA COM A LANDING PAGE -->
+            <div class="p-6 flex items-center gap-3">
+                <div
+                    class="w-9 h-9 bg-brand rounded-xl flex items-center justify-center shadow-md shadow-brand/20 shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M9 12l2 2 4-4"></path>
+                    </svg>
+                </div>
+                <span class="font-heading font-bold text-xl text-white tracking-tight">Re<span
+                        class="text-brand">Action</span></span>
+            </div>
+
+            <nav class="flex-1 mt-6 px-4 space-y-1.5" role="navigation">
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/app'">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/reputacao'">
+                    <i data-lucide="message-square" class="w-5 h-5"></i> Reputação
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/minhas_acoes'">
+                    <i data-lucide="list-checks" class="w-5 h-5"></i> Minhas Ações
+                </button>
+                <button
+                    class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-semibold shadow-sm shadow-brand/10"
+                    onclick="window.location.href='/relatorios'">
+                    <i data-lucide="pie-chart" class="w-5 h-5"></i> Relatórios
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/sala_maquinas'">
+                    <i data-lucide="settings" class="w-5 h-5"></i> Sala de Máquinas
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/integracoes'">
+                    <i data-lucide="link" class="w-5 h-5"></i> Integrações
+                </button>
+            </nav>
+
+            <div class="p-5 border-t border-gray-700/50 flex items-center gap-3 bg-black/10 m-3 rounded-2xl">
+                <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner">
+                    {{ usuario.iniciais }}
+                </div>
+                <div class="text-sm text-gray-300 truncate flex-1 font-medium">
+                    {{ usuario.nome }}
+                </div>
+                <a href="/ajustes" class="text-gray-500 hover:text-gray-300 transition-colors p-1" title="Ajustes">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                </a>
+                <a href="/logout" class="text-gray-500 hover:text-red-400 transition-colors p-1" title="Sair">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </aside>
+
+        <div class="main-scroll flex flex-col relative" id="main-area">
+
+            <!-- LOGO MOBILE PADRONIZADA COM A LANDING PAGE -->
+            <div
+                class="md:hidden flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-30 border-b border-gray-200/60 no-print">
+                <a href="/app" class="flex items-center gap-2">
+            <img src="/static/logo_reaction_transparent_light.png" alt="ReAction Logo" class="h-11 w-auto object-contain transition-all">
+        </a>
+                <div
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold bg-brand shadow-sm">
+                    {{ usuario.iniciais }}
+                </div>
+            </div>
+
+            <header
+                class="flex flex-col sm:flex-row sm:items-end justify-between px-6 md:px-10 py-8 bg-transparent shrink-0 gap-4">
+                <div>
+                    <h1 class="font-heading font-bold text-3xl text-gray-900 tracking-tight">Relatório Executivo</h1>
+                    <p class="text-sm text-gray-500 mt-2 font-medium">Análise de sentimento e performance da marca nos
+                        últimos 30 dias.</p>
+                </div>
+                <div class="flex gap-3 no-print">
+                    <a href="/api/exportar/relatorio_excel"
+                        class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-sm transition-all shadow-md shadow-emerald-600/20 hover:-translate-y-0.5 w-full sm:w-auto">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Exportar Relatório Excel
+                    </a>
+                    <button onclick="window.print()"
+                        class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-gray-700 font-heading font-semibold text-sm hover:bg-white transition-all bg-white/50 border border-gray-200 shadow-sm w-full sm:w-auto">
+                        <i data-lucide="printer" class="w-4 h-4"></i> Exportar PDF
+                    </button>
+                </div>
+            </header>
+
+            <main class="px-6 md:px-10 pb-28 md:pb-10 flex-1 flex flex-col max-w-6xl mx-auto w-full space-y-6">
+
+                <section class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    <div
+                        class="kpi-card bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between h-32">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nota Média</span>
+                            <span
+                                class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+0.4</span>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <div class="font-heading font-extrabold text-4xl text-gray-800">4.7</div>
+                            <div class="text-amber-400 mb-1 flex"><i data-lucide="star"
+                                    class="w-5 h-5 fill-current"></i></div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="kpi-card bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between h-32">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Crises
+                                Evitadas</span>
+                            <span class="text-xs font-bold text-brand bg-orange-50 px-2 py-1 rounded-md">Via IA</span>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <div class="font-heading font-extrabold text-4xl text-gray-800" id="kpi-crises">0</div>
+                            <div class="text-sm font-medium text-gray-400 mb-1.5">resolvidas</div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="kpi-card bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between h-32">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sentimento
+                                Positivo</span>
+                        </div>
+                        <div class="flex items-center gap-4 mt-auto">
+                            <div class="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-emerald-500 h-full rounded-full" style="width: 78%"></div>
+                            </div>
+                            <div class="font-heading font-extrabold text-2xl text-emerald-600">78%</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white p-6 md:p-8 rounded-3xl border border-gray-100 shadow-sm w-full">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-heading font-bold text-base text-gray-900 flex items-center gap-2">
+                            <i data-lucide="trending-up" class="w-5 h-5 text-brand"></i> Evolução da Reputação
+                        </h3>
+                        <select
+                            class="text-xs font-semibold text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none no-print">
+                            <option>Últimos 7 Dias</option>
+                            <option>Últimos 30 Dias</option>
+                        </select>
+                    </div>
+                    <div class="w-full h-[280px]">
+                        <canvas id="chart-evolucao"></canvas>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <div
+        class="mobile-nav fixed bottom-0 left-0 right-0 z-50 md:hidden pb-safe bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] no-print">
+        <nav class="flex items-center justify-around h-[68px] px-2">
+            <a href="/app"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+                <i data-lucide="layout-dashboard" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+                <span class="text-[10px] font-semibold">Cockpit</span>
+            </a>
+            <a href="/reputacao"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+                <i data-lucide="message-square" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+                <span class="text-[10px] font-semibold">Reputação</span>
+            </a>
+            <a href="/relatorios" class="flex flex-col items-center justify-center w-full h-full gap-1 active group">
+                <div class="px-5 py-1 rounded-full bg-brand/10 transition-colors">
+                    <i data-lucide="pie-chart" class="w-6 h-6 text-brand"></i>
+                </div>
+                <span class="text-[10px] font-bold text-brand">Relatórios</span>
+            </a>
+            <a href="/integracoes"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+                <i data-lucide="link" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+                <span class="text-[10px] font-semibold">Canais</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // ================= GRÁFICO DE EVOLUÇÃO (CHART.JS) =================
+        function renderEvolucaoChart() {
+            const ctx = document.getElementById('chart-evolucao').getContext('2d');
+
+            // Dados Mockados para o Pitch Comercial (Mostrando crescimento)
+            const labels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+            const dataElogios = [2, 3, 5, 4, 7, 8, 10];
+            const dataReclamacoes = [4, 3, 2, 2, 1, 1, 0];
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Avaliações Positivas',
+                            data: dataElogios,
+                            borderColor: '#10b981', // Emerald 500
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#10b981',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Críticas / Reclamações',
+                            data: dataReclamacoes,
+                            borderColor: '#ef4444', // Red 500
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#ef4444',
+                            pointBorderWidth: 2,
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 8,
+                                font: { family: 'DM Sans', size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#27272a',
+                            titleFont: { family: 'Poppins' },
+                            bodyFont: { family: 'DM Sans' },
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { font: { family: 'DM Sans' }, color: '#a1a1aa' }
+                        },
+                        y: {
+                            grid: { color: '#f4f4f5', drawBorder: false },
+                            ticks: { stepSize: 2, font: { family: 'DM Sans' }, color: '#a1a1aa' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // ================= CONSUMO DA API PARA KPI DE CRISES =================
+        // Puxa o número real de crises resolvidas (ações concluídas com prioridade crítica)
+        async function loadRealData() {
+            try {
+                const res = await fetch('/api/acoes');
+                if (res.ok) {
+                    const acoes = await res.json();
+                    const crisesResolvidas = acoes.filter(a => a.completed && a.priority === 'critical').length;
+                    // Fallback para 12 no pitch se o DB estiver vazio
+                    document.getElementById('kpi-crises').textContent = crisesResolvidas || 12;
+                }
+            } catch (e) {
+                console.error("Erro ao puxar dados da API", e);
+                document.getElementById('kpi-crises').textContent = 12;
+            }
+        }
+
+        // Inicializar
+        renderEvolucaoChart();
+        loadRealData();
+    </script>
+</body>
+
+</html>
