@@ -1,0 +1,955 @@
+<!doctype html>
+<html lang="pt-PT" class="h-full">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReAction | Cockpit</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="alternate icon" href="/static/favicon.svg">
+  <link rel="apple-touch-icon" href="/static/favicon.svg">
+  <link rel="manifest" href="/static/manifest.json?v=0.1.11">
+  <meta name="theme-color" content="#ff6b35">
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Poppins', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif']
+          },
+          colors: {
+            brand: '#ff6b35',
+            sidebar: '#3a3a3a',
+            bglight: '#f4f4f5'
+          }
+        }
+      }
+    };
+
+    if (localStorage.getItem('hideSetupVipReAction') === 'true') {
+      document.documentElement.classList.add('hide-setup-vip');
+    }
+  </script>
+
+  <style>
+    .hide-setup-vip #banner-setup-vip {
+      display: none !important;
+    }
+
+    /* Reset e Estrutura Base */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      box-sizing: border-box;
+      background-color: #f4f4f5;
+    }
+
+    .app-shell {
+      height: 100%;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .main-scroll {
+      flex: 1;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    /* Scrollbar minimalista */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #d4d4d8;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a1a1aa;
+    }
+
+    /* Animação do Botão Principal */
+    .action-btn {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 15px 4px rgba(255, 107, 53, 0.2);
+      }
+    }
+
+    /* Animações de Entrada (Fade In + Slide Up) */
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .anim-in {
+      animation: slide-up 0.5s ease-out both;
+    }
+
+    .anim-d1 {
+      animation-delay: 0.05s;
+    }
+
+    .anim-d2 {
+      animation-delay: 0.1s;
+    }
+
+    .anim-d3 {
+      animation-delay: 0.15s;
+    }
+
+    .anim-d4 {
+      animation-delay: 0.2s;
+    }
+
+    /* Checkbox de Tarefas Personalizado */
+    .check-box {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #d4d4d8;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+    }
+
+    .check-box.finalizado {
+      background: #ff6b35;
+      border-color: #ff6b35;
+      transform: scale(1.05);
+    }
+
+    .check-box:hover:not(.finalizado) {
+      border-color: #ff6b35;
+      background: #fff5f2;
+    }
+
+    /* Navegação Lateral */
+    .nav-item {
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: rgba(255, 107, 53, 0.1);
+    }
+
+    .nav-item.active {
+      border-left: 3px solid #ff6b35;
+      color: white;
+    }
+
+    /* Cartões KPI */
+    .kpi-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Linhas de Tarefa */
+    .task-row {
+      transition: all 0.2s ease;
+    }
+
+    .task-row:hover {
+      background: #fafafa;
+      transform: translateX(2px);
+    }
+
+    /* Notificações (Toasts) */
+    .toast-msg {
+      position: fixed;
+      bottom: 90px;
+      /* Ajustado para ficar acima da barra mobile */
+      left: 50%;
+      transform: translateX(-50%);
+      background: #27272a;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 99px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1000;
+      animation: slide-up 0.3s ease-out;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Modais */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      animation: fade-in 0.2s;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Área Segura Mobile (Notch iPhones) */
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  </style>
+</head>
+
+<body class="h-full font-body text-gray-800">
+  <div class="app-shell" id="app-shell">
+
+    <aside id="sidebar" class="w-64 flex-shrink-0 flex-col transition-all bg-sidebar hidden md:flex z-20 shadow-xl">
+
+      <!-- LOGO AJUSTADA CONFORME A LANDING PAGE -->
+      <div class="p-6 flex items-center gap-3">
+            <a href="/app" class="flex items-center gap-2">
+                <img src="/static/logo_reaction_transparent_dark.png" alt="ReAction Logo" class="h-12 md:h-14 w-auto object-contain transition-all">
+            </a>
+        </div>
+
+      <nav class="flex-1 mt-6 px-4 space-y-1.5" role="navigation" aria-label="Navegação principal">
+        <button
+          class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-semibold shadow-sm shadow-brand/10"
+          onclick="window.location.href='/app'">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+        </button>
+        <button
+          class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+          onclick="window.location.href='/reputacao'">
+          <i data-lucide="message-square" class="w-5 h-5"></i> Reputação
+        </button>
+        <button
+          class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+          onclick="window.location.href='/minhas_acoes'">
+          <i data-lucide="list-checks" class="w-5 h-5"></i> Minhas Ações
+        </button>
+        <button
+          class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+          onclick="window.location.href='/relatorios'">
+          <i data-lucide="pie-chart" class="w-5 h-5"></i> Relatórios
+        </button>
+        <button
+          class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+          onclick="window.location.href='/sala_maquinas'">
+          <i data-lucide="settings" class="w-5 h-5"></i> Sala de Máquinas
+        </button>
+        <button
+          class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+          onclick="window.location.href='/integracoes'">
+          <i data-lucide="link" class="w-5 h-5"></i> Integrações
+        </button>
+      </nav>
+
+      <div class="p-5 border-t border-gray-700/50 flex items-center gap-3 bg-black/10 m-3 rounded-2xl">
+        <div
+          class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner">
+          {{ usuario.iniciais }}
+        </div>
+        <div class="text-sm text-gray-300 truncate flex-1 font-medium" id="sidebar-name">
+          {{ usuario.nome }}
+        </div>
+        <a href="/ajustes" class="text-gray-500 hover:text-gray-300 transition-colors p-1" title="Ajustes">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+        </a>
+        <a href="/logout" class="text-gray-500 hover:text-red-400 transition-colors p-1" title="Sair">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </aside>
+
+    <div class="main-scroll relative" id="main-area">
+
+      <div
+        class="md:hidden flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-200/60">
+
+        <!-- LOGO MOBILE AJUSTADA CONFORME A LANDING PAGE -->
+        <a href="/app" class="flex items-center gap-2">
+            <img src="/static/logo_reaction_transparent_light.png" alt="ReAction Logo" class="h-11 w-auto object-contain transition-all">
+        </a>
+
+        <div
+          class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold bg-brand shadow-sm"
+          onclick="window.location.href='/ajustes'">
+          {{ usuario.iniciais }}
+        </div>
+      </div>
+
+      <header class="flex flex-col md:flex-row md:items-center justify-between px-6 md:px-10 py-8 gap-4">
+        <div>
+          <div class="flex flex-wrap items-center gap-3">
+            <h1 class="font-heading font-bold text-3xl text-gray-900 tracking-tight" id="greeting-text">Bom dia, {{ usuario.nome }}.</h1>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200/60 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 98.4% Saúde da Marca (+3.2%)
+            </span>
+          </div>
+          <p class="text-sm text-gray-500 mt-2 font-medium" id="greeting-sub">O que vamos resolver hoje na sua reputação?</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- PILLS DE FILTRO DE PERÍODO (V0.1.0) -->
+          <div class="bg-gray-200/70 p-1 rounded-xl flex items-center gap-1 text-xs font-bold text-gray-600 shadow-inner">
+            <button type="button" onclick="filtrarPeriodo(this, 'hoje')" class="btn-periodo px-3 py-1.5 rounded-lg bg-white text-gray-900 shadow-sm transition-all">Hoje</button>
+            <button type="button" onclick="filtrarPeriodo(this, '7d')" class="btn-periodo px-3 py-1.5 rounded-lg hover:text-gray-900 transition-all">7 Dias</button>
+            <button type="button" onclick="filtrarPeriodo(this, '30d')" class="btn-periodo px-3 py-1.5 rounded-lg hover:text-gray-900 transition-all">30 Dias</button>
+            <button type="button" onclick="filtrarPeriodo(this, 'mes')" class="btn-periodo px-3 py-1.5 rounded-lg hover:text-gray-900 transition-all">Este Mês</button>
+          </div>
+
+          <button id="btn-new-action"
+            class="action-btn flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white font-heading font-semibold text-sm hover:brightness-110 transition-all bg-brand shadow-lg shadow-brand/20">
+            <i data-lucide="plus" class="w-4 h-4"></i> Nova Ação
+          </button>
+        </div>
+      </header>
+
+      <main class="px-6 md:px-10 pb-28 md:pb-10 space-y-8 max-w-7xl mx-auto" role="main">
+
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-5" aria-label="Indicadores">
+          <div
+            class="kpi-card anim-in anim-d1 bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between h-32 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-gray-50 rounded-full opacity-50"></div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600">
+                <i data-lucide="clock" class="w-5 h-5"></i>
+              </div>
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Pendentes</span>
+            </div>
+            <div class="font-heading font-extrabold text-4xl text-gray-800" id="kpi-pending">0</div>
+          </div>
+
+          <div
+            class="kpi-card anim-in anim-d2 bg-white rounded-3xl p-6 border border-red-100 shadow-sm flex flex-col justify-between h-32 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-50 rounded-full opacity-50"></div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+                  <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                </div>
+                <span class="text-xs font-semibold text-red-500 uppercase tracking-wider">Crítico / Hoje</span>
+              </div>
+              <span class="flex h-2.5 w-2.5 relative" title="Atenção necessária em tempo real">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+              </span>
+            </div>
+            <div class="font-heading font-extrabold text-4xl text-red-600" id="kpi-critical">0</div>
+          </div>
+
+          <div
+            class="kpi-card anim-in anim-d3 bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm flex flex-col justify-between h-32 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 rounded-full opacity-50"></div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+              </div>
+              <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Concluídas / Resolvidas</span>
+            </div>
+            <div class="font-heading font-extrabold text-4xl text-emerald-600" id="kpi-concluido">0</div>
+          </div>
+        </section>
+
+        <!-- BANNER DISMISSÍVEL SETUP VIP REACTION -->
+        <section id="banner-setup-vip" class="anim-in anim-d2 bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white p-6 md:p-8 rounded-3xl border border-gray-700/60 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+          <button onclick="dismissSetupVip()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 p-1.5 rounded-full transition-all z-20" title="Fechar anúncio">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+          <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-brand/20 rounded-full blur-2xl"></div>
+          <div class="flex items-start gap-4 relative z-10">
+            <div class="w-12 h-12 rounded-2xl bg-brand flex items-center justify-center text-white shrink-0 shadow-lg shadow-brand/30">
+              <i data-lucide="sparkles" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="inline-block px-3 py-0.5 rounded-full bg-brand/20 text-[#ffb347] text-[11px] font-bold uppercase tracking-wider mb-1.5 border border-brand/30">
+                Experiência 360º • Onboarding VIP
+              </div>
+              <h3 class="font-heading font-bold text-xl text-white">Quer que nossa equipe configure e calibre a IA do ReAction para o tom de voz exato da sua empresa?</h3>
+              <p class="text-xs md:text-sm text-gray-300 mt-1 max-w-2xl leading-relaxed">
+                Contrate o <strong>Setup VIP ReAction (R$ 300,00 à vista)</strong>: Inclui 2 sessões ao vivo de 60min com nossos especialistas, pasta no Google Drive com gravações/transcrições e <strong>3 meses grátis de sistema</strong> (90 dias isento de mensalidade).
+              </p>
+            </div>
+          </div>
+          <a href="https://wa.me/5585999999999?text=Ol%C3%A1!%20Sou%20cliente%20ReAction%20e%20gostaria%20de%20contratar%20o%20Setup%20VIP%20por%20R%24%20300" target="_blank" rel="noopener noreferrer" class="relative z-10 py-3.5 px-6 rounded-xl bg-brand text-white font-bold text-xs md:text-sm hover:brightness-110 transition-all shadow-lg shadow-brand/30 whitespace-nowrap text-center w-full md:w-auto shrink-0">
+            Garantir Setup VIP (R$ 300) →
+          </a>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 anim-in anim-d2">
+
+          <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center">
+            <h3 class="font-heading font-bold text-sm text-gray-800 self-start mb-6 flex items-center gap-2">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-brand"></i> Saúde da Marca
+            </h3>
+            <div class="w-full max-w-[200px] flex-1 flex items-center justify-center relative">
+              <canvas id="chart-sentimento"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm md:col-span-2 flex flex-col">
+            <h3 class="font-heading font-bold text-sm text-gray-800 mb-6 flex items-center gap-2">
+              <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand"></i> Principais Motivos de Interação
+            </h3>
+            <div class="w-full flex-1 min-h-[220px]">
+              <canvas id="chart-tags"></canvas>
+            </div>
+          </div>
+
+        </section>
+
+        <section
+          class="anim-in anim-d3 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+          <div class="flex items-center justify-between px-8 py-5 border-b border-gray-100 bg-gray-50/50">
+            <h2 class="font-heading font-bold text-lg text-gray-900 flex items-center gap-2">
+              <i data-lucide="target" class="w-5 h-5 text-brand"></i> Foco Agora
+            </h2>
+            <span class="text-xs font-bold text-brand bg-orange-100 px-3 py-1 rounded-full shadow-sm" id="focus-count">0
+              ações</span>
+          </div>
+
+          <div id="task-list" class="divide-y divide-gray-100 min-h-[160px] flex-1">
+            <div id="empty-state" class="flex flex-col items-center justify-center py-16 text-gray-400">
+              <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="inbox" class="w-8 h-8 text-gray-300"></i>
+              </div>
+              <p class="text-sm font-medium text-gray-500">Tudo limpo por aqui.</p>
+              <p class="text-xs mt-1 text-gray-400">Nenhuma ação pendente na sua fila.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="anim-in anim-d4 bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
+          <h2 class="font-heading font-bold text-lg text-gray-900 mb-6 flex items-center gap-2">
+            <i data-lucide="calendar" class="w-5 h-5 text-brand"></i> Radar de Prazos
+          </h2>
+          <div id="timeline" class="grid grid-cols-7 gap-2 md:gap-4 text-center"></div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <div
+    class="fixed bottom-0 left-0 right-0 z-50 md:hidden pb-safe bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <nav class="flex items-center justify-around h-[68px] px-2">
+      <a href="/app" class="flex flex-col items-center justify-center w-full h-full gap-1 active group">
+        <div class="px-5 py-1 rounded-full bg-brand/10 transition-colors">
+          <i data-lucide="layout-dashboard" class="w-6 h-6 text-brand"></i>
+        </div>
+        <span class="text-[10px] font-bold text-brand">Cockpit</span>
+      </a>
+      <a href="/reputacao"
+        class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+        <i data-lucide="message-square" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+        <span class="text-[10px] font-semibold">Reputação</span>
+      </a>
+      <a href="/minhas_acoes"
+        class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+        <i data-lucide="list-checks" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+        <span class="text-[10px] font-semibold">Ações</span>
+      </a>
+      <a href="/integracoes"
+        class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+        <i data-lucide="menu" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+        <span class="text-[10px] font-semibold">Menu</span>
+      </a>
+    </nav>
+  </div>
+
+  <div id="modal-new" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true"
+    aria-label="Nova Ação">
+    <div class="bg-white rounded-3xl w-full max-w-md p-8 mx-4 shadow-2xl transform transition-all scale-100">
+
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-heading font-bold text-xl text-gray-900">Nova Ação</h3>
+        <button id="btn-close-modal"
+          class="text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full p-2 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-new-action" class="space-y-5">
+        <div>
+          <label for="inp-title" class="block text-sm font-semibold text-gray-700 mb-2">Título da tarefa</label>
+          <input id="inp-title" type="text" required
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition-all"
+            placeholder="Descreva a ação a ser feita...">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="inp-priority" class="block text-sm font-semibold text-gray-700 mb-2">Prioridade</label>
+            <select id="inp-priority"
+              class="w-full border border-gray-200 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand bg-white cursor-pointer transition-all">
+              <option value="normal">Normal</option>
+              <option value="critical">Crítica</option>
+            </select>
+          </div>
+          <div>
+            <label for="inp-due" class="block text-sm font-semibold text-gray-700 mb-2">Prazo Final</label>
+            <input id="inp-due" type="date"
+              class="w-full border border-gray-200 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition-all">
+          </div>
+        </div>
+
+        <div class="pt-6 mt-2 flex gap-3">
+          <button type="button" id="btn-cancel"
+            class="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
+            Cancelar
+          </button>
+          <button type="submit" id="btn-salvar"
+            class="flex-1 py-3 rounded-xl text-white text-sm font-bold hover:brightness-110 transition-all bg-brand shadow-lg shadow-brand/20 flex items-center justify-center gap-2">
+            Criar Ação
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script>
+    // ── Estado Global ──
+    let allActions = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // ── Funções Utilitárias ──
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.toString().replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag] || tag));
+    }
+
+    function getGreetingTime() {
+      const h = new Date().getHours();
+      if (h < 12) return 'Bom dia';
+      if (h < 18) return 'Boa tarde';
+      return 'Boa noite';
+    }
+
+    function isToday(dateStr) {
+      if (!dateStr) return false;
+      const d = new Date(dateStr);
+      d.setHours(0, 0, 0, 0);
+      return d.getTime() === today.getTime();
+    }
+
+    function isThisWeek(dateStr) {
+      if (!dateStr) return false;
+      const d = new Date(dateStr);
+      const start = new Date(today);
+      start.setDate(today.getDate() - today.getDay());
+      const end = new Date(start);
+      end.setDate(start.getDate() + 7);
+      return d >= start && d < end;
+    }
+
+    function filtrarPeriodo(btn, periodo) {
+      document.querySelectorAll('.btn-periodo').forEach(b => {
+        b.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+        b.classList.add('hover:text-gray-900');
+      });
+      btn.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+      btn.classList.remove('hover:text-gray-900');
+
+      let label = "Hoje";
+      if (periodo === '7d') label = "Últimos 7 Dias";
+      if (periodo === '30d') label = "Últimos 30 Dias";
+      if (periodo === 'mes') label = "Este Mês";
+      
+      toast(`Filtro aplicado: ${label}`);
+    }
+
+    function toast(msg) {
+      const el = document.createElement('div');
+      el.className = 'toast-msg font-medium';
+      el.textContent = msg;
+      document.getElementById('toast-container').appendChild(el);
+
+      // Auto-remover após 3 segundos com fade out
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.3s ease-out';
+        setTimeout(() => el.remove(), 300);
+      }, 3000);
+    }
+
+    // ── Renderização de Gráficos (Chart.js) ──
+    async function renderizarGraficos() {
+      try {
+        const res = await fetch('/api/analytics/resumo');
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Gráfico de Sentimento (Rosca)
+        const ctxS = document.getElementById('chart-sentimento').getContext('2d');
+        new Chart(ctxS, {
+          type: 'doughnut',
+          data: {
+            labels: ['Positivo', 'Neutro', 'Negativo'],
+            datasets: [{
+              data: [data.sentimentos.positivo, data.sentimentos.neutro, data.sentimentos.negativo],
+              backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], // Cores modernas
+              borderWidth: 0,
+              hoverOffset: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+              legend: {
+                display: true,
+                position: 'bottom',
+                labels: { usePointStyle: true, padding: 20, font: { family: 'DM Sans', size: 12, weight: '500' } }
+              }
+            }
+          }
+        });
+
+        // Gráfico de Assuntos/Tags (Barras)
+        const ctxT = document.getElementById('chart-tags').getContext('2d');
+        new Chart(ctxT, {
+          type: 'bar',
+          data: {
+            labels: data.top_tags.labels.length ? data.top_tags.labels : ['Sem dados'],
+            datasets: [{
+              label: 'Ocorrências',
+              data: data.top_tags.valores.length ? data.top_tags.valores : [0],
+              backgroundColor: '#ff6b35', // Laranja da Marca
+              hoverBackgroundColor: '#ff8559', // Feedback visual melhorado ao passar o rato
+              borderRadius: 8,
+              barPercentage: 0.6
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { display: false, drawBorder: false }, ticks: { display: false } },
+              y: { grid: { display: false, drawBorder: false }, ticks: { font: { family: 'DM Sans', weight: '600', size: 12 }, color: '#3f3f46' } }
+            }
+          }
+        });
+
+      } catch (err) {
+        console.error("Erro ao renderizar gráficos:", err);
+      }
+    }
+
+    // ── Lógica de Interface (KPIs e Tarefas) ──
+    function updateKPIs() {
+      const pending = allActions.filter(a => !a.completed).length;
+      const critical = allActions.filter(a => !a.completed && (a.priority === 'critical' || isToday(a.due_date))).length;
+      const finishedWeek = allActions.filter(a => a.completed && isThisWeek(a.created_at)).length;
+
+      document.getElementById('kpi-pending').textContent = pending;
+      document.getElementById('kpi-critical').textContent = critical;
+      document.getElementById('kpi-concluido').textContent = finishedWeek;
+    }
+
+    function renderTasks() {
+      const container = document.getElementById('task-list');
+      const emptyState = document.getElementById('empty-state');
+
+      // Ordena tarefas
+      const sorted = [...allActions].sort((a, b) => {
+        if (a.completed !== b.completed) return a.completed ? 1 : -1;
+        if (a.priority === 'critical' && b.priority !== 'critical') return -1;
+        if (b.priority === 'critical' && a.priority !== 'critical') return 1;
+        return 0;
+      });
+
+      // Gestão otimizada do DOM (reutiliza nós existentes se possível)
+      const existing = new Map([...container.querySelectorAll('.task-row')].map(el => [el.dataset.id, el]));
+
+      sorted.forEach(action => {
+        const id = action.__backendId;
+        if (existing.has(id)) {
+          updateTaskRowInner(existing.get(id), action);
+          existing.delete(id);
+        } else {
+          container.appendChild(createTaskRow(action));
+        }
+      });
+
+      // Remove os que já não existem
+      existing.forEach(el => el.remove());
+
+      // Esconde ou mostra o estado vazio
+      if (emptyState) {
+        emptyState.style.display = sorted.length ? 'none' : 'flex';
+      }
+
+      // Atualiza o contador de foco
+      document.getElementById('focus-count').textContent = `${allActions.filter(a => !a.completed).length} ações`;
+    }
+
+    function createTaskRow(action) {
+      const row = document.createElement('div');
+      row.className = 'task-row flex items-center gap-4 px-8 py-4';
+      row.dataset.id = action.__backendId;
+      updateTaskRowInner(row, action);
+      return row;
+    }
+
+    function updateTaskRowInner(row, action) {
+      const isFinished = action.completed;
+      const isCrit = action.priority === 'critical';
+      const dueStr = action.due_date ? new Date(action.due_date).toLocaleDateString('pt-BR', { timeZone: 'UTC', day: '2-digit', month: 'short' }) : '';
+
+      // Html Seguro para a linha
+      row.innerHTML = ` 
+        <div class="check-box ${isFinished ? 'finalizado' : ''}"> 
+          ${isFinished ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7l3 3 5-5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''} 
+        </div> 
+        <span class="flex-1 text-sm font-semibold ${isFinished ? 'line-through text-gray-400' : 'text-gray-800'}">${escapeHTML(action.title)}</span> 
+        ${isCrit && !isFinished ? '<span class="text-[10px] px-2.5 py-1 rounded-md font-bold tracking-wider uppercase bg-red-50 text-red-600 border border-red-100">Crítica</span>' : ''} 
+        ${dueStr ? '<span class="text-[11px] font-bold text-gray-500 bg-gray-100/80 px-2.5 py-1 rounded-md">' + dueStr + '</span>' : ''} 
+        <button class="del-btn text-gray-300 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50" title="Remover Tarefa">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button> 
+      `;
+      lucide.createIcons({ root: row });
+
+      // Evento de Concluir Tarefa (Checkbox)
+      const checkBtn = row.querySelector('.check-box');
+      checkBtn.onclick = async () => {
+        checkBtn.style.opacity = '0.5';
+        try {
+          const res = await fetch(`/api/acoes/${action.__backendId}`, { method: 'PUT' });
+          if (!res.ok) throw new Error('Erro na API');
+
+          const index = allActions.findIndex(a => a.__backendId === action.__backendId);
+          if (index > -1) {
+            allActions[index].completed = !allActions[index].completed;
+            updateKPIs();
+            renderTasks();
+            renderTimeline();
+            toast(allActions[index].completed ? '✅ Ação concluída!' : '🔄 Ação reaberta');
+          }
+        } catch (err) {
+          checkBtn.style.opacity = '1';
+          toast('Erro ao atualizar ação no servidor.');
+        }
+      };
+
+      // Evento de Excluir Tarefa
+      const delBtn = row.querySelector('.del-btn');
+      delBtn.onclick = async () => {
+        delBtn.disabled = true;
+        try {
+          const res = await fetch(`/api/acoes/${action.__backendId}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error('Erro na API');
+
+          allActions = allActions.filter(a => a.__backendId !== action.__backendId);
+          updateKPIs();
+          renderTasks();
+          renderTimeline();
+          toast('🗑️ Ação removida com sucesso.');
+        } catch (err) {
+          delBtn.disabled = false;
+          toast('Erro ao remover a ação.');
+        }
+      };
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('timeline');
+      container.innerHTML = '';
+
+      const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - today.getDay());
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(startOfWeek);
+        d.setDate(startOfWeek.getDate() + i);
+
+        const dateStr = d.toISOString().split('T')[0];
+        const count = allActions.filter(a => a.due_date === dateStr && !a.completed).length;
+        const isT = d.getTime() === today.getTime();
+
+        const col = document.createElement('div');
+        col.className = `flex flex-col items-center gap-1.5 p-2 rounded-xl transition-colors ${isT ? 'bg-orange-50/50' : ''}`;
+        col.innerHTML = ` 
+          <span class="text-[11px] font-bold uppercase tracking-wider ${isT ? 'text-brand' : 'text-gray-400'}">${days[i]}</span> 
+          <span class="text-sm font-semibold ${isT ? 'text-gray-900' : 'text-gray-500'}">${d.getDate()}</span> 
+          <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${count > 0 ? 'text-white' : 'text-gray-400'}" style="${count > 0 ? (isT ? 'background:#ff6b35; box-shadow: 0 4px 10px rgba(255,107,53,0.3);' : 'background:#3f3f46;') : 'background:#f4f4f5;'}">${count || '-'}</div> 
+        `;
+        container.appendChild(col);
+      }
+    }
+
+    // ── Eventos do Modal (Nova Ação) ──
+    const modal = document.getElementById('modal-new');
+    const formNewAction = document.getElementById('form-new-action');
+
+    const openModal = () => {
+      modal.style.display = 'flex';
+      document.getElementById('inp-title').focus();
+    };
+
+    const closeModal = () => {
+      modal.style.display = 'none';
+      formNewAction.reset();
+    };
+
+    document.getElementById('btn-new-action').onclick = openModal;
+    document.getElementById('btn-close-modal').onclick = closeModal;
+    document.getElementById('btn-cancel').onclick = closeModal;
+
+    modal.onclick = (e) => {
+      if (e.target === modal) { closeModal(); }
+    };
+
+    formNewAction.onsubmit = async (e) => {
+      e.preventDefault();
+
+      const titleInput = document.getElementById('inp-title').value.trim();
+      if (!titleInput) {
+        toast('O título da ação não pode estar vazio.');
+        return;
+      }
+
+      // Bloquear botão para evitar multi-submits
+      const btn = document.getElementById('btn-salvar');
+      const originalBtnText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Criando...';
+      lucide.createIcons();
+
+      const payload = {
+        title: titleInput,
+        priority: document.getElementById('inp-priority').value,
+        due_date: document.getElementById('inp-due').value || ''
+      };
+
+      try {
+        const res = await fetch('/api/acoes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error('Erro na API');
+        const data = await res.json();
+
+        // Adiciona a nova tarefa localmente
+        allActions.push({
+          __backendId: data.__backendId,
+          title: payload.title,
+          completed: false,
+          priority: payload.priority,
+          due_date: payload.due_date,
+          created_at: new Date().toISOString()
+        });
+
+        closeModal();
+        updateKPIs();
+        renderTasks();
+        renderTimeline();
+        toast('✨ Ação adicionada com sucesso!');
+
+      } catch (err) {
+        toast('Erro ao comunicar com o servidor.');
+      } finally {
+        // Restaura botão
+        btn.disabled = false;
+        btn.innerHTML = originalBtnText;
+        lucide.createIcons();
+      }
+    };
+
+    // ── Inicialização (Carregamento da Página) ──
+    (async () => {
+      // Configurar a Saudação inicial
+      document.getElementById('greeting-text').textContent = `${getGreetingTime()}, {{ usuario.nome }}.`;
+
+      // Iniciar a busca de ações do backend
+      try {
+        const res = await fetch('/api/acoes');
+        if (res.ok) {
+          allActions = await res.json();
+        }
+      } catch (err) {
+        console.error('Falha ao carregar as ações iniciais:', err);
+      }
+
+      // Verificar se o usuário ocultou o banner de Setup VIP
+      if (localStorage.getItem('hideSetupVipReAction') === 'true') {
+        const banner = document.getElementById('banner-setup-vip');
+        if (banner) banner.style.display = 'none';
+      }
+
+      // Renderizar o ecrã
+      updateKPIs();
+      renderTasks();
+      renderTimeline();
+
+      // Carregar Gráficos e Ícones
+      await renderizarGraficos();
+      lucide.createIcons();
+    })(); 
+
+    function dismissSetupVip() {
+      const banner = document.getElementById('banner-setup-vip');
+      if (banner) banner.style.display = 'none';
+      localStorage.setItem('hideSetupVipReAction', 'true');
+    } 
+  </script>
+</body>
+
+</html>
