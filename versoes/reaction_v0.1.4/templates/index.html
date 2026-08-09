@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="pt-BR" class="scroll-smooth scroll-pt-24">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReAction | Domine a sua Reputação Online com IA</title>
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#ff6b35">
+
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&family=Inter:wght@400;500;600;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        html,
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-heading {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Efeitos Premium */
+        .text-gradient {
+            background: linear-gradient(135deg, #ff6b35, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bg-gradient-brand {
+            background: linear-gradient(135deg, #ff6b35, #e05524);
+        }
+
+        .glow-effect {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: -1;
+        }
+
+        /* Glassmorphism e Bento Grid */
+        .glass-card {
+            background: rgba(25, 25, 25, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bento-hover {
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .bento-hover:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 53, 0.4);
+            box-shadow: 0 15px 30px -10px rgba(255, 107, 53, 0.15);
+        }
+
+        /* Animação Flutuante */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-[#ff6b35] selection:text-white">
+
+    <div class="glow-effect w-[500px] h-[500px] bg-[#ff6b35]/20 top-[-200px] left-[-100px]"></div>
+    <div class="glow-effect w-[600px] h-[600px] bg-[#ffb347]/10 top-[20%] right-[-200px]"></div>
+
+    <nav class="fixed top-0 w-full z-50 glass-card border-b-0 border-white/10 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-brand flex items-center justify-center shadow-lg shadow-[#ff6b35]/30 shrink-0">
+                    <i data-lucide="shield-check" class="text-white w-6 h-6"></i>
+                </div>
+                <span class="text-2xl font-heading font-black tracking-tight">Re<span
+                        class="text-[#ff6b35]">Action</span></span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-300 ml-auto mr-8">
+                <a href="#solucao" class="hover:text-white transition-colors">A Solução</a>
+                <a href="#funcionalidades" class="hover:text-white transition-colors">Funcionalidades</a>
+                <a href="#como-funciona" class="hover:text-white transition-colors">Como Funciona</a>
+                <a href="#planos" class="hover:text-white transition-colors">Planos</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="/login"
+                    class="hidden md:block text-sm font-semibold text-gray-300 hover:text-white transition-colors">Entrar</a>
+                <a href="/login?registo=true"
+                    class="hidden sm:inline-block px-5 py-2.5 rounded-xl bg-white text-black font-bold text-sm hover:scale-105 hover:bg-gray-100 transition-all shadow-lg">
+                    Começar Grátis
+                </a>
+
+                <!-- BOTÃO HAMBÚRGUER MOBILE (ESTILO CASH) -->
+                <button type="button" id="btn-mobile-menu" onclick="toggleMobileMenu()"
+                    class="md:hidden text-white p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-all focus:outline-none"
+                    aria-label="Abrir menu móvel">
+                    <i data-lucide="menu" class="w-6 h-6" id="icon-mobile-menu"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- PAINEL DE NAVEGAÇÃO MOBILE (ESTILO CASH) -->
+        <div id="mobile-menu-drawer" class="hidden md:hidden glass-card border-t border-white/10 px-6 py-6 space-y-4">
+            <a href="#solucao" onclick="toggleMobileMenu()" class="block text-base font-semibold text-gray-200 hover:text-white transition-colors">A Solução</a>
+            <a href="#funcionalidades" onclick="toggleMobileMenu()" class="block text-base font-semibold text-gray-200 hover:text-white transition-colors">Funcionalidades</a>
+            <a href="#como-funciona" onclick="toggleMobileMenu()" class="block text-base font-semibold text-gray-200 hover:text-white transition-colors">Como Funciona</a>
+            <a href="#planos" onclick="toggleMobileMenu()" class="block text-base font-semibold text-gray-200 hover:text-white transition-colors">Planos</a>
+            <div class="pt-4 border-t border-white/10 flex flex-col gap-3">
+                <a href="/login" class="w-full py-3 rounded-xl border border-white/20 text-center font-bold text-sm text-white hover:bg-white/10 transition-all">Entrar na Conta</a>
+                <a href="/login?registo=true" class="w-full py-3 rounded-xl bg-gradient-brand text-center font-bold text-sm text-white transition-all shadow-lg">Começar Grátis</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative pt-28 pb-16 md:pt-32 md:pb-24 px-6 overflow-hidden min-h-[85vh] flex items-center">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center w-full">
+
+            <div class="z-10 text-center lg:text-left">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-white/10 text-xs font-bold tracking-widest text-[#ffb347] mb-8 uppercase">
+                    <span class="w-2 h-2 rounded-full bg-[#ff6b35] animate-pulse"></span>
+                    IA de Gestão de Reputação
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-heading font-black mb-6 leading-[1.1] tracking-tight">
+                    A sua marca, <br><span class="text-gradient">à prova de crises.</span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                    O ReAction monitora o Google, Instagram e WhatsApp 24/7. Responde elogios com a sua voz e isola
+                    clientes insatisfeitos antes que virem um escândalo público.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                    <a href="/login?registo=true"
+                        class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-brand text-white font-bold text-lg hover:scale-105 transition-all shadow-[0_10px_30px_rgba(255,107,53,0.4)] flex items-center justify-center gap-2">
+                        Proteger Minha Marca <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#como-funciona"
+                        class="w-full sm:w-auto px-8 py-4 rounded-xl glass-card font-bold text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="play-circle" class="w-5 h-5 text-gray-400"></i> Ver como funciona
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative z-10 hidden lg:block animate-float">
+                <div
+                    class="absolute inset-0 bg-gradient-to-tr from-[#ff6b35]/20 to-transparent rounded-[2.5rem] blur-2xl">
+                </div>
+                <div class="relative glass-card p-6 rounded-[2.5rem] border-white/20 shadow-2xl">
+                    <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+                        <div class="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
+                            <i data-lucide="alert-triangle" class="text-red-500 w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-sm">Alerta de Crise Detetado</p>
+                            <p class="text-xs text-gray-400">Google Business • Há 2 min</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-300 italic mb-4">"Péssimo atendimento, comida fria e demorou 2 horas.
+                        Não recomendo a ninguém!"</p>
+                    <div class="p-4 bg-[#ff6b35]/10 rounded-xl border border-[#ff6b35]/30">
+                        <p
+                            class="text-xs font-bold text-[#ffb347] mb-2 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="zap" class="w-3 h-3"></i> Ação da IA
+                        </p>
+                        <p class="text-sm text-white/90">"Olá! Pedimos imensas desculpas. Esta não é a nossa norma. A
+                            nossa gerência quer resolver isto agora mesmo consigo no privado: wa.me/55999999999"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="border-y border-white/5 bg-white/[0.02] py-10">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Projetado para empresas que
+                valorizam cada cliente</p>
+            <div
+                class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                <div class="flex items-center gap-2 text-xl font-black font-heading"><i data-lucide="utensils"
+                        class="w-6 h-6"></i> Gastronomia</div>
+                <div class="flex items-center gap-2 text-xl font-black font-heading"><i data-lucide="building"
+                        class="w-6 h-6"></i> Clínicas</div>
+                <div class="flex items-center gap-2 text-xl font-black font-heading"><i data-lucide="shopping-bag"
+                        class="w-6 h-6"></i> E-commerce</div>
+                <div class="flex items-center gap-2 text-xl font-black font-heading"><i data-lucide="car"
+                        class="w-6 h-6"></i> Concessionárias</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="solucao" class="py-24 md:py-32 px-6 relative">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            <div>
+                <h2 class="text-4xl md:text-5xl font-heading font-black mb-6 leading-tight">O silêncio digital está
+                    <br><span class="text-red-500">custando caro.</span></h2>
+                <p class="text-gray-400 text-lg mb-8 leading-relaxed">Cada avaliação negativa não respondida afasta
+                    dezenas de novos clientes. Fazer a gestão disso manualmente consome horas que você não tem.</p>
+
+                <ul class="space-y-6">
+                    <li class="flex items-start gap-4">
+                        <div class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mt-1">
+                            <i data-lucide="x" class="w-4 h-4 text-red-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Perda de Rank no Google</h4>
+                            <p class="text-gray-500 text-sm">Empresas que não respondem avaliações perdem visibilidade
+                                nas buscas locais.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mt-1">
+                            <i data-lucide="x" class="w-4 h-4 text-red-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Crises Escaladas</h4>
+                            <p class="text-gray-500 text-sm">Um comentário ruim no Instagram pode inflamar outros
+                                clientes se não for contido rápido.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="glass-card p-10 rounded-[2rem] border-l-4 border-l-[#ff6b35] relative overflow-hidden">
+                <div class="absolute right-4 -top-6 text-[10rem] text-white/5 font-serif font-black select-none pointer-events-none font-sans">“</div>
+                <h3 class="text-2xl font-heading font-bold mb-6 text-white">Com o ReAction:</h3>
+                <p class="text-gray-300 text-lg mb-8 leading-relaxed">A Inteligência Artificial atua como o seu Relações
+                    Públicas senior. Ela entende o contexto de cada mensagem, aproxima os fãs e esfria os detratores,
+                    levando o problema para o WhatsApp privado antes que o mundo veja.</p>
+
+                <div class="flex items-center gap-4 pt-6 border-t border-white/10">
+                    <div class="flex -space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-700 border-2 border-black"></div>
+                        <div class="w-10 h-10 rounded-full bg-gray-600 border-2 border-black"></div>
+                        <div
+                            class="w-10 h-10 rounded-full bg-[#ff6b35] border-2 border-black flex items-center justify-center text-xs font-bold">
+                            +99</div>
+                    </div>
+                    <p class="text-sm font-bold text-gray-400">Marcas salvas diariamente</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="funcionalidades" class="py-24 px-6 bg-black">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-4xl md:text-5xl font-heading font-black mb-6">Tudo que você precisa num só <span
+                        class="text-[#ff6b35]">Cockpit.</span></h2>
+                <p class="text-gray-400 text-lg">Não precisa abrir 5 abas diferentes. Centralize o atendimento e deixe a
+                    máquina trabalhar por si.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div
+                    class="glass-card p-8 rounded-[2rem] bento-hover md:col-span-2 flex flex-col justify-center relative overflow-hidden group">
+                    <div
+                        class="absolute top-0 right-0 w-64 h-64 bg-[#ff6b35]/10 rounded-full blur-3xl group-hover:bg-[#ff6b35]/20 transition-all">
+                    </div>
+                    <i data-lucide="bot"
+                        class="w-12 h-12 text-[#ff6b35] mb-6 transform group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-2xl font-bold mb-4 font-heading">Clone do seu Tom de Voz</h3>
+                    <p class="text-gray-400 max-w-md">Na "Sala de Máquinas", você ensina à IA as suas regras de ouro.
+                        Ela não responde como um robô genérico, ela responde como VOCÊ, usando os seus jargões e
+                        políticas de devolução.</p>
+                </div>
+
+                <div class="glass-card p-8 rounded-[2rem] bento-hover group">
+                    <i data-lucide="shield-alert"
+                        class="w-12 h-12 text-red-400 mb-6 transform group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold mb-4 font-heading">Alerta Vermelho</h3>
+                    <p class="text-gray-400 text-sm">Críticas nota 1 a 3 acionam um alerta crítico no seu painel. A IA
+                        tenta isolar o cliente no privado imediatamente.</p>
+                </div>
+
+                <div class="glass-card p-8 rounded-[2rem] bento-hover group">
+                    <i data-lucide="link-2"
+                        class="w-12 h-12 text-[#ffb347] mb-6 transform group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold mb-4 font-heading">Integração Nativa</h3>
+                    <p class="text-gray-400 text-sm">Ligue o seu Google Meu Negócio e Instagram com 2 cliques. Nós
+                        cuidamos das chaves e das APIs.</p>
+                </div>
+
+                <div
+                    class="glass-card p-8 rounded-[2rem] bento-hover md:col-span-2 flex items-center justify-between overflow-hidden group">
+                    <div class="z-10 max-w-sm">
+                        <i data-lucide="pie-chart"
+                            class="w-12 h-12 text-[#ff6b35] mb-6 transform group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-2xl font-bold mb-4 font-heading">Analytics Avançado</h3>
+                        <p class="text-gray-400">Descubra as palavras mais usadas pelos seus clientes e a evolução da
+                            sua nota média. Exporte tudo num PDF bonito para a sua reunião de resultados.</p>
+                    </div>
+                    <i data-lucide="bar-chart-4"
+                        class="w-48 h-48 text-white/5 -mr-10 transform group-hover:scale-105 transition-transform"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="como-funciona" class="py-24 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-heading font-black text-center mb-16">Instale em <span class="text-[#ff6b35]">3
+                    passos simples</span></h2>
+
+            <div class="grid md:grid-cols-3 gap-8 relative">
+                <div
+                    class="hidden md:block absolute top-12 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-gray-800 via-[#ff6b35] to-gray-800 -z-10">
+                </div>
+
+                <div class="text-center relative">
+                    <div
+                        class="w-24 h-24 mx-auto bg-black border border-gray-800 rounded-full flex items-center justify-center text-3xl font-black font-heading text-gray-500 mb-6 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                        1</div>
+                    <h3 class="text-xl font-bold mb-3">Conecte os Canais</h3>
+                    <p class="text-gray-400 text-sm">Faça login com o Google ou Meta. O sistema puxa o histórico
+                        automaticamente.</p>
+                </div>
+
+                <div class="text-center relative">
+                    <div
+                        class="w-24 h-24 mx-auto bg-black border-2 border-[#ff6b35] rounded-full flex items-center justify-center text-3xl font-black font-heading text-[#ff6b35] mb-6 shadow-[0_0_30px_rgba(255,107,53,0.3)]">
+                        2</div>
+                    <h3 class="text-xl font-bold mb-3">Calibre a IA</h3>
+                    <p class="text-gray-400 text-sm">Acesse a Sala de Máquinas, defina o tom de voz e o link do seu
+                        WhatsApp de contenção.</p>
+                </div>
+
+                <div class="text-center relative">
+                    <div
+                        class="w-24 h-24 mx-auto bg-black border border-gray-800 rounded-full flex items-center justify-center text-3xl font-black font-heading text-gray-500 mb-6 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                        3</div>
+                    <h3 class="text-xl font-bold mb-3">Durma Tranquilo</h3>
+                    <p class="text-gray-400 text-sm">Acompanhe o Cockpit. O sistema agradece os fãs e alerta-o apenas
+                        quando houver fogo real.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO DE PLANOS E PREÇOS COM TOGGLE -->
+    <section id="planos" class="py-24 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-5xl font-heading font-black mb-6">Planos que cabem no seu negócio.</h2>
+                <p class="text-lg text-gray-400 mb-8 font-medium">Proteja a sua marca com uma Inteligência Artificial que trabalha 24 horas por dia por um fração do custo de um especialista.</p>
+                
+                <!-- Toggle Mensal / Anual -->
+                <div class="inline-flex items-center gap-3 p-1.5 rounded-2xl glass-card border-white/10">
+                    <button id="btn-mensal" onclick="toggleBilling('mensal')" class="px-6 py-2.5 rounded-xl font-bold text-sm text-gray-400 transition-all">
+                        Mensal
+                    </button>
+                    <button id="btn-anual" onclick="toggleBilling('anual')" class="px-6 py-2.5 rounded-xl font-bold text-sm bg-gradient-brand text-white shadow-lg transition-all flex items-center gap-2">
+                        Anual <span class="px-2 py-0.5 rounded-full bg-white/20 text-[10px] uppercase font-black tracking-wide">25% OFF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cards dos Planos -->
+            <div class="grid md:grid-cols-3 gap-8 items-stretch mb-20">
+                
+                <!-- Card 1: Freemium -->
+                <div class="glass-card p-8 rounded-[2.5rem] border-white/10 flex flex-col justify-between relative">
+                    <div>
+                        <h3 class="text-xl font-heading font-bold text-white mb-2">Shield Start (Freemium)</h3>
+                        <p class="text-sm text-gray-400 mb-6">Degustação ativa do poder de resposta automática da IA.</p>
+                        
+                        <div class="mb-8">
+                            <span class="text-4xl font-black font-heading text-white">R$ 0</span>
+                            <span class="text-gray-400 text-sm font-medium">/ mês</span>
+                        </div>
+
+                        <ul class="space-y-4 text-sm text-gray-300 font-medium mb-8">
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> 1 Canal Conectado</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Até 20 avaliações/mês por IA</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Respostas Automáticas básicas</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> 5 Rascunhos IA / mês</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Alerta de Crise por E-mail</li>
+                            <li class="flex items-center gap-3 text-gray-500"><i data-lucide="x" class="w-4 h-4"></i> Ponte Privada WhatsApp</li>
+                        </ul>
+                    </div>
+
+                    <a href="/login?registo=true" class="w-full py-4 rounded-xl glass-card font-bold text-white hover:bg-white/10 transition-all text-center">
+                        Começar Grátis
+                    </a>
+                </div>
+
+                <!-- Card 2: Pro (Escudo Ativo) - MAIS PROCURADO -->
+                <div class="glass-card p-8 rounded-[2.5rem] border-2 border-[#ff6b35] flex flex-col justify-between relative shadow-[0_0_50px_rgba(255,107,53,0.25)]">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-brand text-white text-xs font-black uppercase tracking-wider shadow-md">
+                        🔥 Mais Procurado
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-heading font-bold text-white mb-2">Escudo Ativo (Pro)</h3>
+                        <p class="text-sm text-gray-400 mb-6">Automação completa do dia a dia e calibração da IA.</p>
+                        
+                        <div class="mb-2">
+                            <span id="price-pro" class="text-5xl font-black font-heading text-white">R$ 59,90</span>
+                            <span class="text-gray-400 text-sm font-medium">/ mês</span>
+                        </div>
+                        <p id="sub-pro" class="text-xs text-[#ffb347] font-semibold mb-6">Faturado 12x de R$ 59,90/mês (R$ 718,80/ano no PIX ou Cartão)</p>
+
+                        <div class="p-3 bg-[#ff6b35]/10 rounded-xl border border-[#ff6b35]/30 mb-6 text-xs text-gray-300">
+                            💡 <em>"Isso dá apenas R$ 1,96 por dia na opção anual para ter uma IA cuidando de todas as suas avaliações 24 horas por dia."</em>
+                        </div>
+
+                        <ul class="space-y-4 text-sm text-gray-300 font-medium mb-8">
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> <strong>Até 3 Canais Conectados</strong></li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> <strong>Até 250 avaliações/mês</strong></li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Sala de Máquinas completa</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Aprovação ilimitada de rascunhos</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> <strong>Ponte Privada WhatsApp (Crises)</strong></li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Relatórios Executivos PDF (90 dias)</li>
+                        </ul>
+                    </div>
+
+                    <a href="/login?registo=true" class="w-full py-4 rounded-xl bg-gradient-brand text-white font-bold text-center hover:scale-105 transition-all shadow-lg">
+                        Garantir Plano Pro
+                    </a>
+                </div>
+
+                <!-- Card 3: Premium (Blindagem Total) -->
+                <div class="glass-card p-8 rounded-[2.5rem] border-white/10 flex flex-col justify-between relative">
+                    <div>
+                        <h3 class="text-xl font-heading font-bold text-white mb-2">Blindagem Total (Premium)</h3>
+                        <p class="text-sm text-gray-400 mb-6">Proteção em escala com prioridade e motor Gemini Avançado.</p>
+                        
+                        <div class="mb-2">
+                            <span id="price-premium" class="text-5xl font-black font-heading text-white">R$ 147,90</span>
+                            <span class="text-gray-400 text-sm font-medium">/ mês</span>
+                        </div>
+                        <p id="sub-premium" class="text-xs text-[#ffb347] font-semibold mb-6">Faturado 12x de R$ 147,90/mês (R$ 1.774,80/ano - Economiza R$ 600/ano)</p>
+
+                        <div class="p-3 bg-white/5 rounded-xl border border-white/10 mb-6 text-xs text-gray-300">
+                            💡 <em>"Menos de R$ 4,90 por dia para blindar totalmente sua marca, responder ilimitado e direcionar todas as crises direto para o seu WhatsApp."</em>
+                        </div>
+
+                        <ul class="space-y-4 text-sm text-gray-300 font-medium mb-8">
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> <strong>Canais Ilimitados</strong></li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> <strong>Até 1.500 avaliações/mês</strong></li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Motor Gemini IA Avançado</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Alerta em tempo real via WhatsApp</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Multi-usuários e Gestão de Equipe</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#ff6b35]"></i> Suporte Prioritário WhatsApp</li>
+                        </ul>
+                    </div>
+
+                    <a href="/login?registo=true" class="w-full py-4 rounded-xl glass-card font-bold text-white hover:bg-white/10 transition-all text-center">
+                        Contratar Premium
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- TABELA COMPARATIVA DETALHADA -->
+            <div class="glass-card rounded-[2.5rem] p-8 border-white/10 overflow-x-auto">
+                <h3 class="text-2xl font-heading font-bold text-white mb-6 text-center">Tabela Comparativa de Recursos</h3>
+                <table class="w-full text-left text-sm text-gray-300">
+                    <thead>
+                        <tr class="border-b border-white/10 text-white font-heading">
+                            <th class="py-4 px-4 font-bold">Recurso / Benefício</th>
+                            <th class="py-4 px-4 text-center font-bold">Freemium</th>
+                            <th class="py-4 px-4 text-center font-bold text-[#ff6b35]">Pro (Escudo Ativo)</th>
+                            <th class="py-4 px-4 text-center font-bold">Premium (Blindagem Total)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Plano Mensal</td>
+                            <td class="py-4 px-4 text-center">R$ 0 / mês</td>
+                            <td class="py-4 px-4 text-center text-[#ffb347] font-semibold">R$ 79,90 / mês</td>
+                            <td class="py-4 px-4 text-center">R$ 197,90 / mês</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Plano Anual (Com Economia)</td>
+                            <td class="py-4 px-4 text-center">—</td>
+                            <td class="py-4 px-4 text-center font-bold text-white">12x de R$ 59,90 / mês (R$ 718,80/ano)</td>
+                            <td class="py-4 px-4 text-center font-bold text-white">12x de R$ 147,90 / mês (R$ 1.774,80/ano)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Economia no Anual</td>
+                            <td class="py-4 px-4 text-center">—</td>
+                            <td class="py-4 px-4 text-center text-green-400 font-semibold">Economiza R$ 240 / ano (~25% OFF)</td>
+                            <td class="py-4 px-4 text-center text-green-400 font-semibold">Economiza R$ 600 / ano (~25% OFF)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Canais Conectados</td>
+                            <td class="py-4 px-4 text-center">1 Canal</td>
+                            <td class="py-4 px-4 text-center font-semibold text-white">Até 3 Canais</td>
+                            <td class="py-4 px-4 text-center font-semibold text-white">Canais Ilimitados</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Volume de Interações</td>
+                            <td class="py-4 px-4 text-center">Até 20 / mês</td>
+                            <td class="py-4 px-4 text-center">Até 250 / mês</td>
+                            <td class="py-4 px-4 text-center">Até 1.500 / mês</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Respostas Automáticas (Elogios)</td>
+                            <td class="py-4 px-4 text-center">Sim</td>
+                            <td class="py-4 px-4 text-center text-green-400">Sim</td>
+                            <td class="py-4 px-4 text-center text-green-400">Sim</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Rascunhos com IA (Dúvidas)</td>
+                            <td class="py-4 px-4 text-center">5 / mês</td>
+                            <td class="py-4 px-4 text-center font-bold text-white">Ilimitados</td>
+                            <td class="py-4 px-4 text-center font-bold text-white">Ilimitados</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Contenção de Crises (Link WhatsApp)</td>
+                            <td class="py-4 px-4 text-center text-gray-500">❌</td>
+                            <td class="py-4 px-4 text-center text-green-400 font-medium">Sim (Ponte Privada)</td>
+                            <td class="py-4 px-4 text-center text-green-400 font-medium">Sim (Com Alerta de Crise)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Calibragem da IA (Tom de Voz)</td>
+                            <td class="py-4 px-4 text-center">Básico</td>
+                            <td class="py-4 px-4 text-center font-semibold text-white">Total (Sala de Máquinas)</td>
+                            <td class="py-4 px-4 text-center font-semibold text-white">Total + Treinamento Avançado</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 font-medium">Relatórios Executivos</td>
+                            <td class="py-4 px-4 text-center">7 dias</td>
+                            <td class="py-4 px-4 text-center">90 dias + Exportar PDF</td>
+                            <td class="py-4 px-4 text-center font-bold text-white">Histórico Ilimitado + PDF</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- CHAMADA ESTRATÉGICA SETUP VIP REACTION -->
+            <div class="mt-12 glass-card rounded-[2.5rem] p-8 md:p-10 border-[#ff6b35]/30 bg-gradient-to-r from-[#ff6b35]/10 via-black to-[#e05524]/10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_10px_30px_rgba(255,107,53,0.15)]">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-brand flex items-center justify-center text-white shrink-0 shadow-md">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <div class="inline-block px-3 py-1 rounded-full bg-[#ff6b35]/20 text-[#ffb347] text-xs font-bold uppercase tracking-wider mb-2 border border-[#ff6b35]/30">
+                            Experiência 360º • Setup VIP
+                        </div>
+                        <h4 class="text-xl font-heading font-bold text-white mb-2">Prefere receber a estrutura pronta, personalizada e treinada para sua equipe?</h4>
+                        <p class="text-sm text-gray-300 max-w-3xl leading-relaxed">
+                            Conheça o <strong>Setup VIP ReAction (R$ 300,00 à vista)</strong>: Inclui 2 sessões ao vivo de 60min com nossos especialistas, criação de repositório exclusivo no Google Drive com gravações/transcrições, parametrização da IA no tom de voz da sua marca e <strong>3 meses grátis de sistema</strong> (90 dias isento).
+                        </p>
+                    </div>
+                </div>
+                <a href="https://wa.me/5585999999999?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20o%20Setup%20VIP%20ReAction%20por%20R%24%20300%2C00" target="_blank" rel="noopener noreferrer" class="py-4 px-8 rounded-xl bg-gradient-brand text-white font-bold text-sm whitespace-nowrap hover:scale-105 transition-all shadow-lg text-center shrink-0">
+                    Contratar Setup VIP (R$ 300) →
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="py-24 px-6">
+        <div
+            class="max-w-5xl mx-auto rounded-[3rem] bg-gradient-brand p-12 md:p-24 text-center relative overflow-hidden shadow-[0_20px_50px_rgba(255,107,53,0.4)]">
+            <div
+                class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIvPjwvc3ZnPg==')] opacity-30">
+            </div>
+
+            <h2 class="text-4xl md:text-6xl font-heading font-black mb-8 relative z-10">Tome as rédeas da sua reputação
+                online.</h2>
+            <p class="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto relative z-10 font-medium">Junte-se a
+                dezenas de empresas que pararam de perder clientes por falta de resposta e gestão de crise.</p>
+
+            <a href="/login?registo=true"
+                class="inline-block relative z-10 px-10 py-5 bg-white text-black rounded-2xl font-bold text-lg hover:scale-105 hover:bg-gray-100 transition-all shadow-2xl">
+                Criar Minha Conta Grátis
+            </a>
+
+            <p class="mt-6 text-sm text-white/70 relative z-10 font-semibold">
+                <i data-lucide="check" class="inline w-4 h-4 mr-1"></i> Setup em menos de 5 minutos.
+            </p>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/10 bg-black pt-16 pb-8 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-check" class="text-[#ff6b35] w-6 h-6"></i>
+                <span class="text-xl font-heading font-black tracking-tight">Re<span
+                        class="text-[#ff6b35]">Action</span></span>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 text-sm font-semibold text-gray-400">
+                <a href="#" class="hover:text-white transition">Termos de Uso</a>
+                <a href="#" class="hover:text-white transition">Política de Privacidade</a>
+                <a href="mailto:contato@frameia.com.br" class="hover:text-white transition">Suporte</a>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto text-center mt-12 text-xs font-medium text-gray-600">
+            &copy; 2026 ReAction - Desenvolvido por Frame [IA]
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Alternância do Toggle Mensal / Anual na Seção de Preços
+        function toggleBilling(ciclo) {
+            const btnMensal = document.getElementById('btn-mensal');
+            const btnAnual = document.getElementById('btn-anual');
+            const pricePro = document.getElementById('price-pro');
+            const subPro = document.getElementById('sub-pro');
+            const pricePremium = document.getElementById('price-premium');
+            const subPremium = document.getElementById('sub-premium');
+
+            if (ciclo === 'anual') {
+                btnAnual.className = 'px-6 py-2.5 rounded-xl font-bold text-sm bg-gradient-brand text-white shadow-lg transition-all flex items-center gap-2';
+                btnMensal.className = 'px-6 py-2.5 rounded-xl font-bold text-sm text-gray-400 transition-all';
+                pricePro.textContent = 'R$ 59,90';
+                subPro.textContent = 'Faturado 12x de R$ 59,90/mês (R$ 718,80/ano no PIX ou Cartão)';
+                pricePremium.textContent = 'R$ 147,90';
+                subPremium.textContent = 'Faturado 12x de R$ 147,90/mês (R$ 1.774,80/ano - Economiza R$ 600/ano)';
+            } else {
+                btnMensal.className = 'px-6 py-2.5 rounded-xl font-bold text-sm bg-gradient-brand text-white shadow-lg transition-all';
+                btnAnual.className = 'px-6 py-2.5 rounded-xl font-bold text-sm text-gray-400 transition-all flex items-center gap-2';
+                pricePro.textContent = 'R$ 79,90';
+                subPro.textContent = 'Pagamento mensal recorrente';
+                pricePremium.textContent = 'R$ 197,90';
+                subPremium.textContent = 'Pagamento mensal recorrente';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobile-menu-drawer');
+            const icon = document.getElementById('icon-mobile-menu');
+            if (drawer.classList.contains('hidden')) {
+                drawer.classList.remove('hidden');
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                drawer.classList.add('hidden');
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // Efeito de background na navbar ao dar scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('bg-black/80', 'shadow-lg', 'backdrop-blur-lg');
+                nav.classList.remove('border-b-0');
+            } else {
+                nav.classList.remove('bg-black/80', 'shadow-lg', 'backdrop-blur-lg');
+                nav.classList.add('border-b-0');
+            }
+        });
+    </script>
+</body>
+
+</html>
