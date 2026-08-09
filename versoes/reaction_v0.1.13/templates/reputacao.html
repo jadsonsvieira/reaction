@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReAction | Central de Reputação</title>
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.1.11">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.1.11">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.1.11">
+    <link rel="manifest" href="/static/manifest.json?v=0.1.11">
+    <meta name="theme-color" content="#ff6b35">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Poppins', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif']
+                    },
+                    colors: {
+                        brand: '#ff6b35',
+                        sidebar: '#3a3a3a',
+                        bglight: '#f4f4f5'
+                    }
+                }
+            }
+        } 
+    </script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f5;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* TEMA ESCURO (DARK MODE OBSIDIAN PREMIUM) */
+        html.dark, html.dark body {
+            background-color: #09090b !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark .bg-white {
+            background-color: #141517 !important;
+            border-color: #27272a !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark .bg-gray-50, html.dark .bg-gray-50\/80 {
+            background-color: #18191c !important;
+            border-color: #27272a !important;
+            color: #d4d4d8 !important;
+        }
+        html.dark .text-gray-900 {
+            color: #ffffff !important;
+        }
+        html.dark .text-gray-800, html.dark .text-gray-700, html.dark .text-gray-600 {
+            color: #e4e4e7 !important;
+        }
+        html.dark .text-gray-500 {
+            color: #a1a1aa !important;
+        }
+        html.dark .border-gray-100, html.dark .border-gray-200, html.dark .border-gray-200\/60 {
+            border-color: #27272a !important;
+        }
+
+        .app-shell {
+            height: 100%;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .main-scroll {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar minimalista */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d8;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa;
+        }
+
+        /* Ocultar scrollbar nas colunas do Kanban para ficar mais limpo */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .nav-item.active {
+            border-left: 3px solid #ff6b35;
+            color: white;
+        }
+
+        .review-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08);
+        }
+
+        .pulse-alert {
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 0 5px rgba(220, 38, 38, 0);
+            }
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27272a;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+
+<body class="h-full font-body text-gray-800">
+    <div class="app-shell w-full">
+
+        <aside id="sidebar" class="w-64 flex-shrink-0 flex-col transition-all bg-sidebar hidden md:flex z-20 shadow-xl">
+
+            <!-- LOGO DA SIDEBAR PADRONIZADA COM A LANDING PAGE -->
+            <div class="p-6 flex items-center gap-3">
+                <div
+                    class="w-9 h-9 bg-brand rounded-xl flex items-center justify-center shadow-md shadow-brand/20 shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M9 12l2 2 4-4"></path>
+                    </svg>
+                </div>
+                <span class="font-heading font-bold text-xl text-white tracking-tight">Re<span
+                        class="text-brand">Action</span></span>
+            </div>
+
+            <nav class="flex-1 mt-6 px-4 space-y-1.5" role="navigation">
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/app'">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                </button>
+                <button
+                    class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-semibold shadow-sm shadow-brand/10"
+                    onclick="window.location.href='/reputacao'">
+                    <i data-lucide="message-square" class="w-5 h-5"></i> Reputação
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/minhas_acoes'">
+                    <i data-lucide="list-checks" class="w-5 h-5"></i> Minhas Ações
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/relatorios'">
+                    <i data-lucide="pie-chart" class="w-5 h-5"></i> Relatórios
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/sala_maquinas'">
+                    <i data-lucide="settings" class="w-5 h-5"></i> Sala de Máquinas
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/integracoes'">
+                    <i data-lucide="link" class="w-5 h-5"></i> Integrações
+                </button>
+            </nav>
+
+            <div class="p-5 border-t border-gray-700/50 flex items-center gap-3 bg-black/10 m-3 rounded-2xl">
+                <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner">
+                    {{ usuario.iniciais }}
+                </div>
+                <div class="text-sm text-gray-300 truncate flex-1 font-medium" id="sidebar-name"
+                    title="{{ usuario.nome }}">
+                    {{ usuario.nome }}
+                </div>
+                <button onclick="toggleTheme()" class="text-gray-400 hover:text-amber-400 transition-colors p-1" title="Alternar Modo Escuro/Claro">
+                    <i data-lucide="moon" class="w-4 h-4"></i>
+                </button>
+                <a href="/ajustes" class="text-gray-500 hover:text-gray-300 transition-colors p-1" title="Ajustes">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                </a>
+                <a href="/logout" class="text-gray-500 hover:text-red-400 transition-colors p-1" aria-label="Sair"
+                    title="Sair">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </aside>
+
+        <div class="main-scroll flex-1 flex flex-col h-screen overflow-y-auto relative" id="main-area">
+
+            <!-- LOGO MOBILE PADRONIZADA COM A LANDING PAGE -->
+            <div
+                class="md:hidden flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-30 border-b border-gray-200/60">
+                <a href="/app" class="flex items-center gap-2">
+            <img src="/static/logo_reaction_transparent_light.png" alt="ReAction Logo" class="h-11 w-auto object-contain transition-all">
+        </a>
+                <div
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold bg-brand shadow-sm">
+                    {{ usuario.iniciais }}
+                </div>
+            </div>
+
+            <header
+                class="flex flex-col sm:flex-row sm:items-end justify-between px-6 md:px-10 py-8 bg-transparent shrink-0">
+                <div>
+                    <h1 class="font-heading font-bold text-3xl text-gray-900 tracking-tight">Central de Reputação</h1>
+                    <p class="text-sm text-gray-500 mt-2 font-medium">Gestão inteligente e contenção de crises em tempo real.</p>
+                </div>
+            </header>
+
+            <main class="px-6 md:px-10 pb-28 md:pb-10 flex-1 flex flex-col">
+                <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+
+                    <div class="flex flex-col h-full bg-gray-50/80 rounded-3xl p-4 border border-gray-200/60 shadow-sm">
+                        <div class="flex items-center gap-2 mb-5 px-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></div>
+                            <h2 class="font-heading font-bold text-sm text-gray-900">Respondido pela IA</h2>
+                            <span
+                                class="ml-auto text-[10px] px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-700 font-bold tracking-wider uppercase border border-emerald-200/50">Automático</span>
+                        </div>
+                        <div id="col-respondidos" class="flex-1 overflow-y-auto space-y-4 pb-4 pr-1 scrollbar-hide">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col h-full bg-gray-50/80 rounded-3xl p-4 border border-gray-200/60 shadow-sm">
+                        <div class="flex items-center gap-2 mb-5 px-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-brand shadow-sm shadow-brand/50"></div>
+                            <h2 class="font-heading font-bold text-sm text-gray-900">Dúvidas (Aprovação)</h2>
+                            <span
+                                class="ml-auto text-xs font-bold px-2.5 py-0.5 rounded-md bg-orange-100 text-brand border border-orange-200/50 transition-colors"
+                                id="count-pendentes">0</span>
+                        </div>
+                        <div id="col-pendentes" class="flex-1 overflow-y-auto space-y-4 pb-4 pr-1 scrollbar-hide">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col h-full bg-gray-50/80 rounded-3xl p-4 border border-gray-200/60 shadow-sm">
+                        <div class="flex items-center gap-2 mb-5 px-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm shadow-red-500/50"></div>
+                            <h2 class="font-heading font-bold text-sm text-gray-900">Alerta Vermelho</h2>
+                            <span
+                                class="ml-auto text-xs font-bold px-2.5 py-0.5 rounded-md bg-red-100 text-red-700 border border-red-200/50 transition-colors"
+                                id="count-alertas">0</span>
+                        </div>
+                        <div id="col-alertas" class="flex-1 overflow-y-auto space-y-4 pb-4 pr-1 scrollbar-hide">
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div
+        class="fixed bottom-0 left-0 right-0 z-50 md:hidden pb-safe bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <nav class="flex items-center justify-around h-[68px] px-2">
+            <a href="/app"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+                <i data-lucide="layout-dashboard" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+                <span class="text-[10px] font-semibold">Cockpit</span>
+            </a>
+            <a href="/reputacao" class="flex flex-col items-center justify-center w-full h-full gap-1 active group">
+                <div class="px-5 py-1 rounded-full bg-brand/10 transition-colors">
+                    <i data-lucide="message-square" class="w-6 h-6 text-brand"></i>
+                </div>
+                <span class="text-[10px] font-bold text-brand">Reputação</span>
+            </a>
+            <a href="/minhas_acoes"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+                <i data-lucide="list-checks" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+                <span class="text-[10px] font-semibold">Ações</span>
+            </a>
+            <a href="/integracoes"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+                <i data-lucide="link" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+                <span class="text-[10px] font-semibold">Canais</span>
+            </a>
+        </nav>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        lucide.createIcons();
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            localStorage.setItem('reaction_theme', theme);
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            applyTheme(isDark ? 'light' : 'dark');
+        }
+
+        applyTheme(localStorage.getItem('reaction_theme') || 'light');
+
+        // Helpers
+        function toast(msg) {
+            const el = document.createElement('div');
+            el.className = 'toast-msg';
+            el.innerHTML = msg; // Permite ícones no toast se necessário
+            document.getElementById('toast-container').appendChild(el);
+            setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.toString().replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
+        }
+
+        function renderStars(nota) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<span class="text-[15px] ${i <= nota ? 'text-amber-400' : 'text-gray-200'}">★</span>`;
+            }
+            return stars;
+        }
+
+        // Empty State Template
+        function renderEmptyState(mensagem, icone) {
+            return `
+                <div class="flex flex-col items-center justify-center h-40 text-center px-4 opacity-70">
+                    <i data-lucide="${icone}" class="w-8 h-8 text-gray-300 mb-2"></i>
+                    <p class="text-sm font-medium text-gray-400">${mensagem}</p>
+                </div>
+            `;
+        }
+
+        function createCardHTML(av) {
+            const c_cliente = escapeHTML(av.cliente);
+            const c_plataforma = escapeHTML(av.plataforma);
+            const c_tempo = escapeHTML(av.tempo || "Recente");
+            const c_comentario = escapeHTML(av.comentario);
+            const c_rascunho = escapeHTML(av.rascunho);
+
+            if (av.status === 'respondido_ia') {
+                return `
+                  <div class="review-card bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:border-emerald-200/50">
+                    <div class="flex items-center justify-between mb-3">
+                      <div>
+                        <span class="text-sm font-bold text-gray-900">${c_cliente}</span>
+                        <div class="text-[11px] font-medium text-gray-400 flex items-center gap-1">
+                            <i data-lucide="share-2" class="w-3 h-3"></i> ${c_plataforma} · ${c_tempo}
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-bold px-2.5 py-1 rounded-md border border-emerald-200/50 bg-emerald-50 text-emerald-700 flex items-center gap-1">
+                        <i data-lucide="check-circle" class="w-3 h-3"></i> Respondido
+                      </span>
+                    </div>
+                    <div class="flex gap-0.5 mb-2">${renderStars(av.nota)}</div>
+                    <p class="text-sm text-gray-600 mb-4 line-clamp-3 leading-relaxed">"${c_comentario}"</p>
+                    <div class="pt-3 border-t border-gray-50">
+                      <div class="text-[10px] font-bold mb-1.5 text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                        <i data-lucide="bot" class="w-3 h-3"></i> Resposta da IA:
+                      </div>
+                      <p class="text-[13px] text-gray-500 leading-relaxed italic bg-gray-50/80 rounded-lg p-3 border border-gray-100">"${c_rascunho}"</p>
+                    </div>
+                  </div>
+                `;
+            }
+
+            if (av.status === 'pendente') {
+                return `
+                  <div class="review-card bg-white rounded-2xl p-5 border border-brand/20 shadow-sm relative overflow-hidden hover:border-brand/40">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-brand/5 rounded-bl-full -z-10"></div>
+                    <div class="flex items-center justify-between mb-3">
+                      <div>
+                        <span class="text-sm font-bold text-gray-900">${c_cliente}</span>
+                        <div class="text-[11px] font-medium text-gray-400 flex items-center gap-1">
+                            <i data-lucide="share-2" class="w-3 h-3"></i> ${c_plataforma} · ${c_tempo}
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-bold px-2.5 py-1 rounded-md bg-orange-50 text-brand border border-orange-200/50 flex items-center gap-1">
+                        <i data-lucide="clock" class="w-3 h-3"></i> Pendente
+                      </span>
+                    </div>
+                    <div class="flex gap-0.5 mb-2">${renderStars(av.nota)}</div>
+                    <p class="text-sm text-gray-800 mb-4 font-medium leading-relaxed">"${c_comentario}"</p>
+                    <div class="pt-3 border-t border-gray-50">
+                      <div class="text-[10px] font-bold mb-1.5 text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                        <i data-lucide="pen-tool" class="w-3 h-3"></i> Rascunho da IA:
+                      </div>
+                      <p class="text-[13px] text-gray-700 leading-relaxed mb-4 p-3 bg-orange-50/30 rounded-lg border border-brand/10">"${c_rascunho}"</p>
+                      
+                      <button onclick="aprovarAvaliacao(${av.id}, this)" class="w-full py-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-2 bg-brand hover:brightness-110 active:scale-[0.98] transition-all shadow-md shadow-brand/20">
+                        <i data-lucide="check" class="w-4 h-4"></i> Aprovar Rascunho
+                      </button>
+                    </div>
+                  </div>
+                `;
+            }
+
+            if (av.status === 'alerta_crise') {
+                return `
+                  <div class="review-card pulse-alert bg-white rounded-2xl p-5 border border-red-300 shadow-sm relative overflow-hidden hover:border-red-400">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-red-50 rounded-bl-full -z-10"></div>
+                    <div class="flex items-center justify-between mb-3">
+                      <div>
+                        <span class="text-sm font-bold text-gray-900">${c_cliente}</span>
+                        <div class="text-[11px] font-medium text-gray-400 flex items-center gap-1">
+                            <i data-lucide="share-2" class="w-3 h-3"></i> ${c_plataforma} · ${c_tempo}
+                        </div>
+                      </div>
+                      <span class="text-[10px] font-bold px-2.5 py-1 rounded-md bg-red-100 text-red-700 flex items-center gap-1 border border-red-200/50">
+                        <i data-lucide="alert-triangle" class="w-3 h-3"></i> Urgente
+                      </span>
+                    </div>
+                    <div class="flex gap-0.5 mb-2">${renderStars(av.nota)}</div>
+                    <p class="text-sm text-gray-900 mb-3 font-semibold leading-relaxed">"${c_comentario}"</p>
+                    
+                    <div class="pt-3 border-t border-red-100 bg-red-50/50 -mx-5 -mb-5 px-5 pb-5 rounded-b-2xl mt-4">
+                      <div class="flex items-center gap-1.5 mb-2 pt-3">
+                        <i data-lucide="shield-alert" class="w-4 h-4 text-red-600"></i>
+                        <span class="text-xs font-bold text-red-700">Ação imediata necessária</span>
+                      </div>
+                      <div class="text-[11px] text-red-600/80 mb-4 font-medium">Sugestão de Contenção (Ponte Privada):<br>
+                        <div class="text-[13px] text-gray-800 font-medium mt-1.5 p-3 bg-white rounded-lg border border-red-100 shadow-sm">"${c_rascunho}"</div>
+                      </div>
+                      <button onclick="aprovarAvaliacao(${av.id}, this)" class="w-full py-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-md shadow-red-600/20">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i> Publicar Contenção
+                      </button>
+                    </div>
+                  </div>
+                `;
+            }
+        }
+
+        async function aprovarAvaliacao(id, btnElement) {
+            const originalHTML = btnElement.innerHTML;
+            btnElement.disabled = true;
+            btnElement.classList.add('opacity-70', 'cursor-not-allowed');
+            btnElement.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Processando...`;
+            lucide.createIcons();
+
+            try {
+                const res = await fetch(`/api/avaliacoes/${id}/aprovar`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (res.ok) {
+                    toast('<i data-lucide="check-circle-2" class="w-4 h-4 inline-block mr-1 align-text-bottom"></i> Resposta publicada com sucesso!');
+                    initKanban();
+                } else {
+                    throw new Error('Falha na resposta do servidor');
+                }
+            } catch (err) {
+                console.error(err);
+                toast('<i data-lucide="alert-circle" class="w-4 h-4 inline-block mr-1 align-text-bottom text-red-400"></i> Erro ao aprovar a resposta.');
+                btnElement.disabled = false;
+                btnElement.classList.remove('opacity-70', 'cursor-not-allowed');
+                btnElement.innerHTML = originalHTML;
+                lucide.createIcons();
+            }
+        }
+
+        async function initKanban() {
+            try {
+                const response = await fetch('/api/avaliacoes');
+                if (!response.ok) throw new Error('Erro ao buscar dados da API');
+                const data = await response.json();
+
+                const colRes = document.getElementById('col-respondidos');
+                const colPen = document.getElementById('col-pendentes');
+                const colAle = document.getElementById('col-alertas');
+
+                colRes.innerHTML = '';
+                colPen.innerHTML = '';
+                colAle.innerHTML = '';
+
+                let cRes = 0, cPen = 0, cAle = 0;
+
+                data.forEach(av => {
+                    const html = createCardHTML(av);
+                    if (av.status === 'respondido_ia') { colRes.insertAdjacentHTML('beforeend', html); cRes++; }
+                    if (av.status === 'pendente') { colPen.insertAdjacentHTML('beforeend', html); cPen++; }
+                    if (av.status === 'alerta_crise') { colAle.insertAdjacentHTML('beforeend', html); cAle++; }
+                });
+
+                // Tratamento de Empty States (Se a coluna estiver vazia)
+                if (cRes === 0) colRes.innerHTML = renderEmptyState("Nenhuma resposta automática recente.", "check-circle");
+                if (cPen === 0) colPen.innerHTML = renderEmptyState("Tudo limpo! Nenhuma aprovação pendente.", "inbox");
+                if (cAle === 0) colAle.innerHTML = renderEmptyState("Excelente! Nenhum alerta de crise no radar.", "shield-check");
+
+                // Atualizar Contadores
+                document.getElementById('count-pendentes').innerText = cPen;
+                document.getElementById('count-alertas').innerText = cAle;
+
+                // Animação leve nos contadores se houver mudanças
+                ['count-pendentes', 'count-alertas'].forEach(id => {
+                    const el = document.getElementById(id);
+                    el.classList.add('scale-110');
+                    setTimeout(() => el.classList.remove('scale-110'), 200);
+                });
+
+                lucide.createIcons();
+            } catch (error) {
+                console.error("Falha ao carregar o Kanban:", error);
+                toast('<i data-lucide="wifi-off" class="w-4 h-4 inline-block mr-1 align-text-bottom text-brand"></i> Falha ao sincronizar avaliações.');
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', initKanban);
+    </script>
+</body>
+
+</html>
