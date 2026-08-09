@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="pt-PT" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReAction | Gestor de Reputação</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" href="/static/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/favicon.svg">
+    <link rel="manifest" href="/static/manifest.json?v=0.1.8">
+    <meta name="theme-color" content="#ff6b35">
+
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://alcdn.msauth.net/browser/2.35.0/js/msal-browser.min.js"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { heading: ['Poppins', 'sans-serif'], body: ['DM Sans', 'sans-serif'] },
+                    colors: { brand: '#ff6b35', sidebar: '#3a3a3a', bglight: '#f4f4f5' }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f4f4f5;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Suaviza o autocomplete dos navegadores */
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            -webkit-text-fill-color: #1f2937 !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen font-body flex items-center justify-center p-4">
+
+    <div
+        class="w-full max-w-md bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden fade-in border border-gray-100">
+
+        <!-- CABEÇALHO DO LOGIN COM A LOGO DO ESCUDO PADRONIZADA -->
+        <div class="bg-sidebar p-8 text-center flex flex-col items-center border-b border-gray-800">
+            <img src="/static/logo_reaction_transparent_dark.png" alt="ReAction Logo" class="h-16 w-auto object-contain mb-3 transition-all">
+            <p class="text-gray-400 text-sm mt-1.5 font-medium tracking-wide">O seu gestor de reputação inteligente</p>
+        </div>
+
+        <div class="p-8 md:p-10">
+
+            {% if erro %}
+            <div
+                class="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-sm font-semibold rounded-xl flex items-center gap-3 animate-pulse shadow-sm">
+                <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i> {{ erro }}
+            </div>
+            {% endif %}
+
+            {% if erro_registo %}
+            <div
+                class="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-sm font-semibold rounded-xl flex items-center gap-3 animate-pulse shadow-sm">
+                <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i> {{ erro_registo }}
+            </div>
+            {% endif %}
+
+            <!-- ALERTA DE SUCESSO -->
+            {% if sucesso %}
+            <div
+                class="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm font-semibold rounded-xl flex items-center gap-3 shadow-sm">
+                <i data-lucide="check-circle-2" class="w-5 h-5 flex-shrink-0"></i> <div>{{ sucesso|safe }}</div>
+            </div>
+            {% endif %}
+
+            {% if redefinir_token %}
+            <!-- FORMULÁRIO DE NOVA SENHA COM TOKEN SEGURO -->
+            <form id="form-redefinir" action="/redefinir_senha" method="POST" class="space-y-5" onsubmit="bloquearBotao(this)">
+                <input type="hidden" name="token" value="{{ redefinir_token }}">
+                <div>
+                    <h3 class="font-heading font-bold text-lg text-gray-900 mb-1">Cadastrar Nova Palavra-passe</h3>
+                    <p class="text-xs text-gray-500 mb-4 font-medium">Informe a sua nova senha para redefinir o seu acesso com segurança.</p>
+
+                    <label for="redefinir-senha" class="block text-sm font-bold text-gray-800 mb-1.5">Nova Palavra-passe</label>
+                    <input id="redefinir-senha" type="password" name="senha" required minlength="6" autocomplete="new-password"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/40 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="Mínimo de 6 caracteres">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-brand hover:brightness-110 hover:-translate-y-0.5 transition-all shadow-lg shadow-brand/30">
+                        <span>Atualizar Palavra-passe</span> <i data-lucide="shield-check" class="w-4 h-4 icone-normal"></i>
+                    </button>
+                </div>
+            </form>
+            {% else %}
+            <!-- GRADE DE AUTENTICAÇÃO SOCIAL (GOOGLE, FACEBOOK, APPLE) -->
+            <div class="mb-6 space-y-3 {% if mostrar_registo %}hidden{% endif %}" id="container-google-login">
+                <!-- Botão Google -->
+                <button type="button" onclick="iniciarGoogleLogin()"
+                    class="w-full py-3 px-4 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold text-sm flex items-center justify-center gap-3 transition-all shadow-sm hover:shadow hover:border-gray-300">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span>Continuar com o Google</span>
+                </button>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Botão Facebook -->
+                    <button type="button" onclick="iniciarFacebookLogin()"
+                        class="w-full py-2.5 px-3 rounded-xl border border-blue-600 bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm hover:shadow">
+                        <svg class="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        <span>Facebook</span>
+                    </button>
+
+                    <!-- Botão Microsoft -->
+                    <button type="button" onclick="iniciarMicrosoftLogin()"
+                        class="w-full py-2.5 px-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm hover:shadow hover:border-gray-300">
+                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 23 23">
+                            <path fill="#f35325" d="M1 1h10v10H1z"/>
+                            <path fill="#81bc06" d="M12 1h10v10H1z"/>
+                            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                            <path fill="#ffba08" d="M12 12h10v10H1z"/>
+                        </svg>
+                        <span>Microsoft</span>
+                    </button>
+                </div>
+
+                <div class="relative my-4 flex items-center justify-center">
+                    <div class="border-t border-gray-200 w-full"></div>
+                    <span class="bg-white px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider absolute">OU COM E-MAIL E SENHA</span>
+                </div>
+            </div>
+
+            <form id="form-login" action="/login" method="POST"
+                class="space-y-5 {% if mostrar_registo %}hidden{% endif %}" onsubmit="bloquearBotao(this)">
+
+                <div>
+                    <label for="login-email" class="block text-sm font-bold text-gray-800 mb-1.5">E-mail de
+                        Acesso</label>
+                    <input id="login-email" type="email" name="email" required autocomplete="email"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/40 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="seu@email.com">
+                </div>
+
+                <div>
+                    <label for="login-senha" class="block text-sm font-bold text-gray-800 mb-1.5">Palavra-passe</label>
+                    <input id="login-senha" type="password" name="senha" required autocomplete="current-password"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/40 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="••••••••">
+                    <div class="flex justify-end text-xs mt-1.5">
+                        <a href="#" onclick="mostrarEsqueciSenha(event)" class="text-gray-500 font-semibold hover:text-brand transition-colors hover:underline">Esqueceu a palavra-passe?</a>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-brand hover:brightness-110 hover:-translate-y-0.5 transition-all shadow-lg shadow-brand/30">
+                        <span>Entrar na Plataforma</span> <i data-lucide="arrow-right" class="w-4 h-4 icone-normal"></i>
+                    </button>
+                </div>
+
+                <p class="text-center text-sm font-medium text-gray-500 mt-6">
+                    Não tem uma conta? <a href="#" onclick="toggleForms(event)"
+                        class="text-brand font-bold hover:text-orange-600 transition-colors hover:underline">Criar conta
+                        grátis</a>
+                </p>
+            </form>
+
+            <form id="form-esqueci" action="/esqueci_senha" method="POST"
+                class="space-y-5 hidden" onsubmit="bloquearBotao(this)">
+
+                <div>
+                    <h3 class="font-heading font-bold text-lg text-gray-900 mb-1">Recuperar Palavra-passe</h3>
+                    <p class="text-xs text-gray-500 mb-4 font-medium">Insira o seu e-mail cadastrado para receber as instruções de redefinição.</p>
+
+                    <label for="esqueci-email" class="block text-sm font-bold text-gray-800 mb-1.5">E-mail Cadastrado</label>
+                    <input id="esqueci-email" type="email" name="email" required autocomplete="email"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/40 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="seu@email.com">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-brand hover:brightness-110 hover:-translate-y-0.5 transition-all shadow-lg shadow-brand/30">
+                        <span>Enviar Link de Recuperação</span> <i data-lucide="mail" class="w-4 h-4 icone-normal"></i>
+                    </button>
+                </div>
+
+                <p class="text-center text-sm font-medium text-gray-500 mt-6">
+                    Lembrou da senha? <a href="#" onclick="voltarParaLogin(event)"
+                        class="text-brand font-bold hover:text-orange-600 transition-colors hover:underline">Voltar ao Login</a>
+                </p>
+            </form>
+
+            <form id="form-registo" action="/registo" method="POST"
+                class="space-y-5 {% if not mostrar_registo %}hidden{% endif %}" onsubmit="bloquearBotao(this)">
+
+                <div>
+                    <label for="reg-empresa" class="block text-sm font-bold text-gray-800 mb-1.5">Nome da
+                        Empresa</label>
+                    <input id="reg-empresa" type="text" name="nome_empresa" required autocomplete="organization"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-sidebar focus:ring-2 focus:ring-gray-300 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="A sua marca">
+                </div>
+
+                <div>
+                    <label for="reg-nome" class="block text-sm font-bold text-gray-800 mb-1.5">O seu Nome</label>
+                    <input id="reg-nome" type="text" name="nome_usuario" required autocomplete="name"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-sidebar focus:ring-2 focus:ring-gray-300 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="Como gosta de ser chamado">
+                </div>
+
+                <div>
+                    <label for="reg-email" class="block text-sm font-bold text-gray-800 mb-1.5">E-mail Comercial</label>
+                    <input id="reg-email" type="email" name="email" required autocomplete="email"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-sidebar focus:ring-2 focus:ring-gray-300 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="seu@email.com">
+                </div>
+
+                <div>
+                    <label for="reg-senha" class="block text-sm font-bold text-gray-800 mb-1.5">Criar
+                        Palavra-passe</label>
+                    <input id="reg-senha" type="password" name="senha" required minlength="6"
+                        autocomplete="new-password"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-sidebar focus:ring-2 focus:ring-gray-300 transition-all bg-gray-50 focus:bg-white font-medium"
+                        placeholder="Mínimo de 6 caracteres">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-sidebar hover:bg-black hover:-translate-y-0.5 transition-all shadow-lg shadow-gray-900/20">
+                        <span>Criar Nova Conta</span> <i data-lucide="user-plus" class="w-4 h-4 icone-normal"></i>
+                    </button>
+                </div>
+
+                <p class="text-center text-sm font-medium text-gray-500 mt-6">
+                    Já é cliente? <a href="#" onclick="toggleForms(event)"
+                        class="text-sidebar font-bold hover:text-black transition-colors hover:underline">Iniciar
+                        sessão</a>
+                </p>
+            </form>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <script>
+        // Inicializa ícones
+        lucide.createIcons();
+
+        // Alternar entre formulários de Login e Registo
+        function toggleForms(e) {
+            if (e) e.preventDefault();
+            const formLogin = document.getElementById('form-login');
+            const formRegisto = document.getElementById('form-registo');
+            const formEsqueci = document.getElementById('form-esqueci');
+            const containerGoogle = document.getElementById('container-google-login');
+
+            if (formLogin.classList.contains('hidden')) {
+                formLogin.classList.remove('hidden');
+                formRegisto.classList.add('hidden');
+                formEsqueci.classList.add('hidden');
+                if (containerGoogle) containerGoogle.classList.remove('hidden');
+            } else {
+                formLogin.classList.add('hidden');
+                formRegisto.classList.remove('hidden');
+                formEsqueci.classList.add('hidden');
+                if (containerGoogle) containerGoogle.classList.remove('hidden');
+            }
+        }
+
+        const GOOGLE_CLIENT_ID = "{{ google_client_id if google_client_id else '' }}";
+        const FACEBOOK_APP_ID = "{{ facebook_app_id if facebook_app_id else '' }}";
+        const MICROSOFT_CLIENT_ID = "{{ microsoft_client_id if microsoft_client_id else '' }}";
+
+        let msalInstance = null;
+        if (typeof msal !== 'undefined' && MICROSOFT_CLIENT_ID) {
+            try {
+                msalInstance = new msal.PublicClientApplication({
+                    auth: {
+                        clientId: MICROSOFT_CLIENT_ID,
+                        authority: "https://login.microsoftonline.com/common",
+                        redirectUri: window.location.origin + window.location.pathname
+                    },
+                    cache: { cacheLocation: "sessionStorage", storeAuthStateInCookie: false }
+                });
+                msalInstance.initialize().catch(err => console.log("MSAL Init Error:", err));
+            } catch(e) {
+                console.log("MSAL init info:", e);
+            }
+        }
+
+        function autenticarContaSocialDireta(endpoint, email, nome, token) {
+            fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, nome: nome, access_token: token, credential: token })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.sucesso) {
+                    window.location.href = data.redirect || '/app';
+                } else {
+                    alert(data.erro || 'Erro ao conectar com a conta social.');
+                }
+            })
+            .catch(err => {
+                window.location.href = endpoint;
+            });
+        }
+
+        function iniciarGoogleLogin() {
+            if (window.google && google.accounts && google.accounts.id && GOOGLE_CLIENT_ID) {
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: function(response) {
+                        if (response && response.credential) {
+                            autenticarContaSocialDireta('/api/auth/google', null, null, response.credential);
+                        }
+                    }
+                });
+                google.accounts.id.prompt((notification) => {
+                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                        window.location.href = '/login/google';
+                    }
+                });
+            } else {
+                window.location.href = '/login/google';
+            }
+        }
+
+        function iniciarFacebookLogin() {
+            if (FACEBOOK_APP_ID) {
+                const redirectUri = encodeURIComponent(window.location.origin + '/login/facebook');
+                const fbAuthUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${FACEBOOK_APP_ID}&redirect_uri=${redirectUri}&scope=public_profile,email&response_type=token`;
+                window.open(fbAuthUrl, 'FBAuth', 'width=500,height=600');
+            } else {
+                window.location.href = '/login/facebook';
+            }
+        }
+
+        function iniciarMicrosoftLogin() {
+            if (msalInstance) {
+                msalInstance.loginPopup({ scopes: ["openid", "profile", "email"], prompt: "select_account" })
+                    .then(res => {
+                        if (res) {
+                            const tokenUser = res.idToken || res.accessToken;
+                            autenticarContaSocialDireta('/api/auth/microsoft', null, null, tokenUser);
+                        }
+                    })
+                    .catch(err => {
+                        window.location.href = '/login/microsoft';
+                    });
+            } else {
+                window.location.href = '/login/microsoft';
+            }
+        }
+
+        function iniciarAppleLogin() {
+            window.location.href = '/login/apple';
+        }
+
+        function mostrarEsqueciSenha(e) {
+            if (e) e.preventDefault();
+            document.getElementById('form-login').classList.add('hidden');
+            document.getElementById('form-registo').classList.add('hidden');
+            document.getElementById('container-google-login').classList.add('hidden');
+            document.getElementById('form-esqueci').classList.remove('hidden');
+        }
+
+        function voltarParaLogin(e) {
+            if (e) e.preventDefault();
+            document.getElementById('form-registo').classList.add('hidden');
+            document.getElementById('form-esqueci').classList.add('hidden');
+            document.getElementById('form-login').classList.remove('hidden');
+        }
+
+        // Se o usuário veio pelo botão "Começar Grátis", abrir a aba de Registo diretamente
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registo') === 'true' || urlParams.get('register') === 'true') {
+                const formLogin = document.getElementById('form-login');
+                const formRegisto = document.getElementById('form-registo');
+                if (formLogin && formRegisto) {
+                    formLogin.classList.add('hidden');
+                    formRegisto.classList.remove('hidden');
+                }
+            }
+        });
+
+        // UX: Animação e bloqueio de botão no envio para evitar envios duplicados
+        function bloquearBotao(form) {
+            const btn = form.querySelector('button[type="submit"]');
+
+            // Impede cliques duplos
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            // Modifica o conteúdo do botão para mostrar estado de carregamento
+            btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> <span>A processar...</span>`;
+
+            // Re-renderiza os ícones do Lucide no botão modificado
+            lucide.createIcons({ root: btn });
+        }
+    </script>
+</body>
+
+</html>
