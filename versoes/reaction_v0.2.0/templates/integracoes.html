@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReAction | Canais e Integrações</title>
-    <link rel="shortcut icon" href="/static/favicon.ico?v=0.1.8">
-    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.1.8">
+    <title>ReAction by Frame [IA] | Canais e Integrações</title>
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.2.0">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.2.0">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.1.8">
-    <link rel="manifest" href="/static/manifest.json?v=0.1.8">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.2.0">
+    <link rel="manifest" href="/static/manifest.json?v=0.2.0">
     <meta name="theme-color" content="#ff6b35">
 
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -183,10 +183,7 @@
             </nav>
 
             <div class="p-5 border-t border-gray-700/50 flex items-center gap-3 bg-black/10 m-3 rounded-2xl">
-                <div
-                    class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner">
-                    {{ usuario.iniciais }}
-                </div>
+                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner overflow-hidden cursor-pointer" onclick="window.location.href=\'/ajustes\'">{% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}</div>
                 <div class="text-sm text-gray-300 truncate flex-1 font-medium" id="sidebar-name">
                     {{ usuario.nome }}
                 </div>
@@ -226,11 +223,17 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
 
+                    <!-- GOOGLE MEU NEGÓCIO -->
                     <div
                         class="bg-white rounded-3xl border border-gray-100 p-8 flex flex-col items-center text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-md h-full">
                         <div
-                            class="w-16 h-16 bg-blue-50/80 rounded-2xl flex items-center justify-center mb-5 text-blue-600 shadow-sm border border-blue-100/50">
-                            <i data-lucide="map-pin" class="w-8 h-8"></i>
+                            class="w-16 h-16 bg-blue-50/80 rounded-2xl flex items-center justify-center mb-5 shadow-sm border border-blue-100/50">
+                            <svg class="w-8 h-8" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                            </svg>
                         </div>
                         <h3 class="font-heading font-bold text-lg text-gray-900">Google Meu Negócio</h3>
                         <p class="text-sm text-gray-500 mt-2 mb-8 font-medium leading-relaxed">Sincronize as avaliações
@@ -244,11 +247,25 @@
                         </div>
                     </div>
 
+                    <!-- INSTAGRAM -->
                     <div
                         class="bg-white rounded-3xl border border-gray-100 p-8 flex flex-col items-center text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-md h-full">
                         <div
-                            class="w-16 h-16 bg-pink-50/80 rounded-2xl flex items-center justify-center mb-5 text-pink-600 shadow-sm border border-pink-100/50">
-                            <i data-lucide="instagram" class="w-8 h-8"></i>
+                            class="w-16 h-16 bg-pink-50/80 rounded-2xl flex items-center justify-center mb-5 shadow-sm border border-pink-100/50">
+                            <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none">
+                                <defs>
+                                    <linearGradient id="ig-grad" x1="2" y1="22" x2="22" y2="2">
+                                        <stop offset="0%" stop-color="#fdf497"/>
+                                        <stop offset="25%" stop-color="#fdf497"/>
+                                        <stop offset="50%" stop-color="#fd5949"/>
+                                        <stop offset="75%" stop-color="#d6249f"/>
+                                        <stop offset="100%" stop-color="#285AEB"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="url(#ig-grad)"/>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke="white" stroke-width="1.8" fill="none"/>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                            </svg>
                         </div>
                         <h3 class="font-heading font-bold text-lg text-gray-900">Instagram</h3>
                         <p class="text-sm text-gray-500 mt-2 mb-8 font-medium leading-relaxed">Proteja a caixa de
@@ -262,11 +279,17 @@
                         </div>
                     </div>
 
+                    <!-- IFOOD -->
                     <div
                         class="bg-white rounded-3xl border border-gray-100 p-8 flex flex-col items-center text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-md h-full">
                         <div
-                            class="w-16 h-16 bg-red-50/80 rounded-2xl flex items-center justify-center mb-5 text-red-600 shadow-sm border border-red-100/50">
-                            <i data-lucide="utensils" class="w-8 h-8"></i>
+                            class="w-16 h-16 bg-red-50/80 rounded-2xl flex items-center justify-center mb-5 shadow-sm border border-red-100/50">
+                            <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none">
+                                <rect width="24" height="24" rx="6" fill="#EA1D2C"/>
+                                <path d="M5 15c2.5 3 11.5 3 14 0" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                                <circle cx="8.5" cy="10" r="1.5" fill="white"/>
+                                <circle cx="15.5" cy="10" r="1.5" fill="white"/>
+                            </svg>
                         </div>
                         <h3 class="font-heading font-bold text-lg text-gray-900">iFood</h3>
                         <p class="text-sm text-gray-500 mt-2 mb-8 font-medium leading-relaxed">Conecte a sua loja no iFood para gerenciar avaliações de entrega e evitar cancelamentos.</p>
@@ -279,11 +302,15 @@
                         </div>
                     </div>
 
+                    <!-- WHATSAPP -->
                     <div
                         class="bg-white rounded-3xl border border-gray-100 p-8 flex flex-col items-center text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-md h-full">
                         <div
-                            class="w-16 h-16 bg-green-50/80 rounded-2xl flex items-center justify-center mb-5 text-green-600 shadow-sm border border-green-100/50">
-                            <i data-lucide="message-circle" class="w-8 h-8"></i>
+                            class="w-16 h-16 bg-green-50/80 rounded-2xl flex items-center justify-center mb-5 shadow-sm border border-green-100/50">
+                            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none">
+                                <path fill="#25D366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2z"/>
+                                <path fill="white" d="M16.7 14.3c-.3-.1-1.6-.8-1.9-.9-.3-.1-.5.1-.7.3-.2.3-.7.9-.9 1.1-.1.2-.3.2-.6.1-.3-.1-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.4-.5.1-.2.2-.3.2-.5 0-.2-.1-.4-.2-.5s-.7-1.7-1-2.3c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.8.8.3 1.4.5 1.8.7.8.2 1.5.2 2.1.1.7-.1 2.2-.9 2.5-1.7.3-.9.3-1.7.2-1.8-.1-.1-.3-.2-.6-.3z"/>
+                            </svg>
                         </div>
                         <h3 class="font-heading font-bold text-lg text-gray-900">WhatsApp</h3>
                         <p class="text-sm text-gray-500 mt-2 mb-8 font-medium leading-relaxed">Conecte o bot de atendimento e receba alertas de contenção de crise instantâneos no seu celular.</p>
@@ -296,11 +323,15 @@
                         </div>
                     </div>
 
+                    <!-- ZÉ DELIVERY -->
                     <div
                         class="bg-white rounded-3xl border border-gray-100 p-8 flex flex-col items-center text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-md h-full">
                         <div
-                            class="w-16 h-16 bg-amber-50/80 rounded-2xl flex items-center justify-center mb-5 text-amber-600 shadow-sm border border-amber-100/50">
-                            <i data-lucide="beer" class="w-8 h-8"></i>
+                            class="w-16 h-16 bg-amber-50/80 rounded-2xl flex items-center justify-center mb-5 shadow-sm border border-amber-100/50">
+                            <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none">
+                                <rect width="24" height="24" rx="6" fill="#FFC700"/>
+                                <path d="M7 8h10l-4 4h4l-8 7v-5H9l4-6H7V8z" fill="#000000"/>
+                            </svg>
                         </div>
                         <h3 class="font-heading font-bold text-lg text-gray-900">Zé Delivery</h3>
                         <p class="text-sm text-gray-500 mt-2 mb-8 font-medium leading-relaxed">Gerencie a reputação de pedidos de bebidas e entregas rápidas com respostas automáticas da IA.</p>
@@ -313,11 +344,15 @@
                         </div>
                     </div>
 
+                    <!-- 99FOOD -->
                     <div
                         class="bg-white rounded-3xl border border-gray-100 p-8 flex flex-col items-center text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-md h-full">
                         <div
-                            class="w-16 h-16 bg-[#ffb347]/20 rounded-2xl flex items-center justify-center mb-5 text-[#ff6b35] shadow-sm border border-[#ff6b35]/30">
-                            <i data-lucide="store" class="w-8 h-8"></i>
+                            class="w-16 h-16 bg-orange-50/80 rounded-2xl flex items-center justify-center mb-5 shadow-sm border border-orange-100/50">
+                            <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none">
+                                <rect width="24" height="24" rx="6" fill="#FF8800"/>
+                                <text x="12" y="16" font-family="sans-serif" font-weight="900" font-size="12" fill="white" text-anchor="middle">99</text>
+                            </svg>
                         </div>
                         <h3 class="font-heading font-bold text-lg text-gray-900">99Food</h3>
                         <p class="text-sm text-gray-500 mt-2 mb-8 font-medium leading-relaxed">Sincronize as avaliações do 99Food e responda automaticamente a entregas e pedidos.</p>

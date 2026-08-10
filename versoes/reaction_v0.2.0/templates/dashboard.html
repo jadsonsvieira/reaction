@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ReAction | Cockpit</title>
+  <title>ReAction by Frame [IA] | Cockpit</title>
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
   <link rel="alternate icon" href="/static/favicon.svg">
   <link rel="apple-touch-icon" href="/static/favicon.svg">
-  <link rel="manifest" href="/static/manifest.json?v=0.1.8">
+  <link rel="manifest" href="/static/manifest.json?v=0.2.0">
   <meta name="theme-color" content="#ff6b35">
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -290,10 +290,7 @@
       </nav>
 
       <div class="p-5 border-t border-gray-700/50 flex items-center gap-3 bg-black/10 m-3 rounded-2xl">
-        <div
-          class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner">
-          {{ usuario.iniciais }}
-        </div>
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner overflow-hidden cursor-pointer" onclick="window.location.href=\'/ajustes\'">{% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}</div>
         <div class="text-sm text-gray-300 truncate flex-1 font-medium" id="sidebar-name">
           {{ usuario.nome }}
         </div>
@@ -334,7 +331,7 @@
           <p class="text-sm text-gray-500 mt-2 font-medium" id="greeting-sub">O que vamos resolver hoje na sua reputação?</p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-3 shrink-0">
           <!-- PILLS DE FILTRO DE PERÍODO (V0.1.0) -->
           <div class="bg-gray-200/70 p-1 rounded-xl flex items-center gap-1 text-xs font-bold text-gray-600 shadow-inner">
             <button type="button" onclick="filtrarPeriodo(this, 'hoje')" class="btn-periodo px-3 py-1.5 rounded-lg bg-white text-gray-900 shadow-sm transition-all">Hoje</button>
@@ -344,7 +341,7 @@
           </div>
 
           <button id="btn-new-action"
-            class="action-btn flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white font-heading font-semibold text-sm hover:brightness-110 transition-all bg-brand shadow-lg shadow-brand/20">
+            class="action-btn flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-white font-heading font-semibold text-sm hover:brightness-110 transition-all bg-brand shadow-lg shadow-brand/20">
             <i data-lucide="plus" class="w-4 h-4"></i> Nova Ação
           </button>
         </div>

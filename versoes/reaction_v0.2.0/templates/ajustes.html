@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReAction | Ajustes</title>
-    <link rel="shortcut icon" href="/static/favicon.ico?v=0.1.8">
-    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.1.8">
+    <title>ReAction by Frame [IA] | Ajustes</title>
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.2.0">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.2.0">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.1.8">
-    <link rel="manifest" href="/static/manifest.json?v=0.1.8">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.2.0">
+    <link rel="manifest" href="/static/manifest.json?v=0.2.0">
     <meta name="theme-color" content="#ff6b35">
 
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -182,10 +182,7 @@
             </nav>
 
             <div class="p-5 border-t border-gray-700/50 flex items-center gap-3 bg-black/10 m-3 rounded-2xl">
-                <div
-                    class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner">
-                    {{ usuario.iniciais }}
-                </div>
+                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner overflow-hidden cursor-pointer" onclick="window.location.href=\'/ajustes\'">{% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}</div>
                 <div class="text-sm text-gray-300 truncate flex-1 font-medium">
                     {{ usuario.nome }}
                 </div>
@@ -206,10 +203,7 @@
                 <a href="/app" class="flex items-center gap-2">
             <img src="/static/logo_reaction_transparent_light.png" alt="ReAction Logo" class="h-11 w-auto object-contain transition-all">
         </a>
-                <div
-                    class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold bg-brand shadow-sm">
-                    {{ usuario.iniciais }}
-                </div>
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold bg-brand shadow-sm overflow-hidden cursor-pointer">{% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}</div>
             </div>
 
             <header class="px-6 md:px-10 py-8">
@@ -226,6 +220,34 @@
                         <h2 class="font-heading font-bold text-lg text-gray-900 mb-6 flex items-center gap-2">
                             <i data-lucide="user" class="text-brand w-5 h-5"></i> Informações Pessoais
                         </h2>
+                        <!-- FOTO DE PERFIL / AVATAR DA CONTA -->
+                        <div class="flex items-center gap-5 mb-6 pb-6 border-b border-gray-100">
+                            <div class="relative w-16 h-16 rounded-full overflow-hidden shrink-0 border-2 border-brand/30 shadow-md bg-gray-100 flex items-center justify-center">
+                                {% if usuario.foto_perfil %}
+                                <img id="avatar-preview-img" src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">
+                                {% else %}
+                                <div id="avatar-preview-initials" class="w-full h-full flex items-center justify-center text-white text-xl font-bold bg-brand">
+                                    {{ usuario.iniciais }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="space-y-1.5">
+                                <h3 class="font-heading font-bold text-sm text-gray-900">Foto de Perfil</h3>
+                                <p class="text-xs text-gray-500 font-medium">Vinculada do Google / Microsoft ou carregue uma imagem personalizada.</p>
+                                <div class="flex items-center gap-2 pt-1">
+                                    <input type="file" id="input-foto-avatar" accept="image/*" class="hidden" onchange="enviarFotoPerfil(this)">
+                                    <button type="button" onclick="document.getElementById('input-foto-avatar').click()"
+                                        class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm">
+                                        <i data-lucide="camera" class="w-3.5 h-3.5 text-brand"></i> Alterar Foto
+                                    </button>
+                                    <button type="button" onclick="removerFotoPerfil()"
+                                        class="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold transition-all">
+                                        Remover
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <form class="space-y-5 settings-form">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Nome Completo</label>
@@ -380,6 +402,45 @@
                 el.style.transition = 'opacity 0.3s ease-out';
                 setTimeout(() => el.remove(), 300);
             }, 3000);
+        }
+
+        function enviarFotoPerfil(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('foto', file);
+
+            toast('⏳ Enviando imagem de perfil...');
+
+            fetch('/api/usuario/foto', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    toast('✅ Foto de perfil atualizada com sucesso!');
+                    setTimeout(() => window.location.reload(), 600);
+                } else {
+                    toast('❌ ' + (data.erro || 'Falha ao atualizar foto de perfil.'));
+                }
+            })
+            .catch(err => {
+                console.error('Erro ao enviar foto:', err);
+                toast('❌ Erro de conexão ao enviar foto.');
+            });
+        }
+
+        function removerFotoPerfil() {
+            if (!confirm('Deseja remover sua foto de perfil?')) return;
+            fetch('/api/usuario/foto/remover', { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    toast('✅ Foto removida com sucesso!');
+                    setTimeout(() => window.location.reload(), 600);
+                }
+            });
         }
 
         // Simulação visual de salvamento nos formulários

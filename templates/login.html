@@ -8,7 +8,7 @@
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="alternate icon" href="/static/favicon.svg">
     <link rel="apple-touch-icon" href="/static/favicon.svg">
-    <link rel="manifest" href="/static/manifest.json?v=0.1.19">
+    <link rel="manifest" href="/static/manifest.json?v=0.2.0">
     <meta name="theme-color" content="#ff6b35">
 
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -358,11 +358,31 @@
             }
         }
 
+        window.fbAsyncInit = function() {
+            if (FACEBOOK_APP_ID && typeof FB !== 'undefined') {
+                FB.init({
+                    appId      : FACEBOOK_APP_ID,
+                    cookie     : true,
+                    xfbml      : true,
+                    version    : 'v18.0'
+                });
+            }
+        };
+
         function iniciarFacebookLogin() {
-            if (FACEBOOK_APP_ID) {
+            if (typeof FB !== 'undefined' && FACEBOOK_APP_ID) {
+                FB.login(function(response) {
+                    if (response && response.authResponse) {
+                        const tokenUser = response.authResponse.accessToken;
+                        autenticarContaSocialDireta('/api/auth/facebook', null, null, tokenUser);
+                    } else {
+                        window.location.href = '/login/facebook';
+                    }
+                }, { scope: 'public_profile,email' });
+            } else if (FACEBOOK_APP_ID) {
                 const redirectUri = encodeURIComponent(window.location.origin + '/login/facebook');
                 const fbAuthUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${FACEBOOK_APP_ID}&redirect_uri=${redirectUri}&scope=public_profile,email&response_type=token`;
-                window.open(fbAuthUrl, 'FBAuth', 'width=500,height=600');
+                window.location.href = fbAuthUrl;
             } else {
                 window.location.href = '/login/facebook';
             }

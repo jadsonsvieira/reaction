@@ -167,6 +167,15 @@ def criar_tabelas_se_nao_existirem():
                 print("Coluna 'tags' adicionada com sucesso na tabela avaliacoes_feed.")
         except Exception as tags_err:
             print(f"Erro ao verificar/adicionar coluna tags em avaliacoes_feed: {tags_err}")
+
+        # Migração da coluna foto_perfil na tabela usuarios
+        try:
+            cursor.execute("SHOW COLUMNS FROM usuarios LIKE 'foto_perfil'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE usuarios ADD COLUMN foto_perfil VARCHAR(500) DEFAULT NULL")
+                print("Coluna 'foto_perfil' adicionada com sucesso na tabela usuarios.")
+        except Exception as foto_err:
+            print(f"Erro ao adicionar coluna foto_perfil em usuarios: {foto_err}")
         
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS acoes (
@@ -255,7 +264,8 @@ def get_usuario_logado():
     """Função utilitária para pegar os dados do utilizador logado em todas as rotas"""
     nome = session.get('nome', 'Usuário')
     iniciais = nome[0].upper() if nome else 'U'
-    return {'nome': nome, 'iniciais': iniciais}
+    foto_perfil = session.get('foto_perfil', None)
+    return {'nome': nome, 'iniciais': iniciais, 'foto_perfil': foto_perfil}
 
 def garantir_massa_dados_empresa():
     """Garante que a empresa logada possui dados demonstrativos populados automaticamente"""
@@ -317,7 +327,7 @@ def login():
             session['nome'] = user['nome']
             return redirect(url_for('app_dashboard'))
         else:
-            return render_template('login.html', erro="E-mail ou palavra-passe incorretos.")
+            return render_template('login.html', erro="E-mail ou senha incorretos.")
     
     return render_template('login.html')
 
@@ -405,6 +415,7 @@ def login_google():
                 google_email = token_data.get('email')
                 google_nome = token_data.get('name') or token_data.get('given_name')
                 google_sub = token_data.get('sub')
+                google_picture = token_data.get('picture') or dados.get('picture')
         except Exception as err_tkn:
             print(f"Aviso ao validar token Google: {err_tkn}")
 
@@ -486,9 +497,25 @@ def login_google():
         if conn: conn.close()
 
     if user:
+        # Atualizar foto do perfil se vier do SSO e usuário não tiver foto salva
+        google_picture = locals().get('google_picture') or (dados.get('picture') if isinstance(dados, dict) else None)
+        if google_picture and not user.get('foto_perfil'):
+            try:
+                conn_img = get_db_connection()
+                if conn_img:
+                    cur_img = conn_img.cursor()
+                    cur_img.execute("UPDATE usuarios SET foto_perfil = %s WHERE id = %s", (google_picture, user['id']))
+                    conn_img.commit()
+                    cur_img.close()
+                    conn_img.close()
+                    user['foto_perfil'] = google_picture
+            except Exception as img_err:
+                print(f"Erro ao salvar foto Google SSO: {img_err}")
+
         session['usuario_id'] = user['id']
         session['empresa_id'] = user['empresa_id']
         session['nome'] = user['nome']
+        session['foto_perfil'] = user.get('foto_perfil')
         garantir_massa_dados_empresa()
         if request.path.startswith('/api/'):
             return jsonify({'sucesso': True, 'redirect': '/app'})
@@ -513,7 +540,7 @@ def login_facebook():
     if access_token and not fb_email:
         try:
             import requests as req
-            res = req.get(f'https://graph.facebook.com/me?fields=id,name,email&access_token={access_token}', timeout=5)
+            res = req.get(f'https://graph.facebook.com/me?fields=id,name,email,picture.type(large)&access_token={access_token}', timeout=5)
             if res.status_code == 200:
                 info = res.json()
                 fb_id = info.get('id')
@@ -524,6 +551,7 @@ def login_facebook():
                 if info.get('name'):
                     fb_nome = info.get('name')
                 fb_sub = fb_id
+                fb_picture = info.get('picture', {}).get('data', {}).get('url') if isinstance(info.get('picture'), dict) else None
         except Exception as e:
             print(f"Erro ao verificar token Facebook: {e}")
 
@@ -605,9 +633,24 @@ def login_facebook():
         if conn: conn.close()
 
     if user:
+        fb_picture = locals().get('fb_picture') or (dados.get('picture') if isinstance(dados, dict) else None)
+        if fb_picture and not user.get('foto_perfil'):
+            try:
+                conn_img = get_db_connection()
+                if conn_img:
+                    cur_img = conn_img.cursor()
+                    cur_img.execute("UPDATE usuarios SET foto_perfil = %s WHERE id = %s", (fb_picture, user['id']))
+                    conn_img.commit()
+                    cur_img.close()
+                    conn_img.close()
+                    user['foto_perfil'] = fb_picture
+            except Exception as img_err:
+                print(f"Erro ao salvar foto Facebook SSO: {img_err}")
+
         session['usuario_id'] = user['id']
         session['empresa_id'] = user['empresa_id']
         session['nome'] = user['nome']
+        session['foto_perfil'] = user.get('foto_perfil')
         garantir_massa_dados_empresa()
         if request.path.startswith('/api/'):
             return jsonify({'sucesso': True, 'redirect': '/app'})
@@ -639,6 +682,7 @@ def login_microsoft():
                 ms_email = info.get('mail') or info.get('userPrincipalName')
                 ms_nome = info.get('displayName') or (ms_email.split('@')[0] if ms_email else None)
                 ms_sub = info.get('id')
+                ms_picture = f'https://unavatar.io/{ms_email}' if ms_email else None
         except Exception as e:
             print(f"Erro no Graph API Microsoft: {e}")
 
@@ -720,9 +764,24 @@ def login_microsoft():
         if conn: conn.close()
 
     if user:
+        ms_picture = locals().get('ms_picture') or (dados.get('picture') if isinstance(dados, dict) else None)
+        if ms_picture and not user.get('foto_perfil'):
+            try:
+                conn_img = get_db_connection()
+                if conn_img:
+                    cur_img = conn_img.cursor()
+                    cur_img.execute("UPDATE usuarios SET foto_perfil = %s WHERE id = %s", (ms_picture, user['id']))
+                    conn_img.commit()
+                    cur_img.close()
+                    conn_img.close()
+                    user['foto_perfil'] = ms_picture
+            except Exception as img_err:
+                print(f"Erro ao salvar foto Microsoft SSO: {img_err}")
+
         session['usuario_id'] = user['id']
         session['empresa_id'] = user['empresa_id']
         session['nome'] = user['nome']
+        session['foto_perfil'] = user.get('foto_perfil')
         garantir_massa_dados_empresa()
         if request.path.startswith('/api/'):
             return jsonify({'sucesso': True, 'redirect': '/app'})
@@ -814,9 +873,25 @@ def login_apple():
         if conn: conn.close()
 
     if user:
+        # Atualizar foto do perfil se vier do SSO e usuário não tiver foto salva
+        google_picture = locals().get('google_picture') or (dados.get('picture') if isinstance(dados, dict) else None)
+        if google_picture and not user.get('foto_perfil'):
+            try:
+                conn_img = get_db_connection()
+                if conn_img:
+                    cur_img = conn_img.cursor()
+                    cur_img.execute("UPDATE usuarios SET foto_perfil = %s WHERE id = %s", (google_picture, user['id']))
+                    conn_img.commit()
+                    cur_img.close()
+                    conn_img.close()
+                    user['foto_perfil'] = google_picture
+            except Exception as img_err:
+                print(f"Erro ao salvar foto Google SSO: {img_err}")
+
         session['usuario_id'] = user['id']
         session['empresa_id'] = user['empresa_id']
         session['nome'] = user['nome']
+        session['foto_perfil'] = user.get('foto_perfil')
         garantir_massa_dados_empresa()
         return redirect(url_for('app_dashboard'))
 
@@ -1724,6 +1799,65 @@ def exportar_relatorio_excel():
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
+
+@app.route('/api/usuario/foto', methods=['POST'])
+def atualizar_foto_perfil():
+    if 'usuario_id' not in session:
+        return jsonify({'sucesso': False, 'erro': 'Não autenticado'}), 401
+    
+    usuario_id = session['usuario_id']
+    foto_url = None
+    
+    try:
+        if 'foto' in request.files:
+            file = request.files['foto']
+            if file and file.filename != '':
+                rnd_id = os.urandom(4).hex()
+                filename = f"avatar_{usuario_id}_{rnd_id}.png"
+                upload_dir = os.path.join(app.static_folder, 'uploads', 'avatars')
+                os.makedirs(upload_dir, exist_ok=True)
+                filepath = os.path.join(upload_dir, filename)
+                file.save(filepath)
+                foto_url = f"/static/uploads/avatars/{filename}"
+        elif request.is_json and request.json.get('foto_url'):
+            foto_url = request.json.get('foto_url')
+            
+        if foto_url:
+            conn = get_db_connection()
+            if conn:
+                cursor = conn.cursor()
+                try:
+                    cursor.execute("UPDATE usuarios SET foto_perfil = %s WHERE id = %s", (foto_url, usuario_id))
+                    conn.commit()
+                    session['foto_perfil'] = foto_url
+                    return jsonify({'sucesso': True, 'foto_url': foto_url})
+                finally:
+                    cursor.close()
+                    conn.close()
+    except Exception as err:
+        print(f"Erro ao salvar foto de perfil: {err}")
+        return jsonify({'sucesso': False, 'erro': f'Erro ao processar imagem: {str(err)}'}), 500
+                
+    return jsonify({'sucesso': False, 'erro': 'Nenhuma imagem fornecida'}), 400
+
+@app.route('/api/usuario/foto/remover', methods=['POST'])
+def remover_foto_perfil():
+    if 'usuario_id' not in session:
+        return jsonify({'sucesso': False, 'erro': 'Não autenticado'}), 401
+        
+    usuario_id = session['usuario_id']
+    conn = get_db_connection()
+    if conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute("UPDATE usuarios SET foto_perfil = NULL WHERE id = %s", (usuario_id,))
+            conn.commit()
+            session['foto_perfil'] = None
+            return jsonify({'sucesso': True})
+        finally:
+            cursor.close()
+            conn.close()
+    return jsonify({'sucesso': False, 'erro': 'Erro ao atualizar banco'}), 500
 
 if __name__ == '__main__':
     flask_debug = os.environ.get('FLASK_DEBUG', 'False').lower() in ['true', '1']
