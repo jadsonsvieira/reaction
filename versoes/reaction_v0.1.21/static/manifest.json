@@ -1,0 +1,23 @@
+{
+  "name": "ReAction - Gestão de Reputação com IA",
+  "short_name": "ReAction",
+  "description": "Domine a sua Reputação Online com Inteligência Artificial",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#ff6b35",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
