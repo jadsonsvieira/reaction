@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="pt-PT" class="h-full">
+
+<head>
+    <script>
+        (function() {
+            var currentTheme = localStorage.getItem('reactionTheme');
+            if (currentTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+
+        function toggleTheme() {
+            var isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('reactionTheme', isDark ? 'dark' : 'light');
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'reactionTheme') {
+                if (e.newValue === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+        });
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReAction by Frame [IA] | Ajustes</title>
+                    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.1.28">
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.1.28">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.1.28">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.1.28">
+    <link rel="manifest" href="/static/manifest.json?v=0.1.28">
+    <meta name="theme-color" content="#ff6b35">
+    <meta name="application-name" content="ReAction">
+    <meta name="apple-mobile-web-app-title" content="ReAction">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Poppins', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif']
+                    },
+                    colors: {
+                        brand: '#ff6b35',
+                        sidebar: '#3a3a3a',
+                        bglight: '#f4f4f5'
+                    }
+                }
+            }
+        } 
+    </script>
+
+    <style>
+        /* Reset e Estrutura Base */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background-color: #f4f4f5;
+        }
+
+        .app-shell {
+            height: 100%;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .main-scroll {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar minimalista */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d8;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa;
+        }
+
+        /* Navegação Lateral */
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: rgba(255, 107, 53, 0.05);
+            color: #d1d5db;
+        }
+
+        .nav-item.active {
+            border-left: 3px solid #ff6b35;
+            color: white;
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        /* Notificações (Toasts) */
+        .toast-msg {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27272a;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slide-up 0.3s ease-out;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* Área Segura Mobile (Notch iPhones) */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+
+    
+
+
+    
+    
+
+
+    <style>
+        /* TEMA ESCURO (DARK MODE OBSIDIAN PREMIUM OPCIONAL MULTI-TAB) */
+        html.dark, html.dark body {
+            background-color: #09090b !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark .bg-white {
+            background-color: #141517 !important;
+            border-color: #27272a !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark [class*="bg-gray-50"], 
+        html.dark [class*="bg-gray-100"],
+        html.dark [class*="bg-gray-200"] {
+            background-color: #18191c !important;
+            border-color: #27272a !important;
+            color: #d4d4d8 !important;
+        }
+        html.dark .text-gray-900 {
+            color: #ffffff !important;
+        }
+        html.dark .text-gray-800, 
+        html.dark .text-gray-700, 
+        html.dark .text-gray-600 {
+            color: #e4e4e7 !important;
+        }
+        html.dark .text-gray-500 {
+            color: #a1a1aa !important;
+        }
+        html.dark [class*="border-gray-"] {
+            border-color: #27272a !important;
+        }
+        html.dark input, 
+        html.dark select, 
+        html.dark textarea {
+            background-color: #18191c !important;
+            color: #ffffff !important;
+            border-color: #27272a !important;
+        }
+        html.dark .review-card, 
+        html.dark .kpi-card {
+            background-color: #141517 !important;
+            border-color: #27272a !important;
+            color: #ffffff !important;
+        }
+        html.dark .kpi-card .rounded-full.blur-xl,
+        html.dark .kpi-card .rounded-full,
+        html.dark .review-card .rounded-bl-full {
+            display: none !important;
+        }
+        html.dark .review-card p {
+            color: #e4e4e7 !important;
+        }
+        html.dark .review-card [class*="bg-orange-50"],
+        html.dark .review-card [class*="bg-gray-50"],
+        html.dark .review-card .bg-white {
+            background-color: #121315 !important;
+            border-color: #27272a !important;
+            color: #d4d4d8 !important;
+        }
+        html.dark .task-row:hover {
+            background-color: #1c1d21 !important;
+        }
+        html.dark header, 
+        html.dark .sticky {
+            background-color: rgba(9, 9, 11, 0.85) !important;
+            border-color: #27272a !important;
+        }
+        html.dark aside {
+            background-color: #0c0d0f !important;
+            border-color: #27272a !important;
+        }
+    </style>
+</head>
+
+<body class="h-full font-body text-gray-800">
+    <div class="app-shell" id="app-shell">
+
+        <aside id="sidebar" class="w-64 flex-shrink-0 flex-col transition-all bg-sidebar hidden md:flex z-20 shadow-xl">
+
+            <!-- LOGO DA SIDEBAR PADRONIZADA COM A LANDING PAGE -->
+            <div class="p-6 flex items-center gap-3">
+                <div
+                    class="w-9 h-9 bg-brand rounded-xl flex items-center justify-center shadow-md shadow-brand/20 shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M9 12l2 2 4-4"></path>
+                    </svg>
+                </div>
+                <span class="font-heading font-bold text-xl text-white tracking-tight">Re<span
+                        class="text-brand">Action</span></span>
+            </div>
+
+            <nav class="flex-1 mt-6 px-4 space-y-1.5" role="navigation">
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/app'">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/reputacao'">
+                    <i data-lucide="message-square" class="w-5 h-5"></i> Reputação
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/minhas_acoes'">
+                    <i data-lucide="list-checks" class="w-5 h-5"></i> Minhas Ações
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/relatorios'">
+                    <i data-lucide="pie-chart" class="w-5 h-5"></i> Relatórios
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/sala_maquinas'">
+                    <i data-lucide="settings" class="w-5 h-5"></i> Sala de Máquinas
+                </button>
+                <button
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-gray-200 text-sm font-medium"
+                    onclick="window.location.href='/integracoes'">
+                    <i data-lucide="link" class="w-5 h-5"></i> Integrações
+                </button>
+            </nav>
+
+            <div class="p-5 border-t border-gray-700/50 flex items-center gap-3 bg-black/10 m-3 rounded-2xl">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner overflow-hidden cursor-pointer" onclick="window.location.href='/ajustes'">
+            {% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}
+        </div>
+        <div class="text-sm text-gray-300 truncate flex-1 font-medium" id="sidebar-name" title="{{ usuario.nome }}">
+            {{ usuario.nome }}
+        </div>
+        <a href="/ajustes" class="text-gray-400 hover:text-gray-200 transition-colors p-1" title="Ajustes">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+        </a>
+        <button type="button" onclick="toggleTheme()" class="text-gray-400 hover:text-amber-400 transition-colors p-1" title="Alternar Modo Escuro/Claro">
+            <i data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+        <a href="/logout" class="text-gray-400 hover:text-red-400 transition-colors p-1" title="Sair">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+        </a>
+    </div>
+    </aside>
+
+        <main class="main-scroll relative" id="main-area">
+
+            <!-- LOGO MOBILE PADRONIZADA COM A LANDING PAGE -->
+            <div
+                class="md:hidden flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-200/60">
+                <a href="/app" class="flex items-center gap-2">
+            <img src="/static/logo_reaction_transparent_light.png" alt="ReAction Logo" class="h-11 w-auto object-contain transition-all">
+        </a>
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold bg-brand shadow-sm overflow-hidden cursor-pointer">{% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}</div>
+            </div>
+
+            <header class="px-6 md:px-10 py-8">
+                <h1 class="font-heading font-bold text-3xl text-gray-900 tracking-tight">Perfil & Ajustes</h1>
+                <p class="text-gray-500 text-sm mt-2 font-medium">Gerencie as suas informações de acesso e da conta.</p>
+            </header>
+
+            <section class="px-6 md:px-10 pb-28 md:pb-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+                <!-- COLUNA DA ESQUERDA: PERFIL & SEGURANÇA -->
+                <div class="space-y-8">
+                    <div
+                        class="bg-white p-6 md:p-8 rounded-3xl border border-gray-100 shadow-sm transition-all hover:shadow-md">
+                        <h2 class="font-heading font-bold text-lg text-gray-900 mb-6 flex items-center gap-2">
+                            <i data-lucide="user" class="text-brand w-5 h-5"></i> Informações Pessoais
+                        </h2>
+                        <!-- FOTO DE PERFIL / AVATAR DA CONTA -->
+                        <div class="flex items-center gap-5 mb-6 pb-6 border-b border-gray-100">
+                            <div class="relative w-16 h-16 rounded-full overflow-hidden shrink-0 border-2 border-brand/30 shadow-md bg-gray-100 flex items-center justify-center">
+                                {% if usuario.foto_perfil %}
+                                <img id="avatar-preview-img" src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">
+                                {% else %}
+                                <div id="avatar-preview-initials" class="w-full h-full flex items-center justify-center text-white text-xl font-bold bg-brand">
+                                    {{ usuario.iniciais }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="space-y-1.5">
+                                <h3 class="font-heading font-bold text-sm text-gray-900">Foto de Perfil</h3>
+                                <p class="text-xs text-gray-500 font-medium">Vinculada do Google / Microsoft ou carregue uma imagem personalizada.</p>
+                                <div class="flex items-center gap-2 pt-1">
+                                    <input type="file" id="input-foto-avatar" accept="image/*" class="hidden" onchange="enviarFotoPerfil(this)">
+                                    <button type="button" onclick="document.getElementById('input-foto-avatar').click()"
+                                        class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm">
+                                        <i data-lucide="camera" class="w-3.5 h-3.5 text-brand"></i> Alterar Foto
+                                    </button>
+                                    <button type="button" onclick="removerFotoPerfil()"
+                                        class="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold transition-all">
+                                        Remover
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form class="space-y-5 settings-form">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Nome Completo</label>
+                                <input type="text" value="{{ usuario.nome }}"
+                                    class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Endereço de E-mail</label>
+                                <input type="email" value="jadson@frameia.com.br"
+                                    class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition-all">
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit"
+                                    class="bg-brand text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-brand/20 hover:brightness-110 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                                    Guardar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div
+                        class="bg-white p-6 md:p-8 rounded-3xl border border-gray-100 shadow-sm transition-all hover:shadow-md">
+                        <h2 class="font-heading font-bold text-lg text-gray-900 mb-6 flex items-center gap-2">
+                            <i data-lucide="shield-check" class="text-brand w-5 h-5"></i> Segurança
+                        </h2>
+                        <form class="space-y-5 settings-form">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Palavra-passe Atual</label>
+                                <input type="password" placeholder="••••••••"
+                                    class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-400 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Nova Palavra-passe</label>
+                                <input type="password" placeholder="Escreva a nova palavra-passe"
+                                    class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-400 transition-all">
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit"
+                                    class="bg-gray-800 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-gray-900 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                                    Atualizar Palavra-passe
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- COLUNA DA DIREITA: WHATSAPP DE CRISES & SETUP VIP -->
+                <div class="space-y-8">
+                    <!-- NOTIFICAÇÃO & PONTE PRIVADA DE CRISES WHATSAPP -->
+                    <div class="bg-white p-6 md:p-8 rounded-3xl border border-emerald-100 shadow-sm transition-all hover:shadow-md">
+                        <h2 class="font-heading font-bold text-lg text-gray-900 mb-2 flex items-center gap-2">
+                            <i data-lucide="message-circle" class="text-emerald-600 w-5 h-5"></i> WhatsApp do Gerente / Vendedor (Alertas de Crise)
+                        </h2>
+                        <p class="text-xs text-gray-500 mb-6">Cadastre o número que receberá os alertas de crise (avaliações 1-2 estrelas) com link direto para o atendimento privado via WhatsApp.</p>
+                        <form class="space-y-5 settings-form" id="form-whatsapp">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Número WhatsApp com DDD</label>
+                                <input type="text" id="whatsapp-number" value="+55 (85) 99999-9999" placeholder="+55 (85) 99999-9999"
+                                    class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 transition-all font-mono">
+                            </div>
+                            <div class="flex items-center gap-3 bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                                <input type="checkbox" id="whatsapp-alert-active" checked class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <label for="whatsapp-alert-active" class="text-xs font-semibold text-emerald-900">
+                                    Receber alertas instantâneos de contenção de crise no WhatsApp quando entrar review de 1 ou 2 estrelas.
+                                </label>
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit"
+                                    class="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                                    Salvar WhatsApp de Alertas
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- CARD FIXO PERMANENTE SETUP VIP REACTION -->
+                    <div class="bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white p-6 md:p-8 rounded-3xl border border-gray-700/60 shadow-xl relative overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-brand/20 rounded-full blur-2xl"></div>
+                        <div class="flex items-start gap-4 relative z-10 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-brand flex items-center justify-center text-white shrink-0 shadow-lg shadow-brand/30">
+                                <i data-lucide="sparkles" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="inline-block px-3 py-0.5 rounded-full bg-brand/20 text-[#ffb347] text-[11px] font-bold uppercase tracking-wider mb-1.5 border border-brand/30">
+                                    Experiência 360º • Setup VIP
+                                </div>
+                                <h2 class="font-heading font-bold text-xl text-white">Setup VIP ReAction (R$ 300,00 à vista)</h2>
+                                <p class="text-xs md:text-sm text-gray-300 mt-2 leading-relaxed">
+                                    Quer que nossa equipe configure e calibre a IA do ReAction para o tom de voz exato da sua empresa? O Setup VIP inclui:
+                                </p>
+                                <ul class="mt-3 space-y-1.5 text-xs text-gray-300">
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand"></i> 2 Sessões ao vivo de 60min com nossos especialistas</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand"></i> Pasta privada no Google Drive com gravações e transcrições</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand"></i> <strong>3 meses grátis de sistema (90 dias isento de mensalidade)</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+                            <span class="text-xs text-gray-400">Contratação única com onboarding consultivo.</span>
+                            <a href="https://wa.me/5585999999999?text=Ol%C3%A1!%20Gostaria%20de%20solicitar%20o%20Setup%20VIP%20ReAction%20por%20R%24%20300" target="_blank" rel="noopener noreferrer" class="py-3 px-6 rounded-xl bg-brand text-white font-bold text-xs md:text-sm hover:brightness-110 transition-all shadow-lg shadow-brand/30 whitespace-nowrap text-center w-full sm:w-auto">
+                                Solicitar Setup VIP (R$ 300) →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div
+        class="fixed bottom-0 left-0 right-0 z-50 md:hidden pb-safe bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <nav class="flex items-center justify-around h-[68px] px-2">
+            <a href="/app"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+                <i data-lucide="layout-dashboard" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+                <span class="text-[10px] font-semibold">Cockpit</span>
+            </a>
+            <a href="/reputacao"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+                <i data-lucide="message-square" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+                <span class="text-[10px] font-semibold">Reputação</span>
+            </a>
+            <a href="/ajustes" class="flex flex-col items-center justify-center w-full h-full gap-1 active group">
+                <div class="px-5 py-1 rounded-full bg-brand/10 transition-colors">
+                    <i data-lucide="user" class="w-6 h-6 text-brand"></i>
+                </div>
+                <span class="text-[10px] font-bold text-brand">Perfil</span>
+            </a>
+            <a href="/integracoes"
+                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
+                <i data-lucide="menu" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
+                <span class="text-[10px] font-semibold">Menu</span>
+            </a>
+        </nav>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        // Inicializa os ícones do Lucide
+        lucide.createIcons();
+
+        // Sistema de Toasts (Notificações)
+        function toast(msg) {
+            const el = document.createElement('div');
+            el.className = 'toast-msg font-medium';
+            el.textContent = msg;
+            document.getElementById('toast-container').appendChild(el);
+
+            setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transition = 'opacity 0.3s ease-out';
+                setTimeout(() => el.remove(), 300);
+            }, 3000);
+        }
+
+        function enviarFotoPerfil(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('foto', file);
+
+            toast('⏳ Enviando imagem de perfil...');
+
+            fetch('/api/usuario/foto', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    toast('✅ Foto de perfil atualizada com sucesso!');
+                    setTimeout(() => window.location.reload(), 600);
+                } else {
+                    toast('❌ ' + (data.erro || 'Falha ao atualizar foto de perfil.'));
+                }
+            })
+            .catch(err => {
+                console.error('Erro ao enviar foto:', err);
+                toast('❌ Erro de conexão ao enviar foto.');
+            });
+        }
+
+        function removerFotoPerfil() {
+            if (!confirm('Deseja remover sua foto de perfil?')) return;
+            fetch('/api/usuario/foto/remover', { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    toast('✅ Foto removida com sucesso!');
+                    setTimeout(() => window.location.reload(), 600);
+                }
+            });
+        }
+
+        // Simulação visual de salvamento nos formulários
+        document.querySelectorAll('.settings-form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); // Evita recarregar a página
+
+                const btn = form.querySelector('button[type="submit"]');
+                const originalText = btn.innerHTML;
+
+                // Estado de "A Carregar"
+                btn.disabled = true;
+                btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Guardando...';
+                lucide.createIcons({ root: btn });
+
+                // Simula tempo de requisição à API
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    lucide.createIcons({ root: btn });
+                    toast('✅ Alterações guardadas com sucesso!');
+
+                    // Se for o formulário de senha, limpa os campos
+                    if (form.querySelector('input[type="password"]')) {
+                        form.reset();
+                    }
+                }, 800);
+            });
+        });
+    </script>
+</body>
+
+</html>
