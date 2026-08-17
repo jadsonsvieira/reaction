@@ -1982,10 +1982,7 @@ def remover_foto_perfil():
             conn.close()
     return jsonify({'sucesso': False, 'erro': 'Erro ao atualizar banco'}), 500
 
-if __name__ == '__main__':
-    flask_debug = os.environ.get('FLASK_DEBUG', 'False').lower() in ['true', '1']
-    flask_host = os.environ.get('FLASK_HOST', '127.0.0.1')
-    app.run(host=flask_host, port=5001, debug=flask_debug)
+
 
 
 # ==========================================
@@ -2278,3 +2275,8 @@ def webhook_whatsapp():
         except Exception as err:
             print(f"[WHATSAPP WEBHOOK ERRO GERAL] {err}")
             return jsonify({"status": "ERROR", "message": str(err)}), 500
+
+if __name__ == '__main__':
+    flask_debug = os.environ.get('FLASK_DEBUG', 'False').lower() in ['true', '1']
+    flask_host = os.environ.get('FLASK_HOST', '127.0.0.1')
+    app.run(host=flask_host, port=5001, debug=flask_debug)
