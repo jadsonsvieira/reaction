@@ -4,10 +4,10 @@ ARQUIVO: .\.env
 
 DB_HOST=srv1722.hstgr.io
 DB_USER=u716503964_reaction
-DB_PASS=@@Miguel130510
+DB_PASS=[PROTEGIDO_ENV]
 DB_NAME=u716503964_reaction
 FLASK_SECRET_KEY=chave_secreta_reacao_2026
-GEMINI_API_KEY="AIzaSyAfWWIF82FJrvwOgfujvgW3jMC3hkfttqg"
+GEMINI_API_KEY="[PROTEGIDO_GEMINI_API_KEY]"
 
 # Autenticação Social OAuth (Compartilhada com o Cash)
 GOOGLE_CLIENT_ID="71269651978-gp165jo1i5r6mgmb22u8s82g0jsdh5v0.apps.googleusercontent.com"
@@ -2309,10 +2309,10 @@ ARQUIVO: .\.env
 
 DB_HOST=srv1722.hstgr.io
 DB_USER=u716503964_reaction
-DB_PASS=@@Miguel130510
+DB_PASS=[PROTEGIDO_ENV]
 DB_NAME=u716503964_reaction
 FLASK_SECRET_KEY=chave_secreta_reacao_2026
-GEMINI_API_KEY="AIzaSyAfWWIF82FJrvwOgfujvgW3jMC3hkfttqg"
+GEMINI_API_KEY="[PROTEGIDO_GEMINI_API_KEY]"
 
 # Autenticação Social OAuth (Compartilhada com o Cash)
 GOOGLE_CLIENT_ID="71269651978-gp165jo1i5r6mgmb22u8s82g0jsdh5v0.apps.googleusercontent.com"
@@ -4614,10 +4614,10 @@ ARQUIVO: .\.env
 
 DB_HOST=srv1722.hstgr.io
 DB_USER=u716503964_reaction
-DB_PASS=@@Miguel130510
+DB_PASS=[PROTEGIDO_ENV]
 DB_NAME=u716503964_reaction
 FLASK_SECRET_KEY=chave_secreta_reacao_2026
-GEMINI_API_KEY="AIzaSyAfWWIF82FJrvwOgfujvgW3jMC3hkfttqg"
+GEMINI_API_KEY="[PROTEGIDO_GEMINI_API_KEY]"
 
 # Autenticação Social OAuth (Compartilhada com o Cash)
 GOOGLE_CLIENT_ID="71269651978-gp165jo1i5r6mgmb22u8s82g0jsdh5v0.apps.googleusercontent.com"

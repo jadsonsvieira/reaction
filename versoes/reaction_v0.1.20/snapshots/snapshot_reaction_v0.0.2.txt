@@ -4,7 +4,7 @@ ARQUIVO: .\.env
 
 DB_HOST=srv1722.hstgr.io
 DB_USER=u716503964_admin_reacao
-DB_PASS=@@Miguel130510
+DB_PASS=[PROTEGIDO_ENV]
 DB_NAME=u716503964_reacao
 FLASK_SECRET_KEY=chave_secreta_reacao_2026
 GEMINI_API_KEY="cole_sua_chave_real_do_google_aqui"
@@ -1824,7 +1824,7 @@ ARQUIVO: .\.env
 
 DB_HOST=srv1722.hstgr.io
 DB_USER=u716503964_admin_reacao
-DB_PASS=@@Miguel130510
+DB_PASS=[PROTEGIDO_ENV]
 DB_NAME=u716503964_reacao
 FLASK_SECRET_KEY=chave_secreta_reacao_2026
 GEMINI_API_KEY="cole_sua_chave_real_do_google_aqui"
