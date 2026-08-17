@@ -357,23 +357,32 @@
         }
 
         function iniciarGoogleLogin() {
-            if (window.google && google.accounts && google.accounts.id && GOOGLE_CLIENT_ID) {
-                google.accounts.id.initialize({
-                    client_id: GOOGLE_CLIENT_ID,
-                    callback: function(response) {
-                        if (response && response.credential) {
-                            autenticarContaSocialDireta('/api/auth/google', null, null, response.credential);
+            const cid = GOOGLE_CLIENT_ID || '71269651978-gp165jo1i5r6mgmb22u8s82g0jsdh5v0.apps.googleusercontent.com';
+            if (window.google && google.accounts && google.accounts.id) {
+                try {
+                    google.accounts.id.initialize({
+                        client_id: cid,
+                        callback: function(response) {
+                            if (response && response.credential) {
+                                autenticarContaSocialDireta('/api/auth/google', null, null, response.credential);
+                            }
                         }
-                    }
-                });
-                google.accounts.id.prompt((notification) => {
-                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                        window.location.href = '/login/google';
-                    }
-                });
-            } else {
-                window.location.href = '/login/google';
+                    });
+                    google.accounts.id.prompt((notification) => {
+                        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                            const redirectUri = encodeURIComponent(window.location.origin + '/login');
+                            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${cid}&redirect_uri=${redirectUri}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=reaction_${Date.now()}&prompt=select_account`;
+                            window.location.href = authUrl;
+                        }
+                    });
+                    return;
+                } catch(e) {
+                    console.log("GIS prompt error:", e);
+                }
             }
+            const redirectUri = encodeURIComponent(window.location.origin + '/login');
+            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${cid}&redirect_uri=${redirectUri}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=reaction_${Date.now()}&prompt=select_account`;
+            window.location.href = authUrl;
         }
 
         window.fbAsyncInit = function() {
@@ -450,6 +459,21 @@
 
         // Se o usuário veio pelo botão "Começar Grátis", abrir a aba de Registo diretamente
         window.addEventListener('DOMContentLoaded', () => {
+        // Auto-captura de tokens OAuth retornados via redirect no fragmento da URL (#id_token=... / #access_token=...)
+        if (window.location.hash) {
+            const hashStr = window.location.hash.substring(1);
+            const hashParams = new URLSearchParams(hashStr);
+            const idToken = hashParams.get('id_token') || hashParams.get('credential');
+            const accessToken = hashParams.get('access_token');
+            
+            if (idToken) {
+                // Token ID retornado pelo Google OAuth
+                autenticarContaSocialDireta('/api/auth/google', null, null, idToken);
+            } else if (accessToken) {
+                // Access Token retornado pelo Facebook OAuth
+                autenticarContaSocialDireta('/api/auth/facebook', null, null, accessToken);
+            }
+        }
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('registo') === 'true' || urlParams.get('register') === 'true') {
                 const formLogin = document.getElementById('form-login');

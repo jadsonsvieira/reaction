@@ -6,6 +6,7 @@ import mysql.connector
 import requests
 import io
 import csv
+import time
 from flask import Flask, render_template, redirect, url_for, session, request, jsonify, Response
 from datetime import datetime, date, timedelta
 from dotenv import load_dotenv
@@ -27,6 +28,18 @@ META_APP_SECRET = os.environ.get("META_APP_SECRET")
 META_VERIFY_TOKEN = os.environ.get("META_VERIFY_TOKEN", "frameia_reaction_2026")
 
 app = Flask(__name__)
+
+@app.context_processor
+def inject_oauth_ids():
+    raw_google = os.environ.get('GOOGLE_CLIENT_ID', '71269651978-gp165jo1i5r6mgmb22u8s82g0jsdh5v0.apps.googleusercontent.com')
+    raw_fb = os.environ.get('FACEBOOK_APP_ID', '2263040147842797')
+    raw_ms = os.environ.get('MICROSOFT_CLIENT_ID', '138269ce-38e6-4c1e-bc6a-b5292e877a24')
+    return {
+        'google_client_id': raw_google.replace('GOOGLE_CLIENT_ID=', '').replace('"', '').strip() if raw_google else '71269651978-gp165jo1i5r6mgmb22u8s82g0jsdh5v0.apps.googleusercontent.com',
+        'facebook_app_id': raw_fb.replace('FACEBOOK_APP_ID=', '').replace('"', '').strip() if raw_fb else '2263040147842797',
+        'microsoft_client_id': raw_ms.replace('MICROSOFT_CLIENT_ID=', '').replace('"', '').strip() if raw_ms else '138269ce-38e6-4c1e-bc6a-b5292e877a24'
+    }
+
 
 @app.context_processor
 def inject_oauth_credentials():
@@ -458,6 +471,22 @@ def login_google():
     dados = request.get_json(silent=True) or request.values or {}
     google_token = dados.get('credential') or dados.get('id_token') or dados.get('g_token') or dados.get('access_token')
     
+    # Se for uma navegação GET sem token, redireciona de forma transparente para o fluxo de consentimento oficial do Google
+    if not google_token and request.method == 'GET':
+        raw_cid = os.environ.get('GOOGLE_CLIENT_ID', '71269651978-gp165jo1i5r6mgmb22u8s82g0jsdh5v0.apps.googleusercontent.com')
+        cid = raw_cid.replace('GOOGLE_CLIENT_ID=', '').replace('"', '').strip()
+        redirect_uri = "https://reaction.frameia.com.br/login"
+        auth_url = (
+            f"https://accounts.google.com/o/oauth2/v2/auth?"
+            f"client_id={cid}&"
+            f"redirect_uri={redirect_uri}&"
+            f"response_type=token%20id_token&"
+            f"scope=openid%20email%20profile&"
+            f"nonce=reaction_{int(time.time())}&"
+            f"prompt=select_account"
+        )
+        return redirect(auth_url)
+
     # SEGURANÇA: Token é estritamente obrigatório. Nunca aceitar e-mail avulso sem token!
     if not google_token:
         if request.path.startswith('/api/'):
