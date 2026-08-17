@@ -8,10 +8,10 @@ FILE: .env
 ================================================================================
 DB_HOST=srv1722.hstgr.io
 DB_USER=u716503964_reaction
-DB_PASS=@@Miguel130510
+DB_PASS=[PROTEGIDO_ENV]
 DB_NAME=u716503964_reaction
 FLASK_SECRET_KEY=chave_secreta_reacao_2026
-GEMINI_API_KEY="AIzaSyAfWWIF82FJrvwOgfujvgW3jMC3hkfttqg"
+GEMINI_API_KEY="[PROTEGIDO_GEMINI_API_KEY]"
 
 # Autenticação Social OAuth (Compartilhada com o Cash)
 GOOGLE_CLIENT_ID="71269651978-gp165jo1i5r6mgmb22u8s82g0jsdh5v0.apps.googleusercontent.com"
@@ -2428,7 +2428,7 @@ def buscar_usuario_por_whatsapp(telefone, cursor):
 
 def enviar_mensagem_whatsapp(telefone, texto):
     """Dispara mensagem via API oficial do WhatsApp da Meta"""
-    raw_token = os.getenv('META_ACCESS_TOKEN', 'EAATkzbdHnr0BSNtiVbbWDySAcmjQX71oo6CXDu3QzbOx0rVLpmyCx4prsd3apKY6xKjh4LVdIBhJK5kOZCFSJexqCwchFwSWXB3euiU85GZCxanhH1lnxJVoVNpx72k8XGBr53ypaqDVUArZAk0MxZAThW54Q6jvyIyYSvO5Yxj88hDALOrpUbx9uCfckLZBqLgZDZD')
+    raw_token = os.getenv('META_ACCESS_TOKEN', '[PROTEGIDO_META_ACCESS_TOKEN]')
     token = raw_token.replace('META_ACCESS_TOKEN=', '').replace('"', '').strip() if raw_token else ''
     phone_id = os.getenv('META_PHONE_ID', '1313361515185262').replace('META_PHONE_ID=', '').replace('"', '').strip()
 

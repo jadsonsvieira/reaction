@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+
+<head>
+    <script>
+        (function() {
+            var currentTheme = localStorage.getItem('reactionTheme');
+            if (currentTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidade & LGPD | ReAction by Frame [IA]</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.2.0">
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.2.0">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.2.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.2.0">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Poppins', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif']
+                    },
+                    colors: {
+                        brand: '#ff6b35',
+                        sidebar: '#3a3a3a'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html.dark, html.dark body {
+            background-color: #09090b !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark .bg-white {
+            background-color: #141517 !important;
+            border-color: #27272a !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark .text-gray-900 {
+            color: #ffffff !important;
+        }
+        html.dark .text-gray-700, html.dark .text-gray-600 {
+            color: #d4d4d8 !important;
+        }
+        html.dark [class*="border-gray-"] {
+            border-color: #27272a !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-full font-body text-gray-800 bg-gray-50 antialiased flex flex-col">
+    <!-- Top Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm transition-colors">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <img src="/static/logo_reaction_transparent_light.png?v=0.2.0" alt="ReAction Logo" class="h-10 w-auto object-contain dark:hidden">
+                <img src="/static/logo_reaction_transparent_dark.png?v=0.2.0" alt="ReAction Logo" class="h-10 w-auto object-contain hidden dark:block">
+            </a>
+            <div class="flex items-center gap-3">
+                <a href="/login" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-[#1f2024] dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                    Entrar no App
+                </a>
+                <a href="/" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-brand text-white hover:brightness-110 shadow-sm shadow-brand/20 transition-all flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar ao Início
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Privacy Content -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-gray-200/80 shadow-sm space-y-8">
+            <div class="border-b border-gray-100 dark:border-gray-800 pb-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 text-xs font-bold uppercase tracking-wider mb-3">
+                    <i data-lucide="lock" class="w-4 h-4"></i> Conformidade LGPD
+                </div>
+                <h1 class="font-heading font-bold text-2xl sm:text-3xl text-gray-900 tracking-tight">Política de Privacidade e Proteção de Dados</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Versão oficial 0.2.0 • Em conformidade com a Lei Federal nº 13.709/2018 (LGPD)</p>
+            </div>
+
+                        <!-- Dados da Controladora e Frame [IA] -->
+            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-[#18191c] border border-gray-200/60 dark:border-gray-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-heading font-bold text-sm text-gray-900 dark:text-white uppercase tracking-wider">Identificação da Controladora & Operação de IA</h3>
+                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">LGPD / DPO</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-400">
+                    <p><strong>Holding Controladora:</strong> MJSV TECNOLOGIA E SOLUCOES DIGITAIS (I.S.)</p>
+                    <p><strong>Operação & IA:</strong> Frame [IA]</p>
+                    <p><strong>CNPJ:</strong> 68.614.850/0001-13</p>
+                    <p><strong>Encarregado pelo Tratamento (DPO):</strong> Jadson Sousa Vieira</p>
+                    <p><strong>Sede:</strong> Eusébio - CE, Brasil (Região Metropolitana de Fortaleza)</p>
+                    <p><strong>E-mail de Privacidade / DPO:</strong> contato@frameia.com.br / jadson@mjsv.com.br</p>
+                    <p><strong>Telefone Comercial:</strong> (85) 9662-4278 / (85) 8731-8995</p>
+                    <p><strong>Plataforma:</strong> ReAction by Frame [IA]</p>
+                </div>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 border-t border-gray-200/60 dark:border-gray-800 pt-2 leading-relaxed">
+                    <em>Transparência LGPD:</em> A <strong>MJSV TECNOLOGIA</strong> figura como controladora legal dos dados, enquanto a divisão <strong>Frame [IA]</strong> executa os serviços de tecnologia e tratamento automatizado seguro de dados para a plataforma <strong>ReAction</strong>.
+                </p>
+            </div>
+
+            <!-- Seções da Política -->
+            <section class="space-y-4 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">1. Princípios e Compromisso de Privacidade</h2>
+                <p>
+                    A <strong>MJSV TECNOLOGIA E SOLUCOES DIGITAIS INOVA SIMPLES (I.S.)</strong> e a sua divisão de inovação <strong>Frame [IA]</strong> valorizam a segurança, confidencialidade e privacidade de seus usuários e clientes. Esta Política explica de forma transparente como os dados pessoais são coletados, utilizados, armazenados, protegidos e compartilhados ao utilizar a plataforma <strong>ReAction</strong>.
+                </p>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">2. Dados Coletados</h2>
+                <p>Coletamos exclusivamente os dados estritamente necessários para a prestação dos serviços do SaaS:</p>
+                <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
+                    <li><strong>Dados de Cadastro e Acesso:</strong> Nome completo, endereço de e-mail corporativo, senha criptografada (hash seguro), foto de perfil e telefone WhatsApp para alertas operacionais.</li>
+                    <li><strong>Dados das Avaliações e Canais:</strong> Nomes públicos de autores de reviews, notas atribuídas e comentários públicos postados nas plataformas conectadas (Google Meu Negócio, Instagram, iFood, 99Food, WhatsApp e Zé Delivery).</li>
+                    <li><strong>Logs e Auditoria de Segurança:</strong> Endereço IP de acesso, registro de data/hora do aceite dos termos e logs técnicos de requisições.</li>
+                </ul>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">3. Finalidade do Tratamento de Dados</h2>
+                <p>Os dados tratados possuem as seguintes finalidades legítimas:</p>
+                <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
+                    <li>Execução do contrato SaaS e disponibilização do painel Cockpit e Central de Reputação.</li>
+                    <li>Processamento inteligente de sentimentos e sugestões de respostas via Inteligência Artificial.</li>
+                    <li>Envio de alertas de crise imediatos via WhatsApp e e-mail quando avaliações negativas de alto impacto são detectadas.</li>
+                    <li>Cumprimento de obrigações legais, regulatórias e proteção aos direitos da empresa.</li>
+                </ul>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">4. Armazenamento, Segurança e Criptografia</h2>
+                <p>
+                    Todos os dados trafegam exclusivamente sob protocolo seguro criptografado SSL/TLS (HTTPS). As senhas são armazenadas com algoritmos de derivação de chave de alta entropia. O acesso ao banco de dados MySQL é estritamente isolado por inquilino (*Multi-Tenant Architecture*), impedindo qualquer cruzamento ou vazamento de informações entre empresas clientes.
+                </p>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">5. Compartilhamento de Dados</h2>
+                <p>
+                    A MJSV Tecnologia <strong>não comercializa, não aluga e não transfere</strong> seus dados pessoais para terceiros para fins de marketing. O compartilhamento ocorre exclusivamente com provedores de infraestrutura estritamente necessários:
+                </p>
+                <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
+                    <li>Servidores em nuvem de alta confiabilidade (Hostinger VPS / Certificados SSL).</li>
+                    <li>Provedores de pagamento (Mercado Pago) para liquidação de transações.</li>
+                    <li>Provedores oficiais de mensageria (Meta Cloud API / WhatsApp) para entrega de notificações solicitadas.</li>
+                </ul>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">6. Direitos do Titular (Art. 18 da LGPD)</h2>
+                <p>
+                    Como titular dos dados, você pode a qualquer momento exercer seus direitos garantidos pela LGPD, incluindo: confirmação da existência de tratamento, acesso aos dados, correção de dados incompletos ou inexatos, anonimização ou eliminação de dados desnecessários, e revogação do consentimento.
+                </p>
+                <p>
+                    Para exercer seus direitos, basta enviar uma mensagem direta ao nosso canal de DPO no e-mail <strong>contato@frameia.com.br</strong> ou <strong>jadson@mjsv.com.br</strong>.
+                </p>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">7. Atualizações desta Política</h2>
+                <p>
+                    Esta Política pode ser atualizada periodicamente para refletir melhorias no sistema ou exigências legais. Quaisquer alterações relevantes serão notificadas através do painel do ReAction.
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-white dark:bg-[#0c0d0f] border-t border-gray-200 dark:border-gray-800 py-6 text-center text-xs text-gray-500 transition-colors">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© 2026 MJSV TECNOLOGIA E SOLUCOES DIGITAIS INOVA SIMPLES (I.S.) • CNPJ: 68.614.850/0001-13</p>
+            <div class="flex items-center gap-4">
+                <a href="/termos" class="hover:text-brand">Termos de Uso</a>
+                <a href="/privacidade" class="hover:text-brand font-bold text-brand">Privacidade & LGPD</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
