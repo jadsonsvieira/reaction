@@ -5,11 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReAction by Frame [IA] | Gestor de Reputação</title>
-    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-    <link rel="alternate icon" href="/static/favicon.svg">
-    <link rel="apple-touch-icon" href="/static/favicon.svg">
+                    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.2.0">
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.2.0">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.2.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.2.0">
     <link rel="manifest" href="/static/manifest.json?v=0.2.0">
     <meta name="theme-color" content="#ff6b35">
+    <meta name="application-name" content="ReAction">
+    <meta name="apple-mobile-web-app-title" content="ReAction">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
 
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
@@ -255,6 +260,14 @@
                         placeholder="Mínimo de 6 caracteres">
                 </div>
 
+                                <div class="flex items-start gap-2.5 pt-1">
+                    <input id="reg-termos" type="checkbox" required name="concordo_termos" value="1"
+                        class="mt-1 w-4 h-4 text-brand rounded border-gray-300 focus:ring-brand cursor-pointer">
+                    <label for="reg-termos" class="text-xs text-gray-600 leading-relaxed cursor-pointer">
+                        Declaro que li e concordo com os <a href="/termos" target="_blank" class="text-brand font-bold underline hover:text-orange-600">Termos de Uso</a> e a <a href="/privacidade" target="_blank" class="text-brand font-bold underline hover:text-orange-600">Política de Privacidade</a> (LGPD).
+                    </label>
+                </div>
+
                 <div class="pt-2">
                     <button type="submit"
                         class="w-full py-3.5 rounded-xl text-white font-bold flex items-center justify-center gap-2 bg-sidebar hover:bg-black hover:-translate-y-0.5 transition-all shadow-lg shadow-gray-900/20">
@@ -270,6 +283,11 @@
             </form>
             {% endif %}
 
+                    <div class="mt-8 pt-4 border-t border-gray-100 flex items-center justify-center gap-4 text-xs text-gray-400">
+                <a href="/termos" target="_blank" class="hover:text-brand transition-colors">Termos de Uso</a>
+                <span>•</span>
+                <a href="/privacidade" target="_blank" class="hover:text-brand transition-colors">Privacidade & LGPD</a>
+            </div>
         </div>
     </div>
 
@@ -319,11 +337,11 @@
             }
         }
 
-        function autenticarContaSocialDireta(endpoint, email, nome, token) {
+        function autenticarContaSocialDireta(endpoint, email, nome, token, sub) {
             fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email, nome: nome, access_token: token, credential: token })
+                body: JSON.stringify({ email: email, nome: nome, access_token: token, credential: token, sub: sub })
             })
             .then(res => res.json())
             .then(data => {
@@ -390,14 +408,20 @@
 
         function iniciarMicrosoftLogin() {
             if (msalInstance) {
-                msalInstance.loginPopup({ scopes: ["openid", "profile", "email"], prompt: "select_account" })
+                msalInstance.loginPopup({ scopes: ["openid", "profile", "email", "User.Read"], prompt: "select_account" })
                     .then(res => {
                         if (res) {
+                            const acc = res.account || {};
+                            const claims = res.idTokenClaims || {};
+                            const email = acc.username || claims.preferred_username || claims.email || claims.upn || null;
+                            const nome = acc.name || claims.name || (email ? email.split('@')[0] : null);
+                            const sub = acc.homeAccountId || claims.sub || claims.oid || null;
                             const tokenUser = res.idToken || res.accessToken;
-                            autenticarContaSocialDireta('/api/auth/microsoft', null, null, tokenUser);
+                            autenticarContaSocialDireta('/api/auth/microsoft', email, nome, tokenUser, sub);
                         }
                     })
                     .catch(err => {
+                        console.log("Erro no popup Microsoft MSAL:", err);
                         window.location.href = '/login/microsoft';
                     });
             } else {

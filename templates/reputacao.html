@@ -30,11 +30,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReAction by Frame [IA] | Central de Reputação</title>
-                    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.1.31">
-    <link rel="shortcut icon" href="/static/favicon.ico?v=0.1.31">
-    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.1.31">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.1.31">
-    <link rel="manifest" href="/static/manifest.json?v=0.1.31">
+                    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.2.0">
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.2.0">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.2.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.2.0">
+    <link rel="manifest" href="/static/manifest.json?v=0.2.0">
     <meta name="theme-color" content="#ff6b35">
     <meta name="application-name" content="ReAction">
     <meta name="apple-mobile-web-app-title" content="ReAction">
@@ -295,7 +295,7 @@
                         <!-- LOGO PADRONIZADA REACTION BY FRAME [IA] -->
             <div class="p-6 flex items-center gap-3">
                 <a href="/app" class="flex items-center gap-2">
-                    <img src="/static/logo_reaction_transparent_dark.png?v=0.1.31" alt="ReAction Logo" class="h-12 md:h-14 w-auto object-contain transition-all">
+                    <img src="/static/logo_reaction_transparent_dark.png?v=0.2.0" alt="ReAction Logo" class="h-12 md:h-14 w-auto object-contain transition-all">
                 </a>
             </div>
 
@@ -357,7 +357,7 @@
             <div class="md:hidden flex items-center justify-between px-5 py-3.5 bg-white/85 dark:bg-[#141517]/85 backdrop-blur-xl sticky top-0 z-30 border-b border-gray-200/70 dark:border-white/10 transition-colors">
         <!-- LOGO MOBILE OFICIAL REACTION BY FRAME [IA] (FUNDO CLARO) -->
         <a href="/app" class="flex items-center gap-2">
-          <img src="/static/logo_reaction_transparent_light.png?v=0.1.31" alt="ReAction Logo" class="h-10 w-auto object-contain transition-all">
+          <img src="/static/logo_reaction_transparent_light.png?v=0.2.0" alt="ReAction Logo" class="h-10 w-auto object-contain transition-all">
         </a>
         <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold bg-brand shadow-sm overflow-hidden cursor-pointer" onclick="window.location.href='/ajustes'">
           {% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}
@@ -415,24 +415,24 @@
         </div>
     </div>
 
-      <!-- DOCK FLUTUANTE MOBILE ULTRA-PREMIUM (ESTILO NETFLIX & GOOGLE FOTOS) -->
+        <!-- DOCK FLUTUANTE MOBILE SIMÉTRICO E CENTRALIZADO (ESTILO NETFLIX & GOOGLE FOTOS) -->
   <div class="fixed bottom-4 inset-x-0 z-40 md:hidden flex justify-center items-center px-4 pointer-events-none pb-safe">
-    <nav class="pointer-events-auto flex items-center justify-around gap-1 sm:gap-2 px-3 py-2 rounded-full bg-white/92 dark:bg-[#16171a]/92 backdrop-blur-2xl border border-gray-200/80 dark:border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.14)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.7)] max-w-sm w-full transition-all duration-300">
-      <a href="/app" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-gray-600 dark:text-gray-400 hover:text-brand dark:hover:text-brand font-medium text-xs transition-all hover:bg-gray-100/60 dark:hover:bg-white/5">
+    <nav class="pointer-events-auto max-w-[360px] w-full mx-auto grid grid-cols-4 gap-1 p-1.5 rounded-full bg-white/95 dark:bg-[#16171a]/95 backdrop-blur-2xl border border-gray-200/80 dark:border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.16)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.7)] transition-all duration-300">
+      <a href="/app" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-brand dark:hover:text-brand transition-all duration-200 hover:bg-gray-100/50 dark:hover:bg-white/5">
         <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-        <span>Cockpit</span>
+        <span class="text-[10px] font-bold tracking-tight mt-0.5">Cockpit</span>
       </a>
-      <a href="/reputacao" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand text-white font-bold text-xs shadow-md shadow-brand/25 transition-all">
+      <a href="/reputacao" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-full bg-brand text-white shadow-sm shadow-brand/30 transition-all duration-200">
         <i data-lucide="message-square" class="w-4 h-4"></i>
-        <span>Reputação</span>
+        <span class="text-[10px] font-bold tracking-tight mt-0.5">Reputação</span>
       </a>
-      <a href="/minhas_acoes" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-gray-600 dark:text-gray-400 hover:text-brand dark:hover:text-brand font-medium text-xs transition-all hover:bg-gray-100/60 dark:hover:bg-white/5">
+      <a href="/minhas_acoes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-brand dark:hover:text-brand transition-all duration-200 hover:bg-gray-100/50 dark:hover:bg-white/5">
         <i data-lucide="list-checks" class="w-4 h-4"></i>
-        <span>Ações</span>
+        <span class="text-[10px] font-semibold tracking-tight mt-0.5">Ações</span>
       </a>
-      <button type="button" onclick="openMobileMenuDrawer()" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-gray-600 dark:text-gray-400 hover:text-brand dark:hover:text-brand font-medium text-xs transition-all hover:bg-gray-100/60 dark:hover:bg-white/5">
+      <button type="button" onclick="openMobileMenuDrawer()" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-brand dark:hover:text-brand transition-all duration-200 hover:bg-gray-100/50 dark:hover:bg-white/5">
         <i data-lucide="menu" class="w-4 h-4"></i>
-        <span>Menu</span>
+        <span class="text-[10px] font-semibold tracking-tight mt-0.5">Menu</span>
       </button>
     </nav>
   </div>
@@ -452,6 +452,45 @@
         </div>
       </div>
       <button type="button" onclick="closeMobileMenuDrawer()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="grid grid-cols-2 gap-3 py-4">
+      <a href="/relatorios" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-orange-500/10 text-brand"><i data-lucide="pie-chart" class="w-4 h-4"></i></div>
+        <span>Relatórios</span>
+      </a>
+      <a href="/sala_maquinas" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-blue-500/10 text-blue-500"><i data-lucide="settings" class="w-4 h-4"></i></div>
+        <span>Sala de Máquinas</span>
+      </a>
+      <a href="/integracoes" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-500"><i data-lucide="link" class="w-4 h-4"></i></div>
+        <span>Canais & APIs</span>
+      </a>
+      <a href="/ajustes" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-purple-500/10 text-purple-500"><i data-lucide="user-cog" class="w-4 h-4"></i></div>
+        <span>Meus Ajustes</span>
+      </a>
+    </div>
+    <div class="pt-2 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2">
+      <div class="flex items-center justify-between gap-3">
+        <button type="button" onclick="toggleTheme()" class="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gray-100 dark:bg-[#1f2024] text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+          <i data-lucide="moon" class="w-4 h-4 text-amber-500"></i>
+          <span>Modo Escuro/Claro</span>
+        </button>
+        <a href="/logout" class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+          <span>Sair</span>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-4 pt-2 text-[11px] text-gray-400 dark:text-gray-500">
+        <a href="/termos" target="_blank" class="hover:text-brand">Termos de Uso</a>
+        <span>•</span>
+        <a href="/privacidade" target="_blank" class="hover:text-brand">Privacidade & LGPD</a>
+      </div>
+    </div>
+  </div><button type="button" onclick="closeMobileMenuDrawer()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
     </div>
@@ -644,6 +683,57 @@
         // Inicializar
         document.addEventListener('DOMContentLoaded', initKanban);
     </script>
+
+{% if usuario.termos_pendentes %}
+<!-- MODAL DE ACEITE OBRIGATÓRIO DE TERMOS E PRIVACIDADE (LGPD) -->
+<div id="modal-termos-obrigatorio" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#141517] rounded-3xl p-6 sm:p-8 max-w-md w-full border border-gray-200 dark:border-gray-800 shadow-2xl space-y-6 text-center">
+        <div class="w-14 h-14 rounded-2xl bg-orange-500/10 text-brand flex items-center justify-center mx-auto shadow-sm">
+            <i data-lucide="shield-check" class="w-7 h-7"></i>
+        </div>
+        <div>
+            <h3 class="font-heading font-bold text-xl text-gray-900 dark:text-white">Atualização dos Termos & LGPD</h3>
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
+                Atualizamos nossos <a href="/termos" target="_blank" class="text-brand font-bold underline">Termos de Uso</a> e <a href="/privacidade" target="_blank" class="text-brand font-bold underline">Política de Privacidade</a> com nossos dados corporativos oficiais (CNPJ 68.614.850/0001-13). Para continuar utilizando o ReAction, por favor confirme a sua concordância.
+            </p>
+        </div>
+        <div class="p-4 rounded-2xl bg-gray-50 dark:bg-[#18191c] border border-gray-200/60 dark:border-gray-800 text-left text-xs text-gray-600 dark:text-gray-400 space-y-1">
+            <p><strong>Controladora:</strong> MJSV TECNOLOGIA E SOLUCOES DIGITAIS INOVA SIMPLES (I.S.)</p>
+            <p><strong>CNPJ:</strong> 68.614.850/0001-13</p>
+            <p><strong>Versão:</strong> 0.2.0 (16/08/2026)</p>
+        </div>
+        <button type="button" id="btn-aceitar-termos" onclick="confirmarAceiteTermos()" class="w-full py-3.5 rounded-xl bg-brand text-white font-bold text-sm hover:brightness-110 shadow-lg shadow-brand/25 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="check" class="w-4 h-4"></i> Li e Concordo com os Termos
+        </button>
+    </div>
+</div>
+<script>
+function confirmarAceiteTermos() {
+    const btn = document.getElementById('btn-aceitar-termos');
+    if (btn) { btn.disabled = true; btn.innerText = 'Gravando consentimento...'; }
+    fetch('/api/aceitar_termos', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            const modal = document.getElementById('modal-termos-obrigatorio');
+            if (modal) modal.remove();
+        } else {
+            alert('Erro ao gravar aceite: ' + (d.error || 'Tente novamente'));
+            if (btn) { btn.disabled = false; btn.innerText = 'Tentar Novamente'; }
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Erro ao conectar ao servidor.');
+        if (btn) { btn.disabled = false; btn.innerText = 'Tentar Novamente'; }
+    });
+}
+</script>
+{% endif %}
+
 </body>
 
 </html>

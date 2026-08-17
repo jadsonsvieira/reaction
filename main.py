@@ -176,6 +176,22 @@ def criar_tabelas_se_nao_existirem():
                 print("Coluna 'foto_perfil' adicionada com sucesso na tabela usuarios.")
         except Exception as foto_err:
             print(f"Erro ao adicionar coluna foto_perfil em usuarios: {foto_err}")
+
+        # Migração das colunas de Termos, Privacidade e WhatsApp na tabela usuarios
+        colunas_usuarios = {
+            'telefone': 'VARCHAR(50) DEFAULT NULL',
+            'termos_aceitos_em': 'DATETIME DEFAULT NULL',
+            'termos_versao': 'VARCHAR(20) DEFAULT NULL',
+            'termos_ip': 'VARCHAR(45) DEFAULT NULL'
+        }
+        for col_nome, col_def in colunas_usuarios.items():
+            try:
+                cursor.execute(f"SHOW COLUMNS FROM usuarios LIKE '{col_nome}'")
+                if not cursor.fetchone():
+                    cursor.execute(f"ALTER TABLE usuarios ADD COLUMN {col_nome} {col_def}")
+                    print(f"Coluna '{col_nome}' adicionada com sucesso na tabela usuarios.")
+            except Exception as col_err:
+                print(f"Erro ao adicionar coluna {col_nome} em usuarios: {col_err}")
         
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS acoes (
@@ -261,11 +277,48 @@ def analisar_qualidade_comentario(comentario, nota):
     return {"valido": True}
 
 def get_usuario_logado():
-    """Função utilitária para pegar os dados do utilizador logado em todas as rotas"""
+    """Função utilitária para pegar os dados do utilizador logado em todas as rotas com termos e telefone"""
+    usuario_id = session.get('usuario_id')
     nome = session.get('nome', 'Usuário')
     iniciais = nome[0].upper() if nome else 'U'
     foto_perfil = session.get('foto_perfil', None)
-    return {'nome': nome, 'iniciais': iniciais, 'foto_perfil': foto_perfil}
+    telefone = session.get('telefone', None)
+    email = session.get('email', '')
+    termos_pendentes = False
+    
+    if usuario_id:
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor(dictionary=True)
+            try:
+                cursor.execute("SELECT id, nome, email, role, foto_perfil, telefone, termos_aceitos_em FROM usuarios WHERE id = %s", (usuario_id,))
+                user = cursor.fetchone()
+                if user:
+                    nome = user.get('nome') or nome
+                    email = user.get('email') or email
+                    iniciais = ''.join([part[0].upper() for part in nome.split()[:2]]) if nome else 'U'
+                    foto_perfil = user.get('foto_perfil')
+                    telefone = user.get('telefone')
+                    termos_pendentes = (user.get('termos_aceitos_em') is None)
+                    session['foto_perfil'] = foto_perfil
+                    session['telefone'] = telefone
+                    session['email'] = email
+                    session['nome'] = nome
+            except Exception as e:
+                print(f"Erro ao buscar usuário logado: {e}")
+            finally:
+                cursor.close()
+                conn.close()
+
+    return {
+        'id': usuario_id,
+        'nome': nome,
+        'email': email,
+        'iniciais': iniciais,
+        'foto_perfil': foto_perfil,
+        'telefone': telefone,
+        'termos_pendentes': termos_pendentes
+    }
 
 def garantir_massa_dados_empresa():
     """Garante que a empresa logada possui dados demonstrativos populados automaticamente"""
@@ -360,8 +413,11 @@ def registo():
 
         cursor.execute("INSERT INTO empresas (nome_empresa) VALUES (%s)", (nome_empresa,))
         empresa_id = cursor.lastrowid
-        cursor.execute("INSERT INTO usuarios (empresa_id, nome, email, senha, role) VALUES (%s, %s, %s, %s, 'dono')", 
-                       (empresa_id, nome_usuario, email, senha_hash))
+        ip_cliente = request.headers.get('X-Forwarded-For', request.remote_addr)
+        cursor.execute("""
+            INSERT INTO usuarios (empresa_id, nome, email, senha, role, termos_aceitos_em, termos_versao, termos_ip) 
+            VALUES (%s, %s, %s, %s, 'dono', NOW(), 'v0.2.0', %s)
+        """, (empresa_id, nome_usuario, email, senha_hash, ip_cliente))
         novo_usuario_id = cursor.lastrowid
         conn.commit()
     except Exception as e:
@@ -1930,3 +1986,295 @@ if __name__ == '__main__':
     flask_debug = os.environ.get('FLASK_DEBUG', 'False').lower() in ['true', '1']
     flask_host = os.environ.get('FLASK_HOST', '127.0.0.1')
     app.run(host=flask_host, port=5001, debug=flask_debug)
+
+
+# ==========================================
+# HELPERS E INTEGRAÇÃO WHATSAPP (META CLOUD API)
+# ==========================================
+
+def buscar_usuario_por_whatsapp(telefone, cursor):
+    """Localiza o usuário e sua respectiva empresa pelo número de WhatsApp formatado"""
+    if not telefone:
+        return None
+    # Limpa caracteres não numéricos
+    tel_digits = re.sub(r'\D', '', str(telefone))
+    # Testa variações (com e sem código de país 55 e nono dígito)
+    variacoes = [tel_digits]
+    if tel_digits.startswith('55') and len(tel_digits) > 10:
+        variacoes.append(tel_digits[2:]) # sem 55
+    else:
+        variacoes.append('55' + tel_digits) # com 55
+
+    for tel in variacoes:
+        cursor.execute("""
+            SELECT u.id as usuario_id, u.empresa_id, u.nome, u.email, u.role, u.telefone,
+                   e.nome_empresa, e.plano_assinatura,
+                   c.telefone_whatsapp, c.tom_voz
+            FROM usuarios u
+            INNER JOIN empresas e ON u.empresa_id = e.id
+            LEFT JOIN configuracoes_ia c ON e.id = c.empresa_id
+            WHERE u.telefone LIKE %s OR c.telefone_whatsapp LIKE %s
+            LIMIT 1
+        """, (f"%{tel[-8:]}%", f"%{tel[-8:]}%"))
+        res = cursor.fetchone()
+        if res:
+            return res
+    return None
+
+def enviar_mensagem_whatsapp(telefone, texto):
+    """Dispara mensagem via API oficial do WhatsApp da Meta"""
+    raw_token = os.getenv('META_ACCESS_TOKEN', 'EAATkzbdHnr0BSNtiVbbWDySAcmjQX71oo6CXDu3QzbOx0rVLpmyCx4prsd3apKY6xKjh4LVdIBhJK5kOZCFSJexqCwchFwSWXB3euiU85GZCxanhH1lnxJVoVNpx72k8XGBr53ypaqDVUArZAk0MxZAThW54Q6jvyIyYSvO5Yxj88hDALOrpUbx9uCfckLZBqLgZDZD')
+    token = raw_token.replace('META_ACCESS_TOKEN=', '').replace('"', '').strip() if raw_token else ''
+    phone_id = os.getenv('META_PHONE_ID', '1313361515185262').replace('META_PHONE_ID=', '').replace('"', '').strip()
+
+    if not token or not phone_id:
+        print(f"[WHATSAPP ENVIO SIMULADO] Para: {telefone} | Texto: {texto[:100]}...")
+        return True
+
+    url = f"https://graph.facebook.com/v19.0/{phone_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "messaging_product": "whatsapp",
+        "to": re.sub(r'\D', '', str(telefone)),
+        "type": "text",
+        "text": {"body": texto}
+    }
+
+    try:
+        req = requests.post(url, headers=headers, json=payload, timeout=12)
+        print(f"[WHATSAPP ENVIO] Status HTTP {req.status_code} | Resposta: {req.text[:120]}")
+        return req.status_code in [200, 201]
+    except Exception as e:
+        print(f"[WHATSAPP ENVIO ERRO] {e}")
+        return False
+
+# ==========================================
+# ROTAS PÚBLICAS: TERMOS E PRIVACIDADE (LGPD)
+# ==========================================
+
+@app.route('/termos')
+def pagina_termos():
+    return render_template('termos.html')
+
+@app.route('/privacidade')
+def pagina_privacidade():
+    return render_template('privacidade.html')
+
+@app.route('/api/aceitar_termos', methods=['POST'])
+def api_aceitar_termos():
+    if 'usuario_id' not in session:
+        return jsonify({'error': 'Não autenticado'}), 401
+    
+    usuario_id = session['usuario_id']
+    ip_cliente = request.headers.get('X-Forwarded-For', request.remote_addr)
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            UPDATE usuarios 
+            SET termos_aceitos_em = NOW(), termos_versao = 'v0.2.0', termos_ip = %s 
+            WHERE id = %s
+        """, (ip_cliente, usuario_id))
+        conn.commit()
+        return jsonify({'success': True, 'message': 'Termos e Política de Privacidade aceitos com sucesso!'})
+    except Exception as e:
+        print(f"Erro ao salvar aceite de termos: {e}")
+        return jsonify({'error': 'Erro ao processar aceite.'}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+# ==========================================
+# WEBHOOK WHATSAPP BOT (META CLOUD API)
+# ==========================================
+
+@app.route('/webhook', methods=['GET', 'POST'])
+def webhook_whatsapp():
+    # 1. Validação de Token da Meta (Handshake GET)
+    if request.method == 'GET':
+        mode = request.args.get("hub.mode")
+        token = request.args.get("hub.verify_token")
+        challenge = request.args.get("hub.challenge")
+        
+        verify_token_env = os.getenv('META_VERIFY_TOKEN', 'reaction_token_secret_022026')
+        
+        if mode == "subscribe" and token == verify_token_env:
+            print("[WHATSAPP WEBHOOK GET] Webhook verificado com sucesso pela Meta!")
+            return str(challenge), 200
+        
+        print("[WHATSAPP WEBHOOK GET] Falha na verificação do token Meta.")
+        return "Falha na verificação. Token inválido.", 403
+
+    # 2. Recebimento de Mensagens dos Gestores (POST)
+    if request.method == 'POST':
+        dados = request.get_json(silent=True) or {}
+        print(f"[WHATSAPP RAW POST] {dados}")
+
+        try:
+            entries = dados.get('entry', [])
+            if not entries:
+                if 'value' in dados:
+                    entries = [{'changes': [{'value': dados['value']}]}]
+                elif 'messages' in dados:
+                    entries = [{'changes': [{'value': dados}]}]
+
+            for entry in entries:
+                for change in entry.get('changes', []):
+                    value = change.get('value', {})
+                    for mensagem in value.get('messages', []):
+                        telefone_cliente = re.sub(r'\D', '', str(mensagem.get('from', '')))
+                        tipo_msg = mensagem.get('type', 'text')
+                        texto_recebido = ''
+                        if tipo_msg == 'text' and 'text' in mensagem:
+                            texto_recebido = mensagem['text'].get('body', '').strip()
+                        elif 'text' in mensagem:
+                            texto_recebido = str(mensagem['text'].get('body', '')).strip()
+
+                        if not texto_recebido:
+                            continue
+
+                        print(f"[WHATSAPP MENSAGEM] De: {telefone_cliente} | Texto: {texto_recebido}")
+
+                        conn = get_db_connection()
+                        cursor = conn.cursor(dictionary=True)
+
+                        try:
+                            usuario = buscar_usuario_por_whatsapp(telefone_cliente, cursor)
+
+                            if not usuario:
+                                msg_nao_cadastrado = (
+                                    "🛡️ *Assistente ReAction [IA]*\n\n"
+                                    "⚠️ *WhatsApp não vinculado ao ReAction*\n\n"
+                                    "Não encontramos uma conta associada a este número de telefone.\n\n"
+                                    "👉 Acesse a aba *Ajustes/Perfil* no seu painel ReAction e informe seu WhatsApp para liberar os comandos e alertas!"
+                                )
+                                enviar_mensagem_whatsapp(telefone_cliente, msg_nao_cadastrado)
+                                continue
+
+                            empresa_id = usuario['empresa_id']
+                            nome_gestor = usuario['nome'].split()[0]
+                            texto_lc = texto_recebido.lower().strip()
+
+                            # COMANDO 1: RESUMO / REPUTAÇÃO / SAÚDE DA MARCA
+                            if texto_lc in ['resumo', 'reputacao', 'reputação', 'status', 'saude', 'saúde', 'cockpit']:
+                                cursor.execute("""
+                                    SELECT 
+                                        COUNT(*) as total_reviews,
+                                        COALESCE(AVG(nota), 5.0) as media_nota,
+                                        COUNT(CASE WHEN status = 'alerta_crise' OR nota <= 2 THEN 1 END) as alertas_crise,
+                                        COUNT(CASE WHEN status = 'pendente' THEN 1 END) as pendentes_ia
+                                    FROM avaliacoes_feed
+                                    WHERE empresa_id = %s
+                                """, (empresa_id,))
+                                stats = cursor.fetchone() or {}
+
+                                media = float(stats.get('media_nota', 5.0))
+                                total = stats.get('total_reviews', 0)
+                                crises = stats.get('alertas_crise', 0)
+                                pendentes = stats.get('pendentes_ia', 0)
+
+                                saude_pct = round((media / 5.0) * 100, 1)
+                                emoji_saude = "🟢" if saude_pct >= 90 else ("🟡" if saude_pct >= 70 else "🔴")
+
+                                resposta_resumo = (
+                                    f"🛡️ *Cockpit ReAction • {usuario['nome_empresa']}*\n\n"
+                                    f"Olá, *{nome_gestor}*! Aqui está o raio-x da sua reputação:\n\n"
+                                    f"{emoji_saude} *Saúde da Marca:* {saude_pct}% ({media:.1f} ⭐)\n"
+                                    f"📊 *Total de Avaliações:* {total}\n"
+                                    f"🚨 *Alertas de Crise:* {crises}\n"
+                                    f"⏳ *Pendências de IA:* {pendentes}\n\n"
+                                    f"🔗 Acesse o painel: https://reaction.frameia.com.br/app"
+                                )
+                                enviar_mensagem_whatsapp(telefone_cliente, resposta_resumo)
+
+                            # COMANDO 2: LISTAR AÇÕES / TAREFAS
+                            elif texto_lc in ['acoes', 'ações', 'tarefas', 'pendencias', 'pendências']:
+                                cursor.execute("""
+                                    SELECT id, titulo, prioridade, prazo, status
+                                    FROM acoes
+                                    WHERE empresa_id = %s AND status = 'pendente'
+                                    ORDER BY (prioridade = 'critical') DESC, prazo ASC
+                                    LIMIT 5
+                                """, (empresa_id,))
+                                lista_acoes = cursor.fetchall()
+
+                                if not lista_acoes:
+                                    msg_acoes = f"✅ *Tudo em dia, {nome_gestor}!*\n\nNão há nenhuma ação pendente no seu Cockpit no momento."
+                                else:
+                                    msg_acoes = f"📋 *Ações Pendentes no Cockpit ({len(lista_acoes)}):*\n\n"
+                                    for a in lista_acoes:
+                                        prio_emoji = "🚨" if a['prioridade'] == 'critical' else "📌"
+                                        prazo_txt = f" (Prazo: {a['prazo']})" if a.get('prazo') else ""
+                                        msg_acoes += f"{prio_emoji} *#{a['id']}* - {a['titulo']}{prazo_txt}\n"
+                                    msg_acoes += "\n💡 Para criar uma nova ação, envie: *criar acao [descrição]*"
+
+                                enviar_mensagem_whatsapp(telefone_cliente, msg_acoes)
+
+                            # COMANDO 3: CRIAR NOVA AÇÃO NO COCKPIT
+                            elif texto_lc.startswith('criar acao') or texto_lc.startswith('criar ação') or texto_lc.startswith('acao ') or texto_lc.startswith('ação '):
+                                titulo_acao = re.sub(r'^(?:criar\s+ac(?:a|ã)o|ac(?:a|ã)o)\s+', '', texto_recebido, flags=re.IGNORECASE).strip()
+                                if titulo_acao:
+                                    cursor.execute("""
+                                        INSERT INTO acoes (empresa_id, criado_por, titulo, prioridade, status)
+                                        VALUES (%s, %s, %s, 'normal', 'pendente')
+                                    """, (empresa_id, usuario['usuario_id'], titulo_acao))
+                                    conn.commit()
+                                    nova_id = cursor.lastrowid
+
+                                    msg_criada = (
+                                        f"✅ *Ação Registrada com Sucesso!*\n\n"
+                                        f"📌 *#{nova_id}* - {titulo_acao}\n"
+                                        f"👤 Criada por: {nome_gestor}\n"
+                                        f"📱 Já visível no seu Cockpit ReAction!"
+                                    )
+                                    enviar_mensagem_whatsapp(telefone_cliente, msg_criada)
+
+                            # COMANDO 4: ALERTAS VERMELHOS / CRISES
+                            elif texto_lc in ['alertas', 'alerta', 'crises', 'crise']:
+                                cursor.execute("""
+                                    SELECT id, plataforma_origem, nome_cliente, nota, comentario
+                                    FROM avaliacoes_feed
+                                    WHERE empresa_id = %s AND (status = 'alerta_crise' OR nota <= 2)
+                                    ORDER BY id DESC
+                                    LIMIT 3
+                                """, (empresa_id,))
+                                alertas = cursor.fetchall()
+
+                                if not alertas:
+                                    msg_alertas = f"🛡️ *Nenhum alerta de crise ativo no momento!* Sua reputação está segura, {nome_gestor}."
+                                else:
+                                    msg_alertas = f"🚨 *Alertas de Crise Recentes ({len(alertas)}):*\n\n"
+                                    for al in alertas:
+                                        msg_alertas += f"🔴 *[{al['plataforma_origem'].upper()}] {al['nome_cliente']}* ({al['nota']} ⭐)\n"
+                                        msg_alertas += f"💬 \"{al['comentario'] or 'Sem comentário'}\"\n\n"
+                                    msg_alertas += "👉 Acesse a Central de Reputação para responder: https://reaction.frameia.com.br/reputacao"
+
+                                enviar_mensagem_whatsapp(telefone_cliente, msg_alertas)
+
+                            # COMANDO PADRÃO / AJUDA
+                            else:
+                                msg_ajuda = (
+                                    f"🤖 *Assistente ReAction [IA] • Olá, {nome_gestor}!*\n\n"
+                                    f"Comandos rápidos disponíveis no seu WhatsApp:\n\n"
+                                    f"🔹 *resumo* - Raio-X da reputação e saúde da marca\n"
+                                    f"🔹 *acoes* - Ver ações e tarefas pendentes no Cockpit\n"
+                                    f"🔹 *criar acao [texto]* - Criar nova ação diretamente no painel\n"
+                                    f"🔹 *alertas* - Monitorar crises e notas baixas recentes\n"
+                                    f"🔹 *ajuda* - Exibir este menu de comandos\n\n"
+                                    f"🌐 Painel Web: https://reaction.frameia.com.br"
+                                )
+                                enviar_mensagem_whatsapp(telefone_cliente, msg_ajuda)
+
+                        finally:
+                            cursor.close()
+                            conn.close()
+
+            return jsonify({"status": "EVENT_RECEIVED"}), 200
+
+        except Exception as err:
+            print(f"[WHATSAPP WEBHOOK ERRO GERAL] {err}")
+            return jsonify({"status": "ERROR", "message": str(err)}), 500

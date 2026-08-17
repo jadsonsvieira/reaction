@@ -2,15 +2,44 @@
 <html lang="pt-PT" class="h-full">
 
 <head>
+    <script>
+        (function() {
+            var currentTheme = localStorage.getItem('reactionTheme');
+            if (currentTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+
+        function toggleTheme() {
+            var isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('reactionTheme', isDark ? 'dark' : 'light');
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'reactionTheme') {
+                if (e.newValue === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+        });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReAction by Frame [IA] | Minhas Ações</title>
+                    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.2.0">
     <link rel="shortcut icon" href="/static/favicon.ico?v=0.2.0">
     <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.2.0">
-    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.2.0">
     <link rel="manifest" href="/static/manifest.json?v=0.2.0">
     <meta name="theme-color" content="#ff6b35">
+    <meta name="application-name" content="ReAction">
+    <meta name="apple-mobile-web-app-title" content="ReAction">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
 
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
@@ -211,6 +240,87 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
     </style>
+
+    
+
+
+    
+    
+
+
+    <style>
+        /* TEMA ESCURO (DARK MODE OBSIDIAN PREMIUM OPCIONAL MULTI-TAB) */
+        html.dark, html.dark body {
+            background-color: #09090b !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark .bg-white {
+            background-color: #141517 !important;
+            border-color: #27272a !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark [class*="bg-gray-50"], 
+        html.dark [class*="bg-gray-100"],
+        html.dark [class*="bg-gray-200"] {
+            background-color: #18191c !important;
+            border-color: #27272a !important;
+            color: #d4d4d8 !important;
+        }
+        html.dark .text-gray-900 {
+            color: #ffffff !important;
+        }
+        html.dark .text-gray-800, 
+        html.dark .text-gray-700, 
+        html.dark .text-gray-600 {
+            color: #e4e4e7 !important;
+        }
+        html.dark .text-gray-500 {
+            color: #a1a1aa !important;
+        }
+        html.dark [class*="border-gray-"] {
+            border-color: #27272a !important;
+        }
+        html.dark input, 
+        html.dark select, 
+        html.dark textarea {
+            background-color: #18191c !important;
+            color: #ffffff !important;
+            border-color: #27272a !important;
+        }
+        html.dark .review-card, 
+        html.dark .kpi-card {
+            background-color: #141517 !important;
+            border-color: #27272a !important;
+            color: #ffffff !important;
+        }
+        html.dark .kpi-card .rounded-full.blur-xl,
+        html.dark .kpi-card .rounded-full,
+        html.dark .review-card .rounded-bl-full {
+            display: none !important;
+        }
+        html.dark .review-card p {
+            color: #e4e4e7 !important;
+        }
+        html.dark .review-card [class*="bg-orange-50"],
+        html.dark .review-card [class*="bg-gray-50"],
+        html.dark .review-card .bg-white {
+            background-color: #121315 !important;
+            border-color: #27272a !important;
+            color: #d4d4d8 !important;
+        }
+        html.dark .task-row:hover {
+            background-color: #1c1d21 !important;
+        }
+        html.dark header, 
+        html.dark .sticky {
+            background-color: rgba(9, 9, 11, 0.85) !important;
+            border-color: #27272a !important;
+        }
+        html.dark aside {
+            background-color: #0c0d0f !important;
+            border-color: #27272a !important;
+        }
+    </style>
 </head>
 
 <body class="h-full font-body text-gray-800">
@@ -218,18 +328,11 @@
 
         <aside id="sidebar" class="w-64 flex-shrink-0 flex-col transition-all bg-sidebar hidden md:flex z-20 shadow-xl">
 
-            <!-- LOGO DA SIDEBAR PADRONIZADA COM A LANDING PAGE -->
+                        <!-- LOGO PADRONIZADA REACTION BY FRAME [IA] -->
             <div class="p-6 flex items-center gap-3">
-                <div
-                    class="w-9 h-9 bg-brand rounded-xl flex items-center justify-center shadow-md shadow-brand/20 shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        <path d="M9 12l2 2 4-4"></path>
-                    </svg>
-                </div>
-                <span class="font-heading font-bold text-xl text-white tracking-tight">Re<span
-                        class="text-brand">Action</span></span>
+                <a href="/app" class="flex items-center gap-2">
+                    <img src="/static/logo_reaction_transparent_dark.png?v=0.2.0" alt="ReAction Logo" class="h-12 md:h-14 w-auto object-contain transition-all">
+                </a>
             </div>
 
             <nav class="flex-1 mt-6 px-4 space-y-1.5" role="navigation">
@@ -266,32 +369,36 @@
             </nav>
 
             <div class="p-5 border-t border-gray-700/50 flex items-center gap-3 bg-black/10 m-3 rounded-2xl">
-                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner overflow-hidden cursor-pointer" onclick="window.location.href=\'/ajustes\'">{% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}</div>
-                <div class="text-sm text-gray-300 truncate flex-1 font-medium">
-                    {{ usuario.nome }}
-                </div>
-                <a href="/ajustes" class="text-gray-500 hover:text-gray-300 transition-colors p-1" title="Ajustes">
-                    <i data-lucide="settings" class="w-4 h-4"></i>
-                </a>
-                <a href="/logout" class="text-gray-500 hover:text-red-400 transition-colors p-1" title="Sair">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                </a>
-            </div>
-        </aside>
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-inner overflow-hidden cursor-pointer" onclick="window.location.href='/ajustes'">
+            {% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}
+        </div>
+        <div class="text-sm text-gray-300 truncate flex-1 font-medium" id="sidebar-name" title="{{ usuario.nome }}">
+            {{ usuario.nome }}
+        </div>
+        <a href="/ajustes" class="text-gray-400 hover:text-gray-200 transition-colors p-1" title="Ajustes">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+        </a>
+        <button type="button" onclick="toggleTheme()" class="text-gray-400 hover:text-amber-400 transition-colors p-1" title="Alternar Modo Escuro/Claro">
+            <i data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+        <a href="/logout" class="text-gray-400 hover:text-red-400 transition-colors p-1" title="Sair">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+        </a>
+    </div>
+    </aside>
 
         <div class="main-scroll flex-1 flex flex-col h-screen overflow-y-auto relative" id="main-area">
 
             <!-- LOGO MOBILE PADRONIZADA COM A LANDING PAGE -->
-            <div
-                class="md:hidden flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-30 border-b border-gray-200/60">
-                <a href="/app" class="flex items-center gap-2">
-            <img src="/static/logo_reaction_transparent_light.png" alt="ReAction Logo" class="h-11 w-auto object-contain transition-all">
+            <div class="md:hidden flex items-center justify-between px-5 py-3.5 bg-white/85 dark:bg-[#141517]/85 backdrop-blur-xl sticky top-0 z-30 border-b border-gray-200/70 dark:border-white/10 transition-colors">
+        <!-- LOGO MOBILE OFICIAL REACTION BY FRAME [IA] (FUNDO CLARO) -->
+        <a href="/app" class="flex items-center gap-2">
+          <img src="/static/logo_reaction_transparent_light.png?v=0.2.0" alt="ReAction Logo" class="h-10 w-auto object-contain transition-all">
         </a>
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold bg-brand shadow-sm"
-                    onclick="window.location.href='/ajustes'">
-                    {{ usuario.iniciais }}
-                </div>
-            </div>
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold bg-brand shadow-sm overflow-hidden cursor-pointer" onclick="window.location.href='/ajustes'">
+          {% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}
+        </div>
+      </div>
 
             <header
                 class="flex flex-col sm:flex-row sm:items-end justify-between px-6 md:px-10 py-8 bg-transparent shrink-0 gap-4">
@@ -340,70 +447,114 @@
         </div>
     </div>
 
-    <div
-        class="fixed bottom-0 left-0 right-0 z-50 md:hidden pb-safe bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-        <nav class="flex items-center justify-around h-[68px] px-2">
-            <a href="/app"
-                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
-                <i data-lucide="layout-dashboard" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
-                <span class="text-[10px] font-semibold">Cockpit</span>
-            </a>
-            <a href="/reputacao"
-                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
-                <i data-lucide="message-square" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
-                <span class="text-[10px] font-semibold">Reputação</span>
-            </a>
-            <a href="/minhas_acoes" class="flex flex-col items-center justify-center w-full h-full gap-1 active group">
-                <div class="px-5 py-1 rounded-full bg-brand/10 transition-colors">
-                    <i data-lucide="list-checks" class="w-6 h-6 text-brand"></i>
-                </div>
-                <span class="text-[10px] font-bold text-brand">Ações</span>
-            </a>
-            <a href="/integracoes"
-                class="flex flex-col items-center justify-center w-full h-full gap-1 group text-gray-400 hover:text-brand transition-colors">
-                <i data-lucide="link" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
-                <span class="text-[10px] font-semibold">Canais</span>
-            </a>
-        </nav>
+        <!-- DOCK FLUTUANTE MOBILE SIMÉTRICO E CENTRALIZADO (ESTILO NETFLIX & GOOGLE FOTOS) -->
+  <div class="fixed bottom-4 inset-x-0 z-40 md:hidden flex justify-center items-center px-4 pointer-events-none pb-safe">
+    <nav class="pointer-events-auto max-w-[360px] w-full mx-auto grid grid-cols-4 gap-1 p-1.5 rounded-full bg-white/95 dark:bg-[#16171a]/95 backdrop-blur-2xl border border-gray-200/80 dark:border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.16)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.7)] transition-all duration-300">
+      <a href="/app" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-brand dark:hover:text-brand transition-all duration-200 hover:bg-gray-100/50 dark:hover:bg-white/5">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+        <span class="text-[10px] font-bold tracking-tight mt-0.5">Cockpit</span>
+      </a>
+      <a href="/reputacao" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-brand dark:hover:text-brand transition-all duration-200 hover:bg-gray-100/50 dark:hover:bg-white/5">
+        <i data-lucide="message-square" class="w-4 h-4"></i>
+        <span class="text-[10px] font-semibold tracking-tight mt-0.5">Reputação</span>
+      </a>
+      <a href="/minhas_acoes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-full bg-brand text-white shadow-sm shadow-brand/30 transition-all duration-200">
+        <i data-lucide="list-checks" class="w-4 h-4"></i>
+        <span class="text-[10px] font-bold tracking-tight mt-0.5">Ações</span>
+      </a>
+      <button type="button" onclick="openMobileMenuDrawer()" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-brand dark:hover:text-brand transition-all duration-200 hover:bg-gray-100/50 dark:hover:bg-white/5">
+        <i data-lucide="menu" class="w-4 h-4"></i>
+        <span class="text-[10px] font-semibold tracking-tight mt-0.5">Menu</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- DRAWER / MENU MOBILE SLIDE-UP (ESTILO NETFLIX & GOOGLE FOTOS) -->
+  <div id="mobile-menu-drawer-backdrop" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity duration-300 hidden opacity-0" onclick="closeMobileMenuDrawer()"></div>
+  <div id="mobile-menu-drawer" class="fixed inset-x-0 bottom-0 z-50 transform translate-y-full transition-transform duration-300 ease-out bg-white dark:bg-[#141517] rounded-t-3xl border-t border-gray-200/80 dark:border-white/10 shadow-2xl p-6 pb-safe max-w-lg mx-auto">
+    <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-5"></div>
+    <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold bg-brand shadow-sm overflow-hidden cursor-pointer" onclick="window.location.href='/ajustes'">
+          {% if usuario.foto_perfil %}<img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nome }}" class="w-full h-full object-cover">{% else %}{{ usuario.iniciais }}{% endif %}
+        </div>
+        <div>
+          <p class="font-heading font-bold text-sm text-gray-900 dark:text-white">{{ usuario.nome }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">{{ usuario.email }}</p>
+        </div>
+      </div>
+      <button type="button" onclick="closeMobileMenuDrawer()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
     </div>
-
-    <div id="modal-new" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true"
-        aria-label="Nova Ação">
-        <div class="bg-white rounded-3xl w-full max-w-md p-8 mx-4 shadow-2xl transform transition-all scale-100">
-
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="font-heading font-bold text-xl text-gray-900">Nova Ação</h3>
-                <button id="btn-close-modal"
-                    class="text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full p-2 transition-colors">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <form id="form-new-action" class="space-y-5">
-                <div>
-                    <label for="inp-title" class="block text-sm font-semibold text-gray-700 mb-2">Título da
-                        tarefa</label>
-                    <input id="inp-title" type="text" required
-                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition-all"
-                        placeholder="O que precisa ser feito?">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label for="inp-priority"
-                            class="block text-sm font-semibold text-gray-700 mb-2">Prioridade</label>
-                        <select id="inp-priority"
-                            class="w-full border border-gray-200 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand bg-white cursor-pointer transition-all">
-                            <option value="normal">Normal</option>
-                            <option value="critical">Crítica</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="inp-due" class="block text-sm font-semibold text-gray-700 mb-2">Prazo Final</label>
-                        <input id="inp-due" type="date"
-                            class="w-full border border-gray-200 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition-all">
-                    </div>
-                </div>
+    <div class="grid grid-cols-2 gap-3 py-4">
+      <a href="/relatorios" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-orange-500/10 text-brand"><i data-lucide="pie-chart" class="w-4 h-4"></i></div>
+        <span>Relatórios</span>
+      </a>
+      <a href="/sala_maquinas" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-blue-500/10 text-blue-500"><i data-lucide="settings" class="w-4 h-4"></i></div>
+        <span>Sala de Máquinas</span>
+      </a>
+      <a href="/integracoes" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-500"><i data-lucide="link" class="w-4 h-4"></i></div>
+        <span>Canais & APIs</span>
+      </a>
+      <a href="/ajustes" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-purple-500/10 text-purple-500"><i data-lucide="user-cog" class="w-4 h-4"></i></div>
+        <span>Meus Ajustes</span>
+      </a>
+    </div>
+    <div class="pt-2 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2">
+      <div class="flex items-center justify-between gap-3">
+        <button type="button" onclick="toggleTheme()" class="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gray-100 dark:bg-[#1f2024] text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+          <i data-lucide="moon" class="w-4 h-4 text-amber-500"></i>
+          <span>Modo Escuro/Claro</span>
+        </button>
+        <a href="/logout" class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+          <span>Sair</span>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-4 pt-2 text-[11px] text-gray-400 dark:text-gray-500">
+        <a href="/termos" target="_blank" class="hover:text-brand">Termos de Uso</a>
+        <span>•</span>
+        <a href="/privacidade" target="_blank" class="hover:text-brand">Privacidade & LGPD</a>
+      </div>
+    </div>
+  </div><button type="button" onclick="closeMobileMenuDrawer()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="grid grid-cols-2 gap-3 py-4">
+      <a href="/relatorios" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-orange-500/10 text-brand"><i data-lucide="pie-chart" class="w-4 h-4"></i></div>
+        <span>Relatórios</span>
+      </a>
+      <a href="/sala_maquinas" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-blue-500/10 text-blue-500"><i data-lucide="settings" class="w-4 h-4"></i></div>
+        <span>Sala de Máquinas</span>
+      </a>
+      <a href="/integracoes" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-500"><i data-lucide="link" class="w-4 h-4"></i></div>
+        <span>Canais & APIs</span>
+      </a>
+      <a href="/ajustes" class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-[#1c1d21] border border-gray-200/60 dark:border-gray-800 hover:border-brand/40 text-gray-800 dark:text-gray-200 text-xs font-semibold transition-all">
+        <div class="p-2 rounded-xl bg-purple-500/10 text-purple-500"><i data-lucide="user-cog" class="w-4 h-4"></i></div>
+        <span>Meus Ajustes</span>
+      </a>
+    </div>
+    <div class="pt-2 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between gap-3">
+      <button type="button" onclick="toggleTheme()" class="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gray-100 dark:bg-[#1f2024] text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+        <i data-lucide="moon" class="w-4 h-4 text-amber-500"></i>
+        <span>Modo Escuro/Claro</span>
+      </button>
+      <a href="/logout" class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-red-50 dark:bg-red-500/10 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors">
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+        <span>Sair</span>
+      </a>
+    </div>
+  </div>
 
                 <div class="pt-6 mt-2">
                     <button type="submit" id="btn-salvar"
@@ -425,6 +576,18 @@
         let currentFilter = 'all'; // 'all', 'pending', 'completed'
 
         // ================= FUNÇÕES UTILITÁRIAS =================
+        
+        function getPlatformIconHTML(plat) {
+            const p = (plat || '').toLowerCase();
+            if (p.includes('google')) return '<img src="/static/img/plataformas/google_business.png?v=0.2.0" class="w-4 h-4 object-contain inline-block rounded-sm" alt="Google">';
+            if (p.includes('instagram')) return '<img src="/static/img/plataformas/instagram.png?v=0.2.0" class="w-4 h-4 object-contain inline-block rounded-sm" alt="Instagram">';
+            if (p.includes('ifood')) return '<img src="/static/img/plataformas/ifood.png?v=0.2.0" class="w-4 h-4 object-contain inline-block rounded-sm" alt="iFood">';
+            if (p.includes('whatsapp')) return '<img src="/static/img/plataformas/whatsapp.png?v=0.2.0" class="w-4 h-4 object-contain inline-block rounded-sm" alt="WhatsApp">';
+            if (p.includes('ze') || p.includes('zé')) return '<img src="/static/img/plataformas/ze_delivery.png?v=0.2.0" class="w-4 h-4 object-contain inline-block rounded-sm" alt="Zé Delivery">';
+            if (p.includes('99')) return '<img src="/static/img/plataformas/99food.png?v=0.2.0" class="w-4 h-4 object-contain inline-block rounded-sm" alt="99Food">';
+            return '<i data-lucide="share-2" class="w-3 h-3"></i>';
+        }
+    
         function escapeHTML(str) {
             if (!str) return '';
             return str.toString().replace(/[&<>'"]/g, tag => ({
@@ -654,6 +817,57 @@
             lucide.createIcons();
         })();
     </script>
+
+{% if usuario.termos_pendentes %}
+<!-- MODAL DE ACEITE OBRIGATÓRIO DE TERMOS E PRIVACIDADE (LGPD) -->
+<div id="modal-termos-obrigatorio" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#141517] rounded-3xl p-6 sm:p-8 max-w-md w-full border border-gray-200 dark:border-gray-800 shadow-2xl space-y-6 text-center">
+        <div class="w-14 h-14 rounded-2xl bg-orange-500/10 text-brand flex items-center justify-center mx-auto shadow-sm">
+            <i data-lucide="shield-check" class="w-7 h-7"></i>
+        </div>
+        <div>
+            <h3 class="font-heading font-bold text-xl text-gray-900 dark:text-white">Atualização dos Termos & LGPD</h3>
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
+                Atualizamos nossos <a href="/termos" target="_blank" class="text-brand font-bold underline">Termos de Uso</a> e <a href="/privacidade" target="_blank" class="text-brand font-bold underline">Política de Privacidade</a> com nossos dados corporativos oficiais (CNPJ 68.614.850/0001-13). Para continuar utilizando o ReAction, por favor confirme a sua concordância.
+            </p>
+        </div>
+        <div class="p-4 rounded-2xl bg-gray-50 dark:bg-[#18191c] border border-gray-200/60 dark:border-gray-800 text-left text-xs text-gray-600 dark:text-gray-400 space-y-1">
+            <p><strong>Controladora:</strong> MJSV TECNOLOGIA E SOLUCOES DIGITAIS INOVA SIMPLES (I.S.)</p>
+            <p><strong>CNPJ:</strong> 68.614.850/0001-13</p>
+            <p><strong>Versão:</strong> 0.2.0 (16/08/2026)</p>
+        </div>
+        <button type="button" id="btn-aceitar-termos" onclick="confirmarAceiteTermos()" class="w-full py-3.5 rounded-xl bg-brand text-white font-bold text-sm hover:brightness-110 shadow-lg shadow-brand/25 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="check" class="w-4 h-4"></i> Li e Concordo com os Termos
+        </button>
+    </div>
+</div>
+<script>
+function confirmarAceiteTermos() {
+    const btn = document.getElementById('btn-aceitar-termos');
+    if (btn) { btn.disabled = true; btn.innerText = 'Gravando consentimento...'; }
+    fetch('/api/aceitar_termos', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            const modal = document.getElementById('modal-termos-obrigatorio');
+            if (modal) modal.remove();
+        } else {
+            alert('Erro ao gravar aceite: ' + (d.error || 'Tente novamente'));
+            if (btn) { btn.disabled = false; btn.innerText = 'Tentar Novamente'; }
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Erro ao conectar ao servidor.');
+        if (btn) { btn.disabled = false; btn.innerText = 'Tentar Novamente'; }
+    });
+}
+</script>
+{% endif %}
+
 </body>
 
 </html>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+
+<head>
+    <script>
+        (function() {
+            var currentTheme = localStorage.getItem('reactionTheme');
+            if (currentTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termos de Uso e Serviço | ReAction by Frame [IA]</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.2.0">
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.2.0">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.2.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.2.0">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Poppins', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif']
+                    },
+                    colors: {
+                        brand: '#ff6b35',
+                        sidebar: '#3a3a3a'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html.dark, html.dark body {
+            background-color: #09090b !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark .bg-white {
+            background-color: #141517 !important;
+            border-color: #27272a !important;
+            color: #f4f4f5 !important;
+        }
+        html.dark .text-gray-900 {
+            color: #ffffff !important;
+        }
+        html.dark .text-gray-700, html.dark .text-gray-600 {
+            color: #d4d4d8 !important;
+        }
+        html.dark [class*="border-gray-"] {
+            border-color: #27272a !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-full font-body text-gray-800 bg-gray-50 antialiased flex flex-col">
+    <!-- Top Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm transition-colors">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <img src="/static/logo_reaction_transparent_light.png?v=0.2.0" alt="ReAction Logo" class="h-10 w-auto object-contain dark:hidden">
+                <img src="/static/logo_reaction_transparent_dark.png?v=0.2.0" alt="ReAction Logo" class="h-10 w-auto object-contain hidden dark:block">
+            </a>
+            <div class="flex items-center gap-3">
+                <a href="/login" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-[#1f2024] dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                    Entrar no App
+                </a>
+                <a href="/" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-brand text-white hover:brightness-110 shadow-sm shadow-brand/20 transition-all flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar ao Início
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Legal Content -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-gray-200/80 shadow-sm space-y-8">
+            <div class="border-b border-gray-100 dark:border-gray-800 pb-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-500/10 text-brand text-xs font-bold uppercase tracking-wider mb-3">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> Documento Oficial
+                </div>
+                <h1 class="font-heading font-bold text-2xl sm:text-3xl text-gray-900 tracking-tight">Termos e Condições de Uso</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Versão oficial 0.2.0 • Atualizada em 16 de Agosto de 2026</p>
+            </div>
+
+            <!-- Dados da Empresa -->
+            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-[#18191c] border border-gray-200/60 dark:border-gray-800 space-y-2">
+                <h3 class="font-heading font-bold text-sm text-gray-900 dark:text-white uppercase tracking-wider">Dados da Controladora e Prestadora do Serviço</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-400">
+                    <p><strong>Razão Social:</strong> MJSV TECNOLOGIA E SOLUCOES DIGITAIS INOVA SIMPLES (I.S.)</p>
+                    <p><strong>CNPJ:</strong> 68.614.850/0001-13</p>
+                    <p><strong>Natureza Jurídica:</strong> Empresa Simples de Inovação (234-8)</p>
+                    <p><strong>Sede:</strong> Rua Zildenia, 950, Apto 101, Amador, Eusébio - CE, CEP 61.769-180</p>
+                    <p><strong>E-mails de Contato:</strong> jadson@mjsv.com.br / contato@frameia.com.br</p>
+                    <p><strong>Telefone Comercial:</strong> (85) 9662-4278 / (85) 8731-8995</p>
+                </div>
+            </div>
+
+            <!-- Seções dos Termos -->
+            <section class="space-y-4 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">1. Objeto e Aceitação dos Termos</h2>
+                <p>
+                    O presente instrumento regula o licenciamento de software sob a modalidade SaaS (Software as a Service) da plataforma <strong>ReAction</strong>, desenvolvida pela <strong>MJSV TECNOLOGIA E SOLUCOES DIGITAIS INOVA SIMPLES (I.S.)</strong>. Ao cadastrar-se, acessar ou utilizar qualquer funcionalidade do ReAction, você (doravante "Usuário" ou "Contratante") declara ter lido, compreendido e concordado integralmente com estes Termos de Uso e com a nossa Política de Privacidade.
+                </p>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">2. Serviços Prestados e Inteligência Artificial</h2>
+                <p>
+                    O <strong>ReAction</strong> é uma solução tecnológica voltada à gestão de reputação online, centralização de avaliações (reviews de Google Meu Negócio, Instagram, iFood, WhatsApp e Zé Delivery), geração automatizada de respostas com IA, radar de prazos e contenção de crises em tempo real. O Usuário reconhece que as respostas geradas por IA são sugestões inteligentes calibradas e que a responsabilidade final pelo atendimento e posicionamento institucional perante seus clientes é exclusiva do Usuário/Empresa titular.
+                </p>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">3. Cadastro, Senhas e Acesso Seguro</h2>
+                <p>
+                    O Usuário é responsável por manter a confidencialidade de suas credenciais de acesso (e-mail e senha). Qualquer atividade realizada com sua conta será de sua exclusiva responsabilidade. É expressamente proibido compartilhar credenciais, tentar burlar autenticações OAuth, realizar engenharia reversa ou acessar dados de outros inquilinos (tenants).
+                </p>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">4. Planos, Pagamentos e Cancelamento</h2>
+                <p>
+                    O acesso aos recursos do ReAction é fornecido mediante assinatura nos planos contratados (Básico, Pro ou Enterprise) ou serviços consultivos (Setup VIP). Os pagamentos são processados com segurança via gateways certificados (Mercado Pago). O Usuário pode solicitar o cancelamento de sua assinatura a qualquer momento através do painel de ajustes ou pelo canal oficial de suporte, mantendo o acesso até o término do ciclo já pago.
+                </p>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">5. Integração com WhatsApp e Canais Terceiros</h2>
+                <p>
+                    O ReAction oferece integração via API oficial da Meta (WhatsApp Business Cloud API) e conectores de terceiros. O Usuário autoriza o envio de alertas operacionais, notificações de crises e comandos remotos para o número de WhatsApp vinculado em seu perfil corporativo. O Usuário compromete-se a utilizar o serviço em conformidade com as Políticas Comerciais da Meta.
+                </p>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">6. Disponibilidade (SLA) e Manutenção</h2>
+                <p>
+                    A MJSV Tecnologia emprega os mais altos padrões de segurança em nuvem e infraestrutura para garantir disponibilidade contínua da plataforma. Manutenções programadas serão comunicadas previamente aos clientes sempre que possível.
+                </p>
+
+                <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white">7. Foro e Legislação Aplicável</h2>
+                <p>
+                    Estes Termos são regidos pelas leis da República Federativa do Brasil. Para dirimir quaisquer controvérsias oriundas do presente contrato, fica eleito o Foro da Comarca de Eusébio/CE, com renúncia expressa a qualquer outro, por mais privilegiado que seja.
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-white dark:bg-[#0c0d0f] border-t border-gray-200 dark:border-gray-800 py-6 text-center text-xs text-gray-500 transition-colors">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© 2026 MJSV TECNOLOGIA E SOLUCOES DIGITAIS INOVA SIMPLES (I.S.) • CNPJ: 68.614.850/0001-13</p>
+            <div class="flex items-center gap-4">
+                <a href="/termos" class="hover:text-brand font-bold text-brand">Termos de Uso</a>
+                <a href="/privacidade" class="hover:text-brand">Privacidade & LGPD</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
