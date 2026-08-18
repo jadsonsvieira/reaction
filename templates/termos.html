@@ -1,29 +1,29 @@
-<!doctype html>
-<html lang="pt-BR" class="h-full">
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full">
 
 <head>
-    <script>
-        (function() {
-            var currentTheme = localStorage.getItem('reactionTheme');
-            if (currentTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        })();
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Termos de Uso e Serviço | ReAction by Frame [IA]</title>
-    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.2.0">
-    <link rel="shortcut icon" href="/static/favicon.ico?v=0.2.0">
-    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.2.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.2.0">
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Termos de Uso | ReAction by Frame [IA]</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.2.1">
+    <link rel="shortcut icon" href="/static/favicon.ico?v=0.2.1">
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon.png?v=0.2.1">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=0.2.1">
+    <link rel="manifest" href="/static/manifest.json?v=0.2.1">
+    <meta name="theme-color" content="#ff6b35">
+
+    <!-- Tailwind CSS & Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -31,22 +31,37 @@
                         body: ['DM Sans', 'sans-serif']
                     },
                     colors: {
-                        brand: '#ff6b35',
-                        sidebar: '#3a3a3a'
+                        brand: {
+                            DEFAULT: '#ff6b35',
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#ff6b35',
+                            600: '#ea580c',
+                            700: '#c2410c'
+                        }
                     }
                 }
             }
         }
     </script>
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <style>
-        html.dark, html.dark body {
-            background-color: #09090b !important;
+        html.dark {
+            background-color: #0c0d0f !important;
             color: #f4f4f5 !important;
+        }
+        html.dark body {
+            background-color: #0c0d0f !important;
+            color: #d4d4d8 !important;
         }
         html.dark .bg-white {
             background-color: #141517 !important;
-            border-color: #27272a !important;
-            color: #f4f4f5 !important;
         }
         html.dark .text-gray-900 {
             color: #ffffff !important;
@@ -65,8 +80,8 @@
     <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm transition-colors">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2">
-                <img src="/static/logo_reaction_transparent_light.png?v=0.2.0" alt="ReAction Logo" class="h-10 w-auto object-contain dark:hidden">
-                <img src="/static/logo_reaction_transparent_dark.png?v=0.2.0" alt="ReAction Logo" class="h-10 w-auto object-contain hidden dark:block">
+                <img src="/static/logo_reaction_transparent_light.png?v=0.2.1" alt="ReAction Logo" class="h-10 w-auto object-contain dark:hidden">
+                <img src="/static/logo_reaction_transparent_dark.png?v=0.2.1" alt="ReAction Logo" class="h-10 w-auto object-contain hidden dark:block">
             </a>
             <div class="flex items-center gap-3">
                 <a href="/login" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-[#1f2024] dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
@@ -87,10 +102,10 @@
                     <i data-lucide="shield-check" class="w-4 h-4"></i> Documento Oficial
                 </div>
                 <h1 class="font-heading font-bold text-2xl sm:text-3xl text-gray-900 tracking-tight">Termos e Condições de Uso</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Versão oficial 0.2.1 • Atualizada em 16 de Agosto de 2026</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Versão oficial 0.2.1 • Atualizada em 18 de Agosto de 2026</p>
             </div>
 
-                                                <!-- Identificação Institucional & Qualificação Legal (Padrão Cash / Frame [IA]) -->
+            <!-- Identificação Institucional & Qualificação Legal (Padrão Cash / Frame [IA]) -->
             <div class="p-6 rounded-3xl bg-gradient-to-br from-orange-500/5 via-orange-500/10 to-transparent border border-orange-500/20 dark:border-orange-500/30 space-y-3 my-6">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-brand flex items-center gap-2 m-0">
                     <i data-lucide="brain" class="w-4 h-4"></i> Identificação Institucional & Qualificação Legal
@@ -107,26 +122,77 @@
                     <p><strong>Canais de Contato:</strong> contato@frameia.com.br</p>
                 </div>
             </div>
-                    <span class="inline-flex text-[11px] font-black px-3 py-1 rounded-full bg-brand/10 text-brand uppercase tracking-wider self-start sm:self-auto">
-                        SaaS & Inteligência Artificial
-                    </span>
+
+            <!-- Seções dos Termos -->
+            <section class="space-y-6 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                <div>
+                    <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white mb-2">1. Objeto e Aceitação dos Termos</h2>
+                    <p>
+                        O presente instrumento regula o licenciamento e uso da plataforma SaaS (Software as a Service) <strong>ReAction</strong>, desenvolvida e operada pela <strong>Frame [IA]</strong> com sustentação jurídica da <strong>MJSV TECNOLOGIA E SOLUCOES DIGITAIS INOVA SIMPLES (I.S.)</strong>. Ao criar uma conta, contratar planos ou utilizar o sistema, o Usuário declara ter lido, compreendido e aceito integralmente estes Termos de Uso e nossa Política de Privacidade.
+                    </p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600 dark:text-gray-300">
-                    <p><strong>Empresa / Marca de Operação:</strong> <span class="font-bold text-gray-900 dark:text-white">Frame [IA]</span></p>
-                    <p><strong>Holding Controladora (CNPJ):</strong> MJSV TECNOLOGIA E SOLUCOES DIGITAIS (I.S.)</p>
-                    <p><strong>CNPJ Oficial:</strong> 68.614.850/0001-13</p>
-                    <p><strong>Natureza Jurídica:</strong> Empresa Simples de Inovação (234-8)</p>
-                    <p><strong>Sede:</strong> Eusébio - CE, Brasil (Região Metropolitana de Fortaleza)</p>
-                    <p><strong>Canais de Contato:</strong> contato@frameia.com.br / jadson@mjsv.com.br</p>
-                    <p><strong>Telefone / WhatsApp Comercial:</strong> (85) 9662-4278 / (85) 8731-8995</p>
-                    <p><strong>Plataforma SaaS Licenciada:</strong> ReAction by Frame [IA]</p>
+                <div>
+                    <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white mb-2">2. Descrição dos Serviços</h2>
+                    <p>
+                        O <strong>ReAction by Frame [IA]</strong> é uma plataforma inteligente de gestão de reputação online e contenção de crises. O sistema centraliza avaliações, gera minutas de resposta com Inteligência Artificial no tom de voz da marca, emite alertas imediatos no WhatsApp contra crises públicas e disponibiliza relatórios de sentimento do cliente.
+                    </p>
                 </div>
 
-                <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-black/40 border border-gray-200/50 dark:border-white/5 text-[11.5px] text-gray-500 dark:text-gray-400 leading-relaxed">
-                    <strong>Relação Institucional:</strong> A <strong>Frame [IA]</strong> é a empresa e ecossistema de inteligência artificial que projeta, mantém, comercializa e dá suporte à plataforma <strong>ReAction</strong>. A <strong>MJSV TECNOLOGIA</strong> atua como a holding mantenedora nos bastidores, titular da inscrição jurídica (CNPJ) e responsável pela infraestrutura formal e societária.
+                <div>
+                    <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white mb-2">3. Canais Conectados e Autorizações</h2>
+                    <p>
+                        O Usuário autoriza o ReAction a integrar-se com suas contas comerciais oficiais nos canais homologados: <strong>Google Meu Negócio, Instagram, iFood, 99Food, WhatsApp e Zé Delivery</strong>. O usuário é o único responsável pela titularidade e legitimidade das contas conectadas.
+                    </p>
                 </div>
+
+                <div>
+                    <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white mb-2">4. Inteligência Artificial, Tom de Voz e Moderação</h2>
+                    <p>
+                        As respostas geradas pela IA seguem os parâmetros configurados pelo Usuário na <em>Sala de Máquinas</em>. O Usuário pode optar pelo modo de resposta 100% automática para avaliações positivas ou pelo modo de moderação prévia com rascunhos. A Frame [IA] preza pela ética, cordialidade e precisão das respostas fornecidas pelos motores de inteligência artificial.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white mb-2">5. Estrutura de Planos e Período de Teste (Trial de 30 Dias)</h2>
+                    <p>
+                        O ReAction disponibiliza planos com cobrança mensal e anual. Para os planos <strong>Escudo Ativo (Pro)</strong> e <strong>Blindagem Total (Premium)</strong>, é concedido um período de <strong>teste grátis de 30 dias (Trial)</strong> para validação de todos os recursos. O Usuário pode cancelar a qualquer momento sem qualquer multa ou fidelidade. O plano gratuito (Shield Start) destina-se estritamente à degustação básica das interfaces da plataforma.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white mb-2">6. Segurança da Conta e Dados de Acesso</h2>
+                    <p>
+                        O Usuário é responsável por manter a confidencialidade de suas credenciais de login. O ReAction adota criptografia ponta a ponta, autenticação segura OAuth 2.0 e isolamento de banco de dados por organização (Multi-Tenant).
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white mb-2">7. Propriedade Intelectual</h2>
+                    <p>
+                        Todos os direitos de propriedade intelectual, códigos-fonte, algoritmos, logotipos, interfaces e marcas da plataforma pertencem com exclusividade à <strong>Frame [IA] / MJSV TECNOLOGIA</strong>. É vedada qualquer tentativa de engenharia reversa, cópia ou redistribuição sem autorização prévia por escrito.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white mb-2">8. Legislação Aplicável e Foro de Eleição</h2>
+                    <p>
+                        Estes Termos são regidos pelas leis da República Federativa do Brasil, em especial pelo Marco Civil da Internet (Lei nº 12.965/2014) e pela LGPD (Lei nº 13.709/2018). Fica eleito o Foro da Comarca de Eusébio - CE para dirimir eventuais controvérsias decorrentes deste instrumento.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-[#0c0d0f] border-t border-gray-200 dark:border-gray-800 py-6 text-center text-xs text-gray-500 transition-colors">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© 2026 Frame [IA] • Holding Controladora: MJSV TECNOLOGIA E SOLUCOES DIGITAIS (I.S.) • CNPJ: 68.614.850/0001-13</p>
+            <div class="flex items-center gap-4">
+                <a href="/termos" class="hover:text-brand font-bold text-brand">Termos de Uso</a>
+                <a href="/privacidade" class="hover:text-brand">Privacidade & LGPD</a>
             </div>
+        </div>
     </footer>
 
     <script>
