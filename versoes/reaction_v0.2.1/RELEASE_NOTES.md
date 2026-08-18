@@ -1,5 +1,5 @@
 # Release Notes - ReAction v0.2.1
-**Data:** 18/08/2026 07:07
+**Data:** 18/08/2026 19:48
 **Versão:** v0.2.1
 
 ## Novidades e Melhorias
