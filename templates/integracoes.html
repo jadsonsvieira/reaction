@@ -2,6 +2,10 @@
 <html lang="pt-PT" class="h-full">
 
 <head>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         (function() {
             var currentTheme = localStorage.getItem('reactionTheme');
@@ -15,6 +19,7 @@
         function toggleTheme() {
             var isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('reactionTheme', isDark ? 'dark' : 'light');
+            if (window.lucide) if (window.lucide) lucide.createIcons();
         }
 
         window.addEventListener('storage', function(e) {
@@ -26,35 +31,34 @@
                 }
             }
         });
-    
-    function openMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('hidden');
-        setTimeout(() => {
-          backdrop.classList.remove('opacity-0');
-          drawer.classList.remove('translate-y-full');
-        }, 10);
-      }
-    }
 
-    function closeMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.add('opacity-0');
-        drawer.classList.add('translate-y-full');
-        setTimeout(() => {
-          backdrop.classList.add('hidden');
-          drawer.classList.add('hidden');
-        }, 300);
-      }
-    }
+        function openMobileMenuDrawer() {
+            const drawer = document.getElementById('mobile-menu-drawer');
+            const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
+            if (drawer && backdrop) {
+                backdrop.classList.remove('hidden');
+                drawer.classList.remove('hidden');
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                    drawer.classList.remove('translate-y-full');
+                }, 10);
+            }
+        }
 
-</script>
-    <meta charset="UTF-8">
+        function closeMobileMenuDrawer() {
+            const drawer = document.getElementById('mobile-menu-drawer');
+            const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
+            if (drawer && backdrop) {
+                backdrop.classList.add('opacity-0');
+                drawer.classList.add('translate-y-full');
+                setTimeout(() => {
+                    backdrop.classList.add('hidden');
+                    drawer.classList.add('hidden');
+                }, 300);
+            }
+        }
+    </script>
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReAction by Frame [IA] | Canais e Integrações</title>
                     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.2.1">
@@ -68,111 +72,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <script src="https://cdn.tailwindcss.com/3.4.17">
-    function openMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('hidden');
-        setTimeout(() => {
-          backdrop.classList.remove('opacity-0');
-          drawer.classList.remove('translate-y-full');
-        }, 10);
-      }
-    }
-
-    function closeMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.add('opacity-0');
-        drawer.classList.add('translate-y-full');
-        setTimeout(() => {
-          backdrop.classList.add('hidden');
-          drawer.classList.add('hidden');
-        }, 300);
-      }
-    }
-
-</script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js">
-    function openMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('hidden');
-        setTimeout(() => {
-          backdrop.classList.remove('opacity-0');
-          drawer.classList.remove('translate-y-full');
-        }, 10);
-      }
-    }
-
-    function closeMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.add('opacity-0');
-        drawer.classList.add('translate-y-full');
-        setTimeout(() => {
-          backdrop.classList.add('hidden');
-          drawer.classList.add('hidden');
-        }, 300);
-      }
-    }
-
-</script>
+    
+    
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        heading: ['Poppins', 'sans-serif'],
-                        body: ['DM Sans', 'sans-serif']
-                    },
-                    colors: {
-                        brand: '#ff6b35',
-                        sidebar: '#3a3a3a',
-                        bglight: '#f4f4f5'
-                    }
-                }
-            }
-        } 
     
-    function openMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('hidden');
-        setTimeout(() => {
-          backdrop.classList.remove('opacity-0');
-          drawer.classList.remove('translate-y-full');
-        }, 10);
-      }
-    }
-
-    function closeMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.add('opacity-0');
-        drawer.classList.add('translate-y-full');
-        setTimeout(() => {
-          backdrop.classList.add('hidden');
-          drawer.classList.add('hidden');
-        }, 300);
-      }
-    }
-
-</script>
 
     <style>
         /* Reset e Estrutura Base */
@@ -699,7 +606,7 @@
 
     <script>
         // Inicializa Ícones
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
 
         // Helpers de Segurança e UI
         function escapeHTML(str) {
@@ -772,7 +679,7 @@
                             }
                         }
                     });
-                    lucide.createIcons();
+                    if (window.lucide) lucide.createIcons();
                 }
             } catch (e) {
                 console.error("Erro ao ler integrações", e);

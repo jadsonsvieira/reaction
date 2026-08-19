@@ -2,6 +2,10 @@
 <html lang="pt-PT" class="h-full">
 
 <head>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         (function() {
             var currentTheme = localStorage.getItem('reactionTheme');
@@ -15,6 +19,7 @@
         function toggleTheme() {
             var isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('reactionTheme', isDark ? 'dark' : 'light');
+            if (window.lucide) if (window.lucide) lucide.createIcons();
         }
 
         window.addEventListener('storage', function(e) {
@@ -26,35 +31,34 @@
                 }
             }
         });
-    
-    function openMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('hidden');
-        setTimeout(() => {
-          backdrop.classList.remove('opacity-0');
-          drawer.classList.remove('translate-y-full');
-        }, 10);
-      }
-    }
 
-    function closeMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.add('opacity-0');
-        drawer.classList.add('translate-y-full');
-        setTimeout(() => {
-          backdrop.classList.add('hidden');
-          drawer.classList.add('hidden');
-        }, 300);
-      }
-    }
+        function openMobileMenuDrawer() {
+            const drawer = document.getElementById('mobile-menu-drawer');
+            const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
+            if (drawer && backdrop) {
+                backdrop.classList.remove('hidden');
+                drawer.classList.remove('hidden');
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                    drawer.classList.remove('translate-y-full');
+                }, 10);
+            }
+        }
 
-</script>
-    <meta charset="UTF-8">
+        function closeMobileMenuDrawer() {
+            const drawer = document.getElementById('mobile-menu-drawer');
+            const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
+            if (drawer && backdrop) {
+                backdrop.classList.add('opacity-0');
+                drawer.classList.add('translate-y-full');
+                setTimeout(() => {
+                    backdrop.classList.add('hidden');
+                    drawer.classList.add('hidden');
+                }, 300);
+            }
+        }
+    </script>
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReAction by Frame [IA] | Ajustes</title>
                     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg?v=0.2.1">
@@ -68,111 +72,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <script src="https://cdn.tailwindcss.com/3.4.17">
-    function openMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('hidden');
-        setTimeout(() => {
-          backdrop.classList.remove('opacity-0');
-          drawer.classList.remove('translate-y-full');
-        }, 10);
-      }
-    }
-
-    function closeMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.add('opacity-0');
-        drawer.classList.add('translate-y-full');
-        setTimeout(() => {
-          backdrop.classList.add('hidden');
-          drawer.classList.add('hidden');
-        }, 300);
-      }
-    }
-
-</script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js">
-    function openMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('hidden');
-        setTimeout(() => {
-          backdrop.classList.remove('opacity-0');
-          drawer.classList.remove('translate-y-full');
-        }, 10);
-      }
-    }
-
-    function closeMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.add('opacity-0');
-        drawer.classList.add('translate-y-full');
-        setTimeout(() => {
-          backdrop.classList.add('hidden');
-          drawer.classList.add('hidden');
-        }, 300);
-      }
-    }
-
-</script>
+    
+    
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        heading: ['Poppins', 'sans-serif'],
-                        body: ['DM Sans', 'sans-serif']
-                    },
-                    colors: {
-                        brand: '#ff6b35',
-                        sidebar: '#3a3a3a',
-                        bglight: '#f4f4f5'
-                    }
-                }
-            }
-        } 
     
-    function openMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('hidden');
-        setTimeout(() => {
-          backdrop.classList.remove('opacity-0');
-          drawer.classList.remove('translate-y-full');
-        }, 10);
-      }
-    }
-
-    function closeMobileMenuDrawer() {
-      const drawer = document.getElementById('mobile-menu-drawer');
-      const backdrop = document.getElementById('mobile-menu-drawer-backdrop');
-      if (drawer && backdrop) {
-        backdrop.classList.add('opacity-0');
-        drawer.classList.add('translate-y-full');
-        setTimeout(() => {
-          backdrop.classList.add('hidden');
-          drawer.classList.add('hidden');
-        }, 300);
-      }
-    }
-
-</script>
 
     <style>
         /* Reset e Estrutura Base */
@@ -524,78 +431,78 @@
 
                 <!-- COLUNA DA DIREITA: ASSISTENTE WHATSAPP & SETUP VIP -->
                 <div class="space-y-8">
-                    <!-- CARD COMPLETO DE INTEGRAÇÃO COM WHATSAPP BOT (PADRÃO CASH SAAS) -->
-                    <div class="bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/30 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+                                        <!-- CARD ASSISTENTE WHATSAPP [IA] (DESIGN ELEGANTE E MINIMALISTA) -->
+                    <div class="bg-white dark:bg-[#16171a] p-6 md:p-8 rounded-3xl border border-gray-100 dark:border-white/10 shadow-sm transition-all hover:shadow-md space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100 dark:border-gray-800">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-sm">
                                     <i data-lucide="message-circle" class="w-6 h-6"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-heading font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
-                                        Assistente de Reputação & Alertas WhatsApp [IA]
-                                    </h3>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Interaja com a IA do ReAction diretamente no seu WhatsApp pessoal ou corporativo</p>
+                                    <h2 class="font-heading font-bold text-lg text-gray-900 dark:text-white leading-snug">
+                                        Assistente WhatsApp [IA]
+                                    </h2>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Interaja com a IA do ReAction pelo WhatsApp</p>
                                 </div>
                             </div>
 
                             {% if usuario.telefone %}
-                            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold shrink-0">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> CONECTADO: {{ usuario.telefone }}
-                            </div>
+                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold shrink-0 self-start sm:self-auto">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> {{ usuario.telefone }}
+                            </span>
                             {% else %}
-                            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold shrink-0">
-                                <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> NÚMERO PENDENTE NO PERFIL
-                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold shrink-0 self-start sm:self-auto">
+                                <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Número Pendente
+                            </span>
                             {% endif %}
                         </div>
 
                         <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                            Consulte indicadores de saúde da marca, acompanhe crises e crie tarefas operacionais instantaneamente por mensagem de texto no WhatsApp sem precisar abrir o painel.
+                            Consulte a nota média da marca, acompanhe crises e crie tarefas operacionais diretamente pelo WhatsApp sem precisar abrir o painel.
                         </p>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div class="p-4 rounded-2xl bg-white dark:bg-[#18191c] border border-gray-200/70 dark:border-gray-800 space-y-1.5 shadow-sm">
-                                <div class="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-                                    <i data-lucide="bar-chart-2" class="w-4 h-4"></i> 1. Raio-X & Resumo
+                        <!-- Grade de Comandos -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="p-3.5 rounded-2xl bg-gray-50 dark:bg-[#1f2024] border border-gray-100 dark:border-gray-800 space-y-1">
+                                <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                                    <i data-lucide="activity" class="w-3.5 h-3.5"></i> 1. Raio-X & Resumo
                                 </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                                    Envie <strong>resumo</strong> ou <strong>reputacao</strong> para receber a nota média, volume de reviews e crises em aberto.
+                                <p class="text-[11.5px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                                    Envie <strong>resumo</strong> para ver saúde da marca e reviews pendentes.
                                 </p>
                             </div>
 
-                            <div class="p-4 rounded-2xl bg-white dark:bg-[#18191c] border border-gray-200/70 dark:border-gray-800 space-y-1.5 shadow-sm">
-                                <div class="flex items-center gap-2 text-xs font-bold text-brand uppercase tracking-wider">
-                                    <i data-lucide="check-square" class="w-4 h-4"></i> 2. Gestão de Ações
+                            <div class="p-3.5 rounded-2xl bg-gray-50 dark:bg-[#1f2024] border border-gray-100 dark:border-gray-800 space-y-1">
+                                <div class="flex items-center gap-1.5 text-xs font-bold text-brand">
+                                    <i data-lucide="check-square" class="w-3.5 h-3.5"></i> 2. Gestão de Ações
                                 </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                                    Envie <strong>acoes</strong> para listar tarefas ou <strong>criar acao [texto]</strong> para inserir uma ação no Cockpit.
+                                <p class="text-[11.5px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                                    Envie <strong>acoes</strong> ou <strong>criar acao [texto]</strong> para tarefas.
                                 </p>
                             </div>
 
-                            <div class="p-4 rounded-2xl bg-white dark:bg-[#18191c] border border-gray-200/70 dark:border-gray-800 space-y-1.5 shadow-sm">
-                                <div class="flex items-center gap-2 text-xs font-bold text-red-500 uppercase tracking-wider">
-                                    <i data-lucide="shield-alert" class="w-4 h-4"></i> 3. Alertas de Crise
+                            <div class="p-3.5 rounded-2xl bg-gray-50 dark:bg-[#1f2024] border border-gray-100 dark:border-gray-800 space-y-1">
+                                <div class="flex items-center gap-1.5 text-xs font-bold text-red-500">
+                                    <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> 3. Alertas de Crise
                                 </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                                    Receba avisos instantâneos de avaliações de 1 e 2 estrelas com minuta de resposta pré-gerada pela IA.
+                                <p class="text-[11.5px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                                    Avisos instantâneos para notas 1 e 2 estrelas com minuta de resposta.
                                 </p>
                             </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3 border-t border-emerald-500/20">
-                            <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                                <i data-lucide="bot" class="w-4 h-4 text-emerald-500 shrink-0"></i>
-                                <span>
-                                    {% if usuario.telefone %}
-                                    Seu WhatsApp está habilitado para receber alertas e executar comandos.
-                                    {% else %}
-                                    Preencha seu telefone ao lado e clique em "Guardar Alterações" para ativar o bot.
-                                    {% endif %}
-                                </span>
-                            </div>
-                            <a href="https://wa.me/5511947190457?text=Oi%20ReAction!%20Quero%20consultar%20minha%20reputacao" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/25 transition-all">
-                                <i data-lucide="message-circle" class="w-4 h-4"></i> Abrir WhatsApp Oficial
+                        <!-- Rodapé do Card com CTA -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                {% if usuario.telefone %}
+                                <span class="text-emerald-600 dark:text-emerald-400 font-semibold">● Bot ativo</span> para o seu número cadastrado.
+                                {% else %}
+                                Informe seu WhatsApp em <em>Informações Pessoais</em> para ativar.
+                                {% endif %}
+                            </p>
+                            <a href="https://wa.me/5511947190457?text=Oi%20ReAction!%20Quero%20consultar%20minha%20reputacao" target="_blank" rel="noopener noreferrer"
+                                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all">
+                                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Abrir WhatsApp Oficial
                             </a>
                         </div>
                     </div>
@@ -776,7 +683,7 @@
 
     <script>
         // Inicializa os ícones do Lucide
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
 
         // Sistema de Toasts (Notificações)
         function toast(msg) {
