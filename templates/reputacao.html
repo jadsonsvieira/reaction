@@ -95,6 +95,73 @@
         rel="stylesheet">
     
     <style>
+    /* DOCK FLUTUANTE MOBILE - CONTRASTE ULTRA PRECISO EM MODO CLARO E ESCURO */
+    .mobile-dock-container {
+      pointer-events: none;
+    }
+    .mobile-dock-nav {
+      background: rgba(18, 19, 22, 0.95) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+    }
+    .mobile-dock-active-pill {
+      background-color: #ffffff !important;
+      color: #09090b !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+    .mobile-dock-active-pill span {
+      color: #09090b !important;
+      font-weight: 700 !important;
+    }
+    .mobile-dock-active-pill svg {
+      color: #09090b !important;
+      stroke: #09090b !important;
+      stroke-width: 2.2 !important;
+    }
+    .mobile-dock-inactive-item {
+      color: #d4d4d8 !important;
+      transition: all 0.2s ease;
+    }
+    .mobile-dock-inactive-item:hover,
+    .mobile-dock-inactive-item:active {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.12) !important;
+    }
+    .mobile-dock-inactive-item svg {
+      stroke: #d4d4d8 !important;
+      stroke-width: 2 !important;
+      width: 18px !important;
+      height: 18px !important;
+    }
+    .mobile-dock-bolinha {
+      background: rgba(24, 25, 29, 0.95) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      color: #ffffff !important;
+    }
+    .mobile-dock-bolinha svg {
+      stroke: #ffffff !important;
+      stroke-width: 2.2 !important;
+      width: 20px !important;
+      height: 20px !important;
+    }
+    .mobile-dock-bolinha-active {
+      background: #ff6b35 !important;
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+      box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4) !important;
+      color: #ffffff !important;
+    }
+    .mobile-dock-bolinha-active svg {
+      stroke: #ffffff !important;
+    }
+    svg.lucide {
+      stroke: currentColor;
+    }
+
         html,
         body {
             height: 100%;
@@ -447,28 +514,28 @@
         </div>
     </div>
 
-              <!-- DOCK FLUTUANTE MOBILE CENTRALIZADO (3 ITENS + BOLINHA MENU NO CANTO) -->
-  <div class="fixed bottom-5 inset-x-0 z-40 md:hidden flex justify-center items-center px-4 pointer-events-none pb-safe">
+                <!-- DOCK FLUTUANTE MOBILE CENTRALIZADO (3 ITENS + BOLINHA MENU NO CANTO) -->
+  <div class="mobile-dock-container fixed bottom-5 inset-x-0 z-40 md:hidden flex justify-center items-center px-4 pb-safe">
     <div class="pointer-events-auto flex items-center justify-center gap-2.5 max-w-[370px] w-full mx-auto">
       <!-- Barra Principal com 3 Ícones -->
-      <nav class="flex-1 flex items-center justify-around p-1.5 rounded-full bg-[#121316]/95 dark:bg-[#0c0d0f]/95 backdrop-blur-2xl border border-white/15 shadow-[0_16px_36px_rgba(0,0,0,0.45)] transition-all duration-300">
+      <nav class="mobile-dock-nav flex-1 flex items-center justify-around p-1.5 rounded-full transition-all duration-300">
         <!-- Inactive Item: Cockpit -->
-        <a href="/app" class="px-3.5 py-2.5 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors flex items-center justify-center" title="Cockpit">
-          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+        <a href="/app" class="mobile-dock-inactive-item px-3.5 py-2.5 rounded-full flex items-center justify-center" title="Cockpit">
+          <i data-lucide="layout-dashboard"></i>
         </a>
         <!-- Active Pill: Reputação -->
-        <a href="/reputacao" class="bg-white text-gray-950 font-bold px-4 py-2 rounded-full flex items-center gap-1.5 text-xs shadow-md shrink-0 transition-transform active:scale-95">
-          <i data-lucide="message-square" class="w-4 h-4 text-gray-950"></i>
-          <span class="font-heading font-bold tracking-tight">Reputação</span>
+        <a href="/reputacao" class="mobile-dock-active-pill px-4 py-2 rounded-full flex items-center gap-1.5 text-xs font-bold shrink-0 transition-transform active:scale-95">
+          <i data-lucide="message-square" class="w-4 h-4"></i>
+          <span class="font-heading tracking-tight">Reputação</span>
         </a>
         <!-- Inactive Item: Ações -->
-        <a href="/minhas_acoes" class="px-3.5 py-2.5 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors flex items-center justify-center" title="Ações">
-          <i data-lucide="list-checks" class="w-4 h-4"></i>
+        <a href="/minhas_acoes" class="mobile-dock-inactive-item px-3.5 py-2.5 rounded-full flex items-center justify-center" title="Ações">
+          <i data-lucide="list-checks"></i>
         </a>
       </nav>
       <!-- Bolinha Menu no Canto -->
-      <button type="button" onclick="openMobileMenuDrawer()" class="w-11 h-11 rounded-full bg-[#121316]/95 dark:bg-[#0c0d0f]/95 text-gray-200 hover:text-white hover:bg-white/10 backdrop-blur-2xl border border-white/15 flex items-center justify-center shadow-[0_16px_36px_rgba(0,0,0,0.45)] active:scale-95 transition-all shrink-0" title="Menu e Outras Opções" aria-label="Abrir Menu">
-        <i data-lucide="menu" class="w-5 h-5"></i>
+      <button type="button" onclick="openMobileMenuDrawer()" class="mobile-dock-bolinha w-11 h-11 rounded-full flex items-center justify-center active:scale-95 transition-all shrink-0" title="Menu e Outras Opções" aria-label="Abrir Menu">
+        <i data-lucide="menu"></i>
       </button>
     </div>
   </div>
