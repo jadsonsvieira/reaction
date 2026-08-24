@@ -1,8 +1,0 @@
-Flask==3.0.3
-flask-cors==4.0.1
-mysql-connector-python==8.4.0
-requests==2.32.3
-python-dotenv==1.0.1
-mercadopago==2.2.3
-resvg-py==0.2.2
-gunicorn==22.0.0
