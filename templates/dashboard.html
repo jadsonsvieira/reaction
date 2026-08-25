@@ -24,6 +24,15 @@
         };
 
         (function() {
+            
+        // SETUP VIP: Exibir apenas 1 vez por ciclo de versão minor (ex: v0.2)
+        (function() {
+            var currentMinor = '0.2';
+            if (localStorage.getItem('reaction_setup_vip_v' + currentMinor) === 'dismissed' || localStorage.getItem('hideSetupVipReAction') === 'true') {
+                document.documentElement.classList.add('hide-setup-vip');
+            }
+        })();
+
             var currentTheme = localStorage.getItem('reactionTheme');
             if (currentTheme === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -1212,10 +1221,11 @@ function confirmarAceiteTermos() {
         console.error('Falha ao carregar as ações iniciais:', err);
       }
 
-      // Verificar se o usuário ocultou o banner de Setup VIP
-      if (localStorage.getItem('hideSetupVipReAction') === 'true') {
+      // Verificar se o usuário já dispensou o banner de Setup VIP para a versão minor v0.2
+      if (localStorage.getItem('reaction_setup_vip_v0.2') === 'dismissed' || localStorage.getItem('hideSetupVipReAction') === 'true') {
         const banner = document.getElementById('banner-setup-vip');
         if (banner) banner.style.display = 'none';
+        document.documentElement.classList.add('hide-setup-vip');
       }
 
       // Renderizar o ecrã
@@ -1231,6 +1241,8 @@ function confirmarAceiteTermos() {
     function dismissSetupVip() {
       const banner = document.getElementById('banner-setup-vip');
       if (banner) banner.style.display = 'none';
+      document.documentElement.classList.add('hide-setup-vip');
+      localStorage.setItem('reaction_setup_vip_v0.2', 'dismissed');
       localStorage.setItem('hideSetupVipReAction', 'true');
     } 
   
