@@ -5,7 +5,7 @@
   "start_url": "/app",
   "id": "reaction-saas-app",
   "display": "standalone",
-  "background_color": "#2c1d18",
+  "background_color": "#08090D",
   "theme_color": "#ff6b35",
   "icons": [
     {

@@ -2305,6 +2305,51 @@ def webhook_whatsapp():
             print(f"[WHATSAPP WEBHOOK ERRO GERAL] {err}")
             return jsonify({"status": "ERROR", "message": str(err)}), 500
 
+# ================= STORE & UNIVERSAL LINKS VERIFICATION =================
+@app.route('/.well-known/assetlinks.json')
+def android_assetlinks():
+    """Google Play Digital Asset Links para deep linking / app verification"""
+    data = [
+        {
+            "relation": ["delegate_permission/common.handle_all_urls"],
+            "target": {
+                "namespace": "android_app",
+                "package_name": "br.com.frameia.reaction",
+                "sha256_cert_fingerprints": [
+                    "FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C"
+                ]
+            }
+        }
+    ]
+    return jsonify(data)
+
+@app.route('/.well-known/apple-app-site-association')
+@app.route('/apple-app-site-association')
+def apple_app_site_association():
+    """Apple Universal Links e Shared Web Credentials"""
+    data = {
+        "applinks": {
+            "apps": [],
+            "details": [
+                {
+                    "appID": "98D2DU39YA.br.com.frameia.reaction",
+                    "paths": ["*"]
+                }
+            ]
+        },
+        "webcredentials": {
+            "apps": [
+                "98D2DU39YA.br.com.frameia.reaction"
+            ]
+        }
+    }
+    return Response(json.dumps(data), mimetype='application/json')
+
+@app.route('/manifest.json')
+def serve_web_manifest():
+    """Serve Web App Manifest"""
+    return app.send_static_file('manifest.json')
+
 if __name__ == '__main__':
     flask_debug = os.environ.get('FLASK_DEBUG', 'False').lower() in ['true', '1']
     flask_host = os.environ.get('FLASK_HOST', '127.0.0.1')
