@@ -10,13 +10,27 @@ DB_USER = os.environ.get("DB_USER", "root")
 DB_PASSWORD = os.environ.get("DB_PASS", "")
 DB_NAME = os.environ.get("DB_NAME", "reaction_db")
 
-def popular_banco_dados(empresa_id=1):
-    conn = mysql.connector.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        database=DB_NAME
-    )
+def popular_banco_dados(empresa_id=1, conn_externa=None):
+    deve_fechar = False
+    if conn_externa:
+        conn = conn_externa
+    else:
+        try:
+            from main import get_db_connection
+            conn = get_db_connection()
+        except Exception:
+            conn = mysql.connector.connect(
+                host=DB_HOST,
+                user=DB_USER,
+                password=DB_PASSWORD,
+                database=DB_NAME
+            )
+        deve_fechar = True
+
+    if not conn:
+        print("[AVISO] Não foi possível obter conexão para popular massa de dados.")
+        return
+
     cursor = conn.cursor()
 
     try:
@@ -199,8 +213,15 @@ def popular_banco_dados(empresa_id=1):
         conn.rollback()
         raise e
     finally:
-        cursor.close()
-        conn.close()
+        try:
+            cursor.close()
+        except Exception:
+            pass
+        if deve_fechar:
+            try:
+                conn.close()
+            except Exception:
+                pass
 
 if __name__ == '__main__':
     print("Gerando massa de dados demonstrativa no banco...")

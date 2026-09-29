@@ -3,6 +3,7 @@ import json
 import re
 import secrets
 import mysql.connector
+from mysql.connector import pooling
 import requests
 import io
 import csv
@@ -67,14 +68,50 @@ DB_USER = os.environ.get("DB_USER", "root")
 DB_PASSWORD = os.environ.get("DB_PASS", "")
 DB_NAME = os.environ.get("DB_NAME", "reaction_db")
 
-# ================= BANCO DE DADOS =================
+# ================= BANCO DE DADOS & POOL DE CONEXÕES =================
+_db_pool = None
+
+def get_db_pool():
+    global _db_pool
+    if _db_pool is None:
+        try:
+            _db_pool = pooling.MySQLConnectionPool(
+                pool_name="reaction_pool",
+                pool_size=5,
+                pool_reset_session=True,
+                host=DB_HOST,
+                user=DB_USER,
+                password=DB_PASSWORD,
+                database=DB_NAME,
+                connection_timeout=10,
+                autocommit=False
+            )
+            print(f"[DB POOL] Pool de conexões inicializado com sucesso para {DB_NAME} (tamanho: 5).")
+        except Exception as e:
+            print(f"[DB POOL AVISO] Falha ao inicializar pool MySQL: {e}")
+            _db_pool = None
+    return _db_pool
+
 def get_db_connection():
+    # 1. Tenta obter conexão reciclada do Pool persistente (evita estourar max_connections_per_hour)
+    pool = get_db_pool()
+    if pool:
+        try:
+            conn = pool.get_connection()
+            if conn.is_connected():
+                conn.ping(reconnect=True, attempts=3, delay=1)
+                return conn
+        except Exception as pool_err:
+            print(f"[DB POOL GET ERRO] {pool_err}")
+
+    # 2. Fallback de conexão direta caso o pool esteja temporariamente indisponível
     try:
         conn = mysql.connector.connect(
             host=DB_HOST,
             user=DB_USER,
             password=DB_PASSWORD,
-            database=DB_NAME
+            database=DB_NAME,
+            connection_timeout=10
         )
         return conn
     except mysql.connector.Error as err:
@@ -90,7 +127,7 @@ def get_db_connection():
                 conn.database = DB_NAME
                 cursor.close()
                 return conn
-            except mysql.connector.Error as e:
+            except Exception as e:
                 print(f"Erro ao tentar criar base de dados: {e}")
                 return None
         else:
@@ -252,11 +289,17 @@ def criar_tabelas_se_nao_existirem():
             print(f"Erro ao verificar/auto-gerar massa de dados: {seed_err}")
 
         conn.commit()
-        cursor.close()
-        conn.close()
-        
     except Exception as e:
         print(f"Erro fatal ao criar tabelas: {e}")
+    finally:
+        try:
+            cursor.close()
+        except Exception:
+            pass
+        try:
+            conn.close()
+        except Exception:
+            pass
 
 try:
     criar_tabelas_se_nao_existirem()
